@@ -1,0 +1,11 @@
+bot:
+  token: 5614420210:AAE0drGVvQ9bJwlZTkX7WgMh1l0Am4ipxfM
+  username: t.me/spend1Money1Bot
+
+
+spring:
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql://localhost:5432/expenses
+    driver-class-name: org.postgresql.Driver

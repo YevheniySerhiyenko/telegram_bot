@@ -1,0 +1,80 @@
+package org.expense_bot.handler.check_expenses;
+
+import lombok.RequiredArgsConstructor;
+import org.expense_bot.enums.ConversationState;
+import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.model.Expense;
+import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.UserSession;
+import org.expense_bot.service.ExpenseService;
+import org.expense_bot.service.TelegramService;
+import org.expense_bot.service.UserSessionService;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class CheckCategoryHandler extends UserRequestHandler {
+
+
+  private final TelegramService telegramService;
+  private final KeyboardHelper keyboardHelper;
+  private final UserSessionService userSessionService;
+  private final ExpenseService expenseService;
+
+  @Override
+  public boolean isApplicable(UserRequest request) {
+	return isTextMessage(request.getUpdate())
+	  && ConversationState.WAITING_CHECK_CATEGORY.equals(request.getUserSession().getState());
+
+  }
+
+  @Override
+  public void handle(UserRequest userRequest) {
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMenuWithCancel();
+	final Long chatId = userRequest.getChatId();
+	telegramService.sendMessage(chatId, "Ваші витрати!", replyKeyboardMarkup);
+	final String category = userRequest.getUpdate().getMessage().getText();
+	final String period = userSessionService.getLastSession(chatId).getPeriod();
+	final UserSession session = userRequest.getUserSession();
+	session.setCategory(category);
+	session.setPeriod(period);
+	session.setState(ConversationState.CONVERSATION_STARTED);
+	userSessionService.saveSession(chatId, session);
+	final List<Expense> expenses = getExpenses(session);
+	expenses.forEach(expense -> telegramService.sendMessage(chatId, getMessage(expense)));
+
+
+  }
+
+  private String getMessage(Expense expense) {
+	return expense.getCategory() + " : " + expense.getSum();
+  }
+
+  private List<Expense> getExpenses(UserSession session) {
+	List<Expense> expenses = new ArrayList<>();
+	final String period = session.getPeriod();
+	switch (period) {
+	  case "За день":
+		expenses = expenseService.getByOneDay();
+		break;
+	  case "За тиждень":
+		expenses = expenseService.getByOneWeek();
+		break;
+	  case "За місяць":
+		expenses = expenseService.getByOneMonth();
+		break;
+	}
+	return expenses;
+  }
+
+  @Override
+  public boolean isGlobal() {
+	return false;
+  }
+
+}
