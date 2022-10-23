@@ -6,7 +6,6 @@ public enum ConversationState {
     WAITING_FOR_SUM,
     WAITING_CHECK_CATEGORY,
     WAITING_FOR_PERIOD;
-
-    ConversationState() {
+  ConversationState() {
     }
 }

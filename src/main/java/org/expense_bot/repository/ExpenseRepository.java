@@ -3,15 +3,13 @@ package org.expense_bot.repository;
 import org.expense_bot.model.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
-  List<Expense> getAllByDateTimeEquals(LocalDate today);
+  List<Expense> getAllByDateTimeIsAfter(LocalDateTime dateTime);
 
-  List<Expense> getAllByDateTimeIsAfter(LocalDate weekAgo);
-
-  List<Expense> getAllByDateTimeBetween(LocalDate beginOfMonth, LocalDate today);
+  List<Expense> getAllByDateTimeBetween(LocalDateTime dateTime, LocalDateTime dateTime2);
 
 }

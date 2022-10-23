@@ -8,9 +8,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.expense_bot.sender.ExpenseBotSender;
 
-/**
- * This service allows to communicate with Telegram API
- */
 @Slf4j
 @Component
 public class TelegramService {

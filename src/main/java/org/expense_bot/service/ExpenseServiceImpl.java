@@ -5,6 +5,8 @@ import org.expense_bot.repository.ExpenseRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Component
@@ -12,6 +14,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   private static final int DAYS_TO_SUBTRACT = 7;
   private static final LocalDate NOW = LocalDate.now();
+  private static final int FIRST_DAY = 1;
   private final ExpenseRepository expenseRepository;
 
   public ExpenseServiceImpl(ExpenseRepository expenseRepository) {
@@ -23,22 +26,22 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   public List<Expense> getByOneDay() {
-	return expenseRepository.getAllByDateTimeEquals(NOW);
+	final LocalDateTime from = LocalDateTime.from(NOW.atTime(LocalTime.MIDNIGHT));
+	return expenseRepository.getAllByDateTimeIsAfter(from);
   }
 
   public List<Expense> getByOneWeek() {
-	LocalDate weekAgo = NOW.minusDays(7L);
-	return expenseRepository.getAllByDateTimeIsAfter(weekAgo);
+	final LocalDateTime dateTime = NOW.minusDays(DAYS_TO_SUBTRACT).atTime(LocalTime.MIDNIGHT);
+	return expenseRepository.getAllByDateTimeIsAfter(LocalDateTime.from(dateTime));
   }
 
   public List<Expense> getByOneMonth() {
-	int dayOfMonth = NOW.getDayOfMonth();
-	LocalDate beginOfMonth = LocalDate.of(NOW.getYear(), NOW.getMonth(), dayOfMonth);
-	return expenseRepository.getAllByDateTimeBetween(beginOfMonth, NOW);
+	final LocalDateTime from = LocalDate.of(NOW.getYear(), NOW.getMonth(), FIRST_DAY).atTime(LocalTime.MIDNIGHT);
+	return expenseRepository.getAllByDateTimeIsAfter(from);
   }
 
   public List<Expense> getByPeriod(LocalDate from, LocalDate to) {
-	return expenseRepository.getAllByDateTimeBetween(from, to);
+	return expenseRepository.getAllByDateTimeBetween(LocalDateTime.from(from), LocalDateTime.from(to));
   }
 
 }

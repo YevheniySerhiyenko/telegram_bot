@@ -37,7 +37,6 @@ public class CheckCategoryHandler extends UserRequestHandler {
   public void handle(UserRequest userRequest) {
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMenuWithCancel();
 	final Long chatId = userRequest.getChatId();
-	telegramService.sendMessage(chatId, "Ваші витрати!", replyKeyboardMarkup);
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final String period = userSessionService.getLastSession(chatId).getPeriod();
 	final UserSession session = userRequest.getUserSession();
@@ -46,9 +45,18 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	session.setState(ConversationState.CONVERSATION_STARTED);
 	userSessionService.saveSession(chatId, session);
 	final List<Expense> expenses = getExpenses(session);
-	expenses.forEach(expense -> telegramService.sendMessage(chatId, getMessage(expense)));
+	if(expenses == null || expenses.isEmpty()){
+	  telegramService.sendMessage(chatId, "Не знайдено витрат за період", replyKeyboardMarkup);
+	}else {
+	  expenses.forEach(expense -> telegramService.sendMessage(chatId, getMessage(expense)));
+	  telegramService.sendMessage(chatId, getSumMessage(expenses,period), replyKeyboardMarkup);
+	}
+  }
 
-
+  private String getSumMessage(List<Expense> expenses, String period) {
+	final Double sum = expenses.stream().map(Expense::getSum).reduce(Double::sum).orElse(null);
+	final String periodWord = period.split(" ")[1];
+	return "Сума витрат за " + periodWord + " : " + sum;
   }
 
   private String getMessage(Expense expense) {

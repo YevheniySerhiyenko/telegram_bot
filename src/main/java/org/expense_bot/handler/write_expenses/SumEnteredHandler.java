@@ -33,12 +33,11 @@ public class SumEnteredHandler extends UserRequestHandler {
   }
 
   public boolean isApplicable(UserRequest userRequest) {
-	return this.isTextMessage(userRequest.getUpdate()) && ConversationState.WAITING_FOR_SUM.equals(userRequest.getUserSession().getState());
+	return isTextMessage(userRequest.getUpdate()) && ConversationState.WAITING_FOR_SUM.equals(userRequest.getUserSession().getState());
   }
 
   public void handle(UserRequest userRequest) {
-	ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildMainMenu();
-	this.telegramService.sendMessage(userRequest.getChatId(), "Сума витрат записана та відправлена!", replyKeyboardMarkup);
+	this.telegramService.sendMessage(userRequest.getChatId(), "Сума витрат записана та відправлена!");
 	Double sum = Double.valueOf(userRequest.getUpdate().getMessage().getText());
 	UserSession session = userRequest.getUserSession();
 	session.setSum(sum);
