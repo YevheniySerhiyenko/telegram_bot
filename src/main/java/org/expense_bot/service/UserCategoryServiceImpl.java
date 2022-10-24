@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
-import org.expense_bot.repository.CategoryRepository;
 import org.expense_bot.repository.UserCategoryRepository;
 import org.expense_bot.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +17,6 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
   private final UserCategoryRepository repository;
   private final UserRepository userRepository;
-  private final CategoryRepository categoryRepository;
   private final TelegramService telegramService;
 
   @Override
@@ -46,6 +45,11 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
     repository.getByChatIdAndCategoryLike(user,category)
       .ifPresent(repository::delete);
+  }
+
+  @Override
+  public List<UserCategory> getByUser(User userId) {
+    return repository.getByChatId(userId);
   }
 
 }

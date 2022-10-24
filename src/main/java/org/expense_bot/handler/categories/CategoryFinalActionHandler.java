@@ -24,7 +24,6 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   private final UserSessionService userSessionService;
   private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
-  private final KeyboardHelper keyboardHelper;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -36,7 +35,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 	final Long chatId = userRequest.getChatId();
 	final String categoryParam = userRequest.getUpdate().getMessage().getText();
 	final CategoryAction categoryAction = userSessionService.getLastSession(chatId).getCategoryAction();
-	final Category category = getCategory(categoryParam);
+	final Category category = getCategory(chatId,categoryParam);
 
 	switch (categoryAction){
 	  case ADD_NEW_CATEGORY:
@@ -54,8 +53,11 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 	userSessionService.saveSession(chatId, session);
   }
 
-  private Category getCategory(String categoryParam) {
+  private Category getCategory(Long chatId, String categoryParam) {
 	final Optional<Category> byName = categoryService.findByName(categoryParam);
+	if(byName.isEmpty()){
+	  telegramService.sendMessage(chatId,"Категорія додана до загального списку");
+	}
 	return byName.orElseGet(() -> categoryService.create(buildCategory(categoryParam)));
   }
 

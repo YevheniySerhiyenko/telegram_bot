@@ -12,6 +12,7 @@ import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.TelegramService;
+import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.UserService;
 import org.expense_bot.service.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ public class CategoryActionHandler extends UserRequestHandler {
   private final TelegramService telegramService;
   private final UserSessionService userSessionService;
   private final CategoryService categoryService;
+  private final UserCategoryService userCategoryService;
   private final KeyboardHelper keyboardHelper;
   private final UserService userService;
 
@@ -104,7 +106,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 
   private void handleDelete(Long chatId) {
 	final User user = userService.getByChatId(chatId).orElse(null);
-	final List<String> allCategories = categoryService.getByUser(user)
+	final List<String> allCategories = userCategoryService.getByUser(user)
 	  .stream()
 	  .map(UserCategory::getCategory)
 	  .map(Category::getName)
@@ -117,7 +119,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 
   private void handleShowAll(Long chatId) {
 	final User user = userService.getByChatId(chatId).orElse(null);
-	final List<String> allCategories = categoryService.getByUser(user)
+	final List<String> allCategories = userCategoryService.getByUser(user)
 	  .stream()
 	  .map(UserCategory::getCategory)
 	  .map(Category::getName)

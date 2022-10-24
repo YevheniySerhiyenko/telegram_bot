@@ -29,11 +29,6 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public List<UserCategory> getByUser(User userId) {
-	return userCategoryRepository.getByChatId(userId);
-  }
-
-  @Override
   public List<Category> getDefault() {
 	return categoryRepository.findAll();
   }

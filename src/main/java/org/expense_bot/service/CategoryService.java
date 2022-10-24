@@ -13,8 +13,6 @@ public interface CategoryService {
 
   Category create(Category category);
 
-  List<UserCategory> getByUser(User userId);
-
   List<Category> getDefault();
 
 }

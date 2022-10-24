@@ -28,7 +28,7 @@ public class WriteHandler extends UserRequestHandler {
     }
 
     public void handle(UserRequest userRequest) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildCategoriesMenu();
+        ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildCategoriesMenu(userRequest.getChatId());
         this.telegramService.sendMessage(userRequest.getChatId(), "Оберіть категорію витрат зі списку або опишіть вручну⤵️", replyKeyboardMarkup);
         UserSession userSession = userRequest.getUserSession();
         userSession.setState(ConversationState.WAITING_FOR_CATEGORY);
