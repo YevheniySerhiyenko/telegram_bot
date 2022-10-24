@@ -1,6 +1,7 @@
 package org.expense_bot.handler.check_expenses;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -35,7 +36,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMenuWithCancel();
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMainMenu();
 	final Long chatId = userRequest.getChatId();
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final String period = userSessionService.getLastSession(chatId).getPeriod();
@@ -46,8 +47,9 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	userSessionService.saveSession(chatId, session);
 	final List<Expense> expenses = getExpenses(session);
 	if(expenses == null || expenses.isEmpty()){
-	  telegramService.sendMessage(chatId, "Не знайдено витрат за період", replyKeyboardMarkup);
+	  telegramService.sendMessage(chatId, Messages.NOT_FOUND_FOR_PERIOD, replyKeyboardMarkup);
 	}else {
+	  telegramService.sendMessage(chatId, Messages.SUCCESS);
 	  expenses.forEach(expense -> telegramService.sendMessage(chatId, getMessage(expense)));
 	  telegramService.sendMessage(chatId, getSumMessage(expenses,period), replyKeyboardMarkup);
 	}
@@ -67,13 +69,13 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	List<Expense> expenses = new ArrayList<>();
 	final String period = session.getPeriod();
 	switch (period) {
-	  case "За день":
+	  case Messages.DAY:
 		expenses = expenseService.getByOneDay();
 		break;
-	  case "За тиждень":
+	  case Messages.WEEK:
 		expenses = expenseService.getByOneWeek();
 		break;
-	  case "За місяць":
+	  case Messages.MONTH:
 		expenses = expenseService.getByOneMonth();
 		break;
 	}

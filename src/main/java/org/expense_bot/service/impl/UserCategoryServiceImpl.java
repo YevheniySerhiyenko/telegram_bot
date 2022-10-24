@@ -1,6 +1,7 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
@@ -22,14 +23,25 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
   @Override
   public UserCategory add(Long chatId, Category category) {
-    final User user = userRepository.findByChatId(chatId)
-      .orElseThrow(() -> new RuntimeException("User not found by chat id: " + chatId));
+    final User user = getUser(chatId);
     final Optional<UserCategory> userCategory = repository.getByChatIdAndCategoryLike(user, category);
+
     if(userCategory.isPresent()){
-      telegramService.sendMessage(chatId,"Ви вже маєте дану категорію");
+      telegramService.sendMessage(chatId, Messages.ERROR);
+      telegramService.sendMessage(chatId,Messages.ALREADY_HAD_SUCH_CATEGORY);
       return null;
     }
     return repository.save(getCategory(category, user));
+  }
+
+  private User getUser(Long chatId) {
+    return userRepository.findByChatId(chatId)
+      .orElseThrow(() -> {
+        final String message = Messages.USER_NOT_FOUND + chatId;
+        telegramService.sendMessage(chatId, Messages.ERROR);
+        telegramService.sendMessage(chatId, message);
+        return new RuntimeException(message);
+      });
   }
 
   private UserCategory getCategory(Category category, User user) {
@@ -42,7 +54,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   @Override
   public void delete(Long chatId, Category category) {
     final User user = userRepository.findByChatId(chatId)
-      .orElseThrow(() -> new RuntimeException("User not found by chat id: " + chatId));
+      .orElseThrow(() -> new RuntimeException(Messages.USER_NOT_FOUND + chatId));
 
     repository.getByChatIdAndCategoryLike(user,category)
       .ifPresent(repository::delete);

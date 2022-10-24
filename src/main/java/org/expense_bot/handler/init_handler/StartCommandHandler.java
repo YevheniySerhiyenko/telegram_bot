@@ -1,12 +1,13 @@
 package org.expense_bot.handler.init_handler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.impl.TelegramService;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Component
 @RequiredArgsConstructor
@@ -25,11 +26,8 @@ public class StartCommandHandler extends UserRequestHandler {
     @Override
     public void handle(UserRequest request) {
         final ReplyKeyboard replyKeyboard = keyboardHelper.buildMainMenu();
-        telegramService.sendMessage(request.getChatId(),
-                "\uD83D\uDC4BПривіт! За допомогою цього чат-бота ви зможете зробити запит про допомогу!",
-                replyKeyboard);
-        telegramService.sendMessage(request.getChatId(),
-                "Обирайте що хочете зробити ⤵️");
+        telegramService.sendMessage(request.getChatId(), Messages.HELLO_MESSAGE, replyKeyboard);
+        telegramService.sendMessage(request.getChatId(), Messages.CHOOSE_YOUR_ACTION);
     }
 
     @Override

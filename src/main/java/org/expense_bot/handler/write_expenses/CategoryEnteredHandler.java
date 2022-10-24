@@ -1,5 +1,6 @@
 package org.expense_bot.handler.write_expenses;
 
+import lombok.RequiredArgsConstructor;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -11,30 +12,26 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 @Component
+@RequiredArgsConstructor
 public class CategoryEnteredHandler extends UserRequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
+  private final KeyboardHelper keyboardHelper;
 
-  public CategoryEnteredHandler(TelegramService telegramService, KeyboardHelper keyboardHelper, UserSessionService userSessionService) {
-	this.telegramService = telegramService;
-	this.keyboardHelper = keyboardHelper;
-	this.userSessionService = userSessionService;
-  }
-
+  @Override
   public boolean isApplicable(UserRequest userRequest) {
-	return this.isTextMessage(userRequest.getUpdate()) && ConversationState.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
+	return isTextMessage(userRequest.getUpdate()) && ConversationState.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
   }
 
+  @Override
   public void handle(UserRequest userRequest) {
-	ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildMenuWithCancel();
-	this.telegramService.sendMessage(userRequest.getChatId(), "✍️Введи суму витрат⤵️", replyKeyboardMarkup);
-	String category = userRequest.getUpdate().getMessage().getText();
-	UserSession session = userRequest.getUserSession();
+	telegramService.sendMessage(userRequest.getChatId(), "✍️Введи суму витрат⤵️");
+	final String category = userRequest.getUpdate().getMessage().getText();
+	final UserSession session = userRequest.getUserSession();
 	session.setCategory(category);
 	session.setState(ConversationState.WAITING_FOR_SUM);
-	this.userSessionService.saveSession(userRequest.getChatId(), session);
+	userSessionService.saveSession(userRequest.getChatId(), session);
   }
 
   public boolean isGlobal() {

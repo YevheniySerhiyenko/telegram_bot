@@ -1,5 +1,6 @@
 package org.expense_bot.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.expense_bot.model.Expense;
 import org.expense_bot.repository.ExpenseRepository;
 import org.expense_bot.service.ExpenseService;
@@ -11,16 +12,14 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
+
+  private final ExpenseRepository expenseRepository;
 
   private static final int DAYS_TO_SUBTRACT = 7;
   private static final LocalDate NOW = LocalDate.now();
   private static final int FIRST_DAY = 1;
-  private final ExpenseRepository expenseRepository;
-
-  public ExpenseServiceImpl(ExpenseRepository expenseRepository) {
-	this.expenseRepository = expenseRepository;
-  }
 
   public Expense save(Expense spent) {
 	return expenseRepository.save(spent);

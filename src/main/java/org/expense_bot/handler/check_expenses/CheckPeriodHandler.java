@@ -1,6 +1,7 @@
 package org.expense_bot.handler.check_expenses;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -30,7 +31,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
   public void handle(UserRequest userRequest) {
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCheckCategoriesMenu();
 	final Long chatId = userRequest.getChatId();
-	telegramService.sendMessage(chatId, "Оберіть категорію!", replyKeyboardMarkup);
+	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, replyKeyboardMarkup);
 	final String period = userRequest.getUpdate().getMessage().getText();
 	final UserSession session = userRequest.getUserSession();
 	session.setPeriod(period);

@@ -1,7 +1,7 @@
 package org.expense_bot.helper;
 
-import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Constants;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
 import org.expense_bot.model.Category;
@@ -56,10 +56,6 @@ public class KeyboardHelper {
 
 	  final KeyboardRow row = new KeyboardRow();
 	  row.add(allCategories.get(i++));
-	  if(i >= allCategories.size()) {
-		break;
-	  }
-	  row.add(allCategories.get(i++));
 
 	  if(!row.isEmpty()) {
 		buttonsList.add(row);
@@ -79,10 +75,30 @@ public class KeyboardHelper {
 	  .oneTimeKeyboard(false).build();
   }
 
-  public ReplyKeyboardMarkup buildMenuWithCancel() {
+  public ReplyKeyboardMarkup buildCategoryActionsMenuWithCancel() {
+	final ReplyKeyboardMarkup replyKeyboardMarkup = buildCategoryOptionsMenu();
 	KeyboardRow row = new KeyboardRow();
 	row.add(Constants.BTN_CANCEL);
-	return ReplyKeyboardMarkup.builder().keyboard(List.of(row)).selective(true).resizeKeyboard(true).oneTimeKeyboard(false).build();
+	final List<KeyboardRow> keyboard = replyKeyboardMarkup.getKeyboard();
+	keyboard.add(row);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(keyboard)
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(false)
+	  .build();
+
+  }
+
+  public ReplyKeyboardMarkup buildMenuWithCancel() {
+	final KeyboardRow row = new KeyboardRow();
+	row.add(Constants.BTN_CANCEL);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(row))
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(false)
+	  .build();
   }
 
   public ReplyKeyboardMarkup buildCheckPeriodMenu() {
@@ -173,6 +189,17 @@ public class KeyboardHelper {
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
+	  .build();
+  }
+
+  public ReplyKeyboardMarkup buildСonfirm() {
+	final KeyboardRow row = new KeyboardRow();
+	row.add(Messages.SUCCESS);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(row))
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(true)
 	  .build();
   }
 

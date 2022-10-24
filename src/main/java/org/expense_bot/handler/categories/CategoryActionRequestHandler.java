@@ -1,6 +1,7 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -35,7 +36,7 @@ public class CategoryActionRequestHandler extends UserRequestHandler {
   public void handle(UserRequest userRequest) {
     checkUser(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
-	this.telegramService.sendMessage(userRequest.getChatId(), "Оберіть дію",replyKeyboardMarkup);
+	this.telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	final Long chatId = userRequest.getChatId();
 	final UserSession session = userRequest.getUserSession();
 	session.setCategoryState(CategoryState.WAITING_CATEGORY_ACTION);

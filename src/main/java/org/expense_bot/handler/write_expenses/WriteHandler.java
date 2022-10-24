@@ -1,5 +1,6 @@
 package org.expense_bot.handler.write_expenses;
 
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -12,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 
 @Component
 public class WriteHandler extends UserRequestHandler {
-    public static String writeDownSpendingMoney = "Записати витрати";
+
     private final TelegramService telegramService;
     private final KeyboardHelper keyboardHelper;
     private final UserSessionService userSessionService;
@@ -24,12 +25,12 @@ public class WriteHandler extends UserRequestHandler {
     }
 
     public boolean isApplicable(UserRequest userRequest) {
-        return isTextMessage(userRequest.getUpdate(), writeDownSpendingMoney);
+        return isTextMessage(userRequest.getUpdate(), Messages.WRITE_EXPENSES);
     }
 
     public void handle(UserRequest userRequest) {
         ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildCategoriesMenu(userRequest.getChatId());
-        this.telegramService.sendMessage(userRequest.getChatId(), "Оберіть категорію витрат зі списку або опишіть вручну⤵️", replyKeyboardMarkup);
+        this.telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_EXPENSES_CATEGORY, replyKeyboardMarkup);
         UserSession userSession = userRequest.getUserSession();
         userSession.setState(ConversationState.WAITING_FOR_CATEGORY);
         this.userSessionService.saveSession(userSession.getChatId(), userSession);

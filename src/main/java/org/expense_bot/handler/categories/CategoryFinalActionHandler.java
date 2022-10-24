@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.CategoryState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
@@ -12,6 +13,7 @@ import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   private final UserSessionService userSessionService;
   private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
+  private final KeyboardHelper keyboardHelper;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -47,15 +50,16 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 	}
 
 	final UserSession session = userRequest.getUserSession();
-	session.setCategoryState(CategoryState.WAITING_FINAL_ACTION);
+	session.setCategoryState(CategoryState.WAITING_CATEGORY_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
   }
 
   private Category getCategory(Long chatId, String categoryParam) {
+	ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildMenuWithCancel();
 	final Optional<Category> byName = categoryService.findByName(categoryParam);
 	if(byName.isEmpty()){
-	  telegramService.sendMessage(chatId,"Категорія додана до загального списку");
+	  telegramService.sendMessage(chatId,"Категорія додана до загального списку",replyKeyboardMarkup);
 	}
 	return byName.orElseGet(() -> categoryService.create(buildCategory(categoryParam)));
   }

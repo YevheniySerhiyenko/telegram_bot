@@ -1,6 +1,7 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.CategoryState;
 import org.expense_bot.handler.UserRequestHandler;
@@ -55,16 +56,16 @@ public class CategoryActionHandler extends UserRequestHandler {
   private CategoryAction parseAction(String text) {
 	CategoryAction categoryState = null;
 	switch (text) {
-	  case "Додати свою категорію":
+	  case Messages.ADD_CATEGORY:
 		categoryState = CategoryAction.ADD_NEW_CATEGORY;
 		break;
-	  case "Видалити категорію":
+	  case Messages.DELETE_CATEGORY:
 		categoryState = CategoryAction.DELETE_CATEGORY;
 		break;
-	  case "Подивитись мої категорії":
+	  case Messages.SHOW_MY_CATEGORIES:
 		categoryState = CategoryAction.SHOW_MY_CATEGORIES;
 		break;
-	  case "Додати існуючу категорію":
+	  case Messages.ADD_FROM_DEFAULT:
 		categoryState = CategoryAction.ADD_FROM_DEFAULT;
 		break;
 	}
@@ -100,8 +101,7 @@ public class CategoryActionHandler extends UserRequestHandler {
   }
 
   private void handleAddNew(Long chatId) {
-	final String message = "Введіть назву категорії";
-	telegramService.sendMessage(chatId, message);
+	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME);
   }
 
   private void handleDelete(Long chatId) {
@@ -112,8 +112,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  .map(Category::getName)
 	  .collect(Collectors.toList());
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
-	final String message = "Виберіть категорію для видалення";
-	telegramService.sendMessage(chatId, message, replyKeyboardMarkup);
+	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FOR_DELETE, replyKeyboardMarkup);
 
   }
 
@@ -125,16 +124,14 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  .map(Category::getName)
 	  .collect(Collectors.toList());
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
-	final String message = "Ваші категорії";
-	telegramService.sendMessage(chatId, message, replyKeyboardMarkup);
+	telegramService.sendMessage(chatId, Messages.YOUR_CATEGORIES, replyKeyboardMarkup);
   }
 
   private void handleAddFromDefault(Long chatId) {
 	final List<String> allCategories = categoryService.getDefault().stream().map(Category::getName)
 	  .collect(Collectors.toList());
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
-	final String message = "Оберіть категорію зі списку";
-	telegramService.sendMessage(chatId, message, replyKeyboardMarkup);
+	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FROM_LIST, replyKeyboardMarkup);
   }
 
 }

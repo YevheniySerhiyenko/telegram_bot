@@ -1,6 +1,7 @@
 package org.expense_bot.handler.check_expenses;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -15,19 +16,18 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 @RequiredArgsConstructor
 public class CheckHandler extends UserRequestHandler {
 
-  public static String checkSpentMoney = "Перевірити витрати";
   private final TelegramService telegramService;
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
 
 
   public boolean isApplicable(UserRequest userRequest) {
-	return isTextMessage(userRequest.getUpdate(), checkSpentMoney);
+	return isTextMessage(userRequest.getUpdate(), Messages.CHECK_EXPENSES);
   }
 
   public void handle(UserRequest userRequest) {
 	ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildCheckPeriodMenu();
-	this.telegramService.sendMessage(userRequest.getChatId(), "Оберіть період!", replyKeyboardMarkup);
+	this.telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_PERIOD, replyKeyboardMarkup);
 	String action = userRequest.getUpdate().getMessage().getText();
 	UserSession session = userRequest.getUserSession();
 	session.setAction(action);
