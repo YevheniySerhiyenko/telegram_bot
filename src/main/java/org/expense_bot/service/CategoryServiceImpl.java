@@ -2,6 +2,7 @@ package org.expense_bot.service;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.model.Category;
+import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.repository.CategoryRepository;
 import org.expense_bot.repository.UserCategoryRepository;
@@ -18,21 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
   private final CategoryRepository categoryRepository;
 
   @Override
-  public void addToUser(Long userId, String category) {
-	final Category categoryByName = categoryRepository.getByNameLike(category);
-	if(categoryByName != null){
-	  final UserCategory userCategory = UserCategory.builder().userId(userId).category(categoryByName).build();
-	  userCategoryRepository.save(userCategory);
-	}
-	else{
-	  final Category newCategory = categoryRepository.save(Category.builder().name(category).build());
-	  final UserCategory userCategory = UserCategory.builder().userId(userId).category(newCategory).build();
-	  userCategoryRepository.save(userCategory);
-	}
-  }
-
-  @Override
-  public Category findByName(String name) {
+  public Optional<Category> findByName(String name) {
 	return categoryRepository.getByNameLike(name);
   }
 
@@ -42,14 +29,8 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public List<UserCategory> getByUser(Long userId) {
-	return userCategoryRepository.getByUserId(userId);
-  }
-
-  @Override
-  public void deleteFromUser(Long chatId, String category) {
-	final Optional<UserCategory> userCategory = userCategoryRepository.getByUserIdAndCategoryLike(chatId, category);
-	userCategory.ifPresent(value -> userCategoryRepository.deleteById(value.getId()));
+  public List<UserCategory> getByUser(User userId) {
+	return userCategoryRepository.getByChatId(userId);
   }
 
   @Override

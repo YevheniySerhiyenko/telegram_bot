@@ -6,11 +6,13 @@ import org.expense_bot.enums.CategoryState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Category;
+import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.TelegramService;
+import org.expense_bot.service.UserService;
 import org.expense_bot.service.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -26,6 +28,7 @@ public class CategoryActionHandler extends UserRequestHandler {
   private final UserSessionService userSessionService;
   private final CategoryService categoryService;
   private final KeyboardHelper keyboardHelper;
+  private final UserService userService;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -100,7 +103,8 @@ public class CategoryActionHandler extends UserRequestHandler {
   }
 
   private void handleDelete(Long chatId) {
-	final List<String> allCategories = categoryService.getByUser(chatId)
+	final User user = userService.getByChatId(chatId).orElse(null);
+	final List<String> allCategories = categoryService.getByUser(user)
 	  .stream()
 	  .map(UserCategory::getCategory)
 	  .map(Category::getName)
@@ -112,7 +116,8 @@ public class CategoryActionHandler extends UserRequestHandler {
   }
 
   private void handleShowAll(Long chatId) {
-	final List<String> allCategories = categoryService.getByUser(chatId)
+	final User user = userService.getByChatId(chatId).orElse(null);
+	final List<String> allCategories = categoryService.getByUser(user)
 	  .stream()
 	  .map(UserCategory::getCategory)
 	  .map(Category::getName)

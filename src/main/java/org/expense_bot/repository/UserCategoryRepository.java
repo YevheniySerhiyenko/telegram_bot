@@ -1,5 +1,7 @@
 package org.expense_bot.repository;
 
+import org.expense_bot.model.Category;
+import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,8 +10,8 @@ import java.util.Optional;
 
 public interface UserCategoryRepository extends JpaRepository<UserCategory, Long> {
 
-  Optional<UserCategory> getByUserIdAndCategoryLike(Long userId, String category);
+  Optional<UserCategory> getByChatIdAndCategoryLike(User chatId, Category category);
 
-  List<UserCategory> getByUserId(Long userId);
+  List<UserCategory> getByChatId(User userId);
 
 }

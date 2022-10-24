@@ -3,31 +3,27 @@ package org.expense_bot.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
-@Entity
-@Table(name = "categories")
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@Entity
+@Table(name = "users")
 @RequiredArgsConstructor
-public class Category implements Serializable {
+@AllArgsConstructor
+@Builder
+public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  @Column
+  private Long chatId;
 
-  @Column(name = "name")
+  @Column
   private String name;
 }
