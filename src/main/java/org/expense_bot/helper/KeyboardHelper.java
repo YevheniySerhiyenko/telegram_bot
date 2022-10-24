@@ -1,6 +1,7 @@
 package org.expense_bot.helper;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Constants;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
 import org.expense_bot.model.Category;
@@ -39,7 +40,7 @@ public class KeyboardHelper {
 
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add("❌");
+	cancelRow.add(Constants.BTN_CANCEL);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
@@ -80,7 +81,7 @@ public class KeyboardHelper {
 
   public ReplyKeyboardMarkup buildMenuWithCancel() {
 	KeyboardRow row = new KeyboardRow();
-	row.add("❌");
+	row.add(Constants.BTN_CANCEL);
 	return ReplyKeyboardMarkup.builder().keyboard(List.of(row)).selective(true).resizeKeyboard(true).oneTimeKeyboard(false).build();
   }
 
@@ -94,7 +95,7 @@ public class KeyboardHelper {
 	KeyboardRow row4 = new KeyboardRow();
 	row4.add(Period.PERIOD.getValue());
 	KeyboardRow row5 = new KeyboardRow();
-	row5.add("❌");
+	row5.add(Constants.BTN_CANCEL);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row1, row2, row3, row4, row5))
 	  .selective(true)
@@ -132,7 +133,7 @@ public class KeyboardHelper {
 	row6.add("Розваги та подарунки");
 
 	KeyboardRow row8 = new KeyboardRow();
-	row8.add("❌");
+	row8.add(Constants.BTN_CANCEL);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row, row1, row2, row3, row4, row5, row6, row8))
 	  .selective(true)
@@ -151,7 +152,7 @@ public class KeyboardHelper {
 	KeyboardRow row4 = new KeyboardRow();
 	row4.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
 	KeyboardRow row5 = new KeyboardRow();
-	row5.add("❌");
+	row5.add(Constants.BTN_CANCEL);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row1, row2, row3, row4, row5))
 	  .selective(true)
@@ -164,7 +165,7 @@ public class KeyboardHelper {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add("❌");
+	cancelRow.add(Constants.BTN_CANCEL);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
