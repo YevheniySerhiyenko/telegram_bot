@@ -1,4 +1,4 @@
-package org.expense_bot.service;
+package org.expense_bot.service.impl;
 
 import org.springframework.stereotype.Component;
 import org.expense_bot.model.UserSession;

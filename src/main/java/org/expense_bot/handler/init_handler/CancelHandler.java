@@ -4,8 +4,8 @@ import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
-import org.expense_bot.service.TelegramService;
-import org.expense_bot.service.UserSessionService;
+import org.expense_bot.service.impl.TelegramService;
+import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 
 import static org.expense_bot.constant.Constants.BTN_CANCEL;

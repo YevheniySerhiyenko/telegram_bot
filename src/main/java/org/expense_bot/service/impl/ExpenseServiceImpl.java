@@ -1,7 +1,8 @@
-package org.expense_bot.service;
+package org.expense_bot.service.impl;
 
 import org.expense_bot.model.Expense;
 import org.expense_bot.repository.ExpenseRepository;
+import org.expense_bot.service.ExpenseService;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

@@ -11,10 +11,10 @@ import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.CategoryService;
-import org.expense_bot.service.TelegramService;
+import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.UserService;
-import org.expense_bot.service.UserSessionService;
+import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 

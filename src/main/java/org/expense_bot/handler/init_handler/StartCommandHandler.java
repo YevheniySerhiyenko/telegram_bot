@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.service.TelegramService;
+import org.expense_bot.service.impl.TelegramService;
 
 @Component
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package org.expense_bot.service;
+package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.model.Category;
@@ -6,6 +6,7 @@ import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.repository.CategoryRepository;
 import org.expense_bot.repository.UserCategoryRepository;
+import org.expense_bot.service.CategoryService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -7,7 +7,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
-import org.expense_bot.service.UserSessionService;
+import org.expense_bot.service.impl.UserSessionService;
 
 @Slf4j
 @Component
