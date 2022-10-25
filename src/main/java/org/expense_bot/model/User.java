@@ -21,9 +21,8 @@ import javax.persistence.Table;
 public class User {
 
   @Id
-  @Column
   private Long chatId;
 
-  @Column
+  @Column(nullable = false, unique = true)
   private String name;
 }
