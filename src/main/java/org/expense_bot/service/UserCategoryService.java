@@ -8,10 +8,12 @@ import java.util.List;
 
 public interface UserCategoryService {
 
-  UserCategory add(Long userId, Category category);
+  UserCategory add(Long userId, String categoryName);
 
-  void delete(Long userId, Category category);
+  void delete(Long userId, String categoryName);
 
   List<UserCategory> getByUser(User userId);
+
+  boolean existByUser(Long userId,Category category);
 
 }

@@ -7,6 +7,7 @@ import org.expense_bot.enums.Period;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
+import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,13 @@ public class KeyboardHelper {
   @Autowired
   private UserCategoryService userCategoryService;
   @Autowired
+  private CategoryService categoryService;
+  @Autowired
   private UserService userService;
 
   public ReplyKeyboardMarkup buildCategoriesMenu(Long userId) {
 	final User user = userService.getByChatId(userId)
-	  .orElseThrow(() -> new RuntimeException("User not found"));
+	  .orElseThrow(() -> new RuntimeException(Messages.USER_NOT_FOUND + userId));
 
 	List<KeyboardRow> buttonsList = new ArrayList<>();
 
@@ -51,23 +54,11 @@ public class KeyboardHelper {
 	  .build();
   }
 
-  private void setButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
-	for (int i = 0; i < allCategories.size(); ) {
-
-	  final KeyboardRow row = new KeyboardRow();
-	  row.add(allCategories.get(i++));
-
-	  if(!row.isEmpty()) {
-		buttonsList.add(row);
-	  }
-
-	}
-  }
 
   public ReplyKeyboardMarkup buildMainMenu() {
 	KeyboardRow row = new KeyboardRow();
-	row.add("Записати витрати");
-	row.add("Перевірити витрати");
+	row.add(Messages.WRITE_EXPENSES);
+	row.add(Messages.CHECK_EXPENSES);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row))
 	  .selective(true)
@@ -121,37 +112,23 @@ public class KeyboardHelper {
   }
 
   public ReplyKeyboardMarkup buildCheckCategoriesMenu() {
-	KeyboardRow row = new KeyboardRow();
+	final List<String> categoryList = categoryService.getDefault()
+	  .stream()
+	  .map(Category::getName)
+	  .collect(Collectors.toList());
+
+	final List<KeyboardRow> keyboardRows = new ArrayList<>();
+	final KeyboardRow row = new KeyboardRow();
 	row.add("По всім категоріям");
+	keyboardRows.add(row);
+	setButtons(keyboardRows, categoryList);
 
-	KeyboardRow row1 = new KeyboardRow();
-	row1.add("Книги");
-	row1.add("Зв'язок (телефон, інтернет)");
 
-	KeyboardRow row2 = new KeyboardRow();
-	row2.add("Побутові потреби");
-	row2.add("Шкідливі звички");
-
-	KeyboardRow row3 = new KeyboardRow();
-	row3.add("Гігієна та здоров'я");
-	row3.add("Кафе");
-
-	KeyboardRow row4 = new KeyboardRow();
-	row4.add("Квартплата");
-	row4.add("Кредит/борги");
-
-	KeyboardRow row5 = new KeyboardRow();
-	row5.add("Одяг та косметика");
-	row5.add("Поїздки (транспорт, таксі)");
-
-	KeyboardRow row6 = new KeyboardRow();
-	row6.add("Продукти харчування");
-	row6.add("Розваги та подарунки");
-
-	KeyboardRow row8 = new KeyboardRow();
-	row8.add(Constants.BTN_CANCEL);
+	final KeyboardRow row1 = new KeyboardRow();
+	row1.add(Constants.BTN_CANCEL);
+	keyboardRows.add(row1);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row, row1, row2, row3, row4, row5, row6, row8))
+	  .keyboard(keyboardRows)
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
@@ -162,15 +139,13 @@ public class KeyboardHelper {
 	KeyboardRow row1 = new KeyboardRow();
 	row1.add(CategoryAction.ADD_NEW_CATEGORY.getValue());
 	KeyboardRow row2 = new KeyboardRow();
-	row2.add(CategoryAction.DELETE_CATEGORY.getValue());
+	row2.add(CategoryAction.SHOW_MY_CATEGORIES.getValue());
 	KeyboardRow row3 = new KeyboardRow();
-	row3.add(CategoryAction.SHOW_MY_CATEGORIES.getValue());
+	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
 	KeyboardRow row4 = new KeyboardRow();
-	row4.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
-	KeyboardRow row5 = new KeyboardRow();
-	row5.add(Constants.BTN_CANCEL);
+	row4.add(Constants.BTN_CANCEL);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row1, row2, row3, row4, row5))
+	  .keyboard(List.of(row1, row2, row3, row4))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
@@ -190,6 +165,23 @@ public class KeyboardHelper {
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
 	  .build();
+  }
+
+  private void setDeleteButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
+	for (String category : allCategories) {
+	  final KeyboardRow row = new KeyboardRow();
+	  row.add(category + Constants.BTN_CANCEL);
+	  buttonsList.add(row);
+	}
+  }
+
+
+  private void setButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
+	for (String category : allCategories) {
+	  final KeyboardRow row = new KeyboardRow();
+	  row.add(category);
+	  buttonsList.add(row);
+	}
   }
 
   public ReplyKeyboardMarkup buildСonfirm() {

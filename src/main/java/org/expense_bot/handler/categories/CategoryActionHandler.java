@@ -59,9 +59,6 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  case Messages.ADD_CATEGORY:
 		categoryState = CategoryAction.ADD_NEW_CATEGORY;
 		break;
-	  case Messages.DELETE_CATEGORY:
-		categoryState = CategoryAction.DELETE_CATEGORY;
-		break;
 	  case Messages.SHOW_MY_CATEGORIES:
 		categoryState = CategoryAction.SHOW_MY_CATEGORIES;
 		break;
@@ -81,9 +78,6 @@ public class CategoryActionHandler extends UserRequestHandler {
 	final Long chatId = userRequest.getChatId();
 
 	switch (categoryAction) {
-	  case DELETE_CATEGORY:
-		handleDelete(chatId);
-		break;
 	  case ADD_NEW_CATEGORY:
 		handleAddNew(chatId);
 		break;
@@ -104,20 +98,9 @@ public class CategoryActionHandler extends UserRequestHandler {
 	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME);
   }
 
-  private void handleDelete(Long chatId) {
-	final User user = userService.getByChatId(chatId).orElse(null);
-	final List<String> allCategories = userCategoryService.getByUser(user)
-	  .stream()
-	  .map(UserCategory::getCategory)
-	  .map(Category::getName)
-	  .collect(Collectors.toList());
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
-	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FOR_DELETE, replyKeyboardMarkup);
-
-  }
 
   private void handleShowAll(Long chatId) {
-	final User user = userService.getByChatId(chatId).orElse(null);
+	final User user = getUser(chatId);
 	final List<String> allCategories = userCategoryService.getByUser(user)
 	  .stream()
 	  .map(UserCategory::getCategory)
@@ -125,6 +108,11 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  .collect(Collectors.toList());
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
 	telegramService.sendMessage(chatId, Messages.YOUR_CATEGORIES, replyKeyboardMarkup);
+  }
+
+  private User getUser(Long chatId) {
+	return userService.getByChatId(chatId)
+	  .orElseThrow(() -> new RuntimeException(Messages.USER_NOT_FOUND + chatId));
   }
 
   private void handleAddFromDefault(Long chatId) {

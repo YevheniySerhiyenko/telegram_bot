@@ -45,10 +45,16 @@ public class Messages {
 
   public static final String ADD_CATEGORY = "Додати свою категорію";
 
-  public static final String DELETE_CATEGORY = "Видалити категорію";
-
   public static final String SHOW_MY_CATEGORIES = "Подивитись мої категорії";
 
   public static final String ADD_FROM_DEFAULT = "Додати існуючу категорію";
+
+  public static final String CATEGORY_ADDED_TO_DEFAULT = "Категорія додана до загального списку";
+
+  public static final String CATEGORY_ADDED_FROM_DEFAULT = "Категорія додана із загального списку";
+
+  public static final String CATEGORY_DELETED = "Категорія видалена із вашого списку";
+
+  public static final String CATEGORY_NOT_FOUND = "Категорія не знайдена списку";
 
 }
