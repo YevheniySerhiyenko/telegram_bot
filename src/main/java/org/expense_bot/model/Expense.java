@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -26,11 +28,17 @@ public class Expense {
   @Id
   @GeneratedValue
   private Long id;
-  @Column(name = "category")
+
+  @Column(name = "user_id")
+  private Long chatId;
+
+  @Column(name = "category",nullable = false)
   private String category;
-  @Column(name = "sum")
+
+  @Column(name = "sum",nullable = false)
   private Double sum;
-  @Column(name = "date_time")
+
+  @Column(name = "date_time",nullable = false)
   private LocalDateTime dateTime;
 
 }

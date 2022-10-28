@@ -1,7 +1,6 @@
 package org.expense_bot.handler.init_handler;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.enums.CategoryState;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -12,7 +11,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
-import static org.expense_bot.constant.Constants.BTN_CANCEL;
+import static org.expense_bot.constant.Constants.BUTTON_CANCEL;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class CancelHandler extends UserRequestHandler {
 
     @Override
     public boolean isApplicable(UserRequest userRequest) {
-        return isTextMessage(userRequest.getUpdate(), BTN_CANCEL);
+        return isTextMessage(userRequest.getUpdate(), BUTTON_CANCEL);
     }
 
     @Override

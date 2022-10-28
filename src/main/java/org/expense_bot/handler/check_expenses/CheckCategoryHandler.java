@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -57,8 +58,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
 
   private String getSumMessage(List<Expense> expenses, String period) {
 	final Double sum = expenses.stream().map(Expense::getSum).reduce(Double::sum).orElse(null);
-	final String periodWord = period.split(" ")[1];
-	return "Сума витрат за " + periodWord + " : " + sum;
+	return String.format(Messages.RESPONSE_MESSAGE, period.toLowerCase(Locale.ROOT)) + sum;
   }
 
   private String getMessage(Expense expense) {

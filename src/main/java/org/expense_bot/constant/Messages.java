@@ -45,16 +45,26 @@ public class Messages {
 
   public static final String ADD_CATEGORY = "Додати свою категорію";
 
-  public static final String SHOW_MY_CATEGORIES = "Подивитись мої категорії";
+  public static final String SHOW_MY_CATEGORIES = "Мої категорії";
 
   public static final String ADD_FROM_DEFAULT = "Додати існуючу категорію";
 
-  public static final String CATEGORY_ADDED_TO_DEFAULT = "Категорія додана до загального списку";
+  public static final String CATEGORY_ADDED_TO_YOUR_LIST = "Категорія додана до вашого списку";
 
-  public static final String CATEGORY_ADDED_FROM_DEFAULT = "Категорія додана із загального списку";
+  public static final String CATEGORY_FOUND_IN_DEFAULT = "Категорія знайдена в загальному списку";
 
-  public static final String CATEGORY_DELETED = "Категорія видалена із вашого списку";
+  public static final String CATEGORY_DELETED = "Категорія %s видалена";
 
-  public static final String CATEGORY_NOT_FOUND = "Категорія не знайдена списку";
+  public static final String CATEGORY_NOT_FOUND = "Категорія не знайдена в списку";
+
+  public static final String ENTER_SUM = "✍️Введи суму витрат⤵️";
+
+  public static final String ENTER_DATE = "\uD83D\uDCC5 Обрати інший день";
+
+  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення";
+
+  public static final String RESPONSE_MESSAGE = "Сума витрат %s : ";
+
+  public static final String HELLO = "Привіт. Ти вперше в цьому боті";
 
 }

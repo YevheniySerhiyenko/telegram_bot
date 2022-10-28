@@ -7,7 +7,6 @@ import org.expense_bot.service.CategoryService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -16,7 +15,7 @@ public class CategoryServiceImpl implements CategoryService {
   private final CategoryRepository categoryRepository;
 
   @Override
-  public Optional<Category> findByName(String name) {
+  public Category findByName(String name) {
 	return categoryRepository.getByNameLike(name);
   }
 

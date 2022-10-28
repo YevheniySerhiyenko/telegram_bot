@@ -1,5 +1,8 @@
 package org.expense_bot;
 
+import lombok.RequiredArgsConstructor;
+import org.expense_bot.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.model.UserRequest;
@@ -12,6 +15,9 @@ import java.util.stream.Collectors;
 public class Dispatcher {
 
     private final List<UserRequestHandler> handlers;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * Pay attention at this constructor
@@ -29,6 +35,8 @@ public class Dispatcher {
     }
 
     public boolean dispatch(UserRequest userRequest) {
+        userService.checkUser(userRequest);
+
         for (UserRequestHandler userRequestHandler : handlers) {
             if(userRequestHandler.isApplicable(userRequest)){
                 userRequestHandler.handle(userRequest);

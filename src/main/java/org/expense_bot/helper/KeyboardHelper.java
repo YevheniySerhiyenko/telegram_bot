@@ -26,24 +26,19 @@ public class KeyboardHelper {
   private UserCategoryService userCategoryService;
   @Autowired
   private CategoryService categoryService;
-  @Autowired
-  private UserService userService;
 
   public ReplyKeyboardMarkup buildCategoriesMenu(Long userId) {
-	final User user = userService.getByChatId(userId)
-	  .orElseThrow(() -> new RuntimeException(Messages.USER_NOT_FOUND + userId));
 
 	List<KeyboardRow> buttonsList = new ArrayList<>();
 
-	final List<String> allCategories = userCategoryService.getByUser(user)
+	final List<String> allCategories = userCategoryService.getByUserId(userId)
 	  .stream()
 	  .map(UserCategory::getCategory)
-	  .map(Category::getName)
 	  .collect(Collectors.toList());
 
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Constants.BTN_CANCEL);
+	cancelRow.add(Constants.BUTTON_BACK);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
@@ -69,7 +64,7 @@ public class KeyboardHelper {
   public ReplyKeyboardMarkup buildCategoryActionsMenuWithCancel() {
 	final ReplyKeyboardMarkup replyKeyboardMarkup = buildCategoryOptionsMenu();
 	KeyboardRow row = new KeyboardRow();
-	row.add(Constants.BTN_CANCEL);
+	row.add(Constants.BUTTON_CANCEL);
 	final List<KeyboardRow> keyboard = replyKeyboardMarkup.getKeyboard();
 	keyboard.add(row);
 	return ReplyKeyboardMarkup.builder()
@@ -83,7 +78,7 @@ public class KeyboardHelper {
 
   public ReplyKeyboardMarkup buildMenuWithCancel() {
 	final KeyboardRow row = new KeyboardRow();
-	row.add(Constants.BTN_CANCEL);
+	row.add(Constants.BUTTON_CANCEL);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row))
 	  .selective(true)
@@ -102,7 +97,7 @@ public class KeyboardHelper {
 	KeyboardRow row4 = new KeyboardRow();
 	row4.add(Period.PERIOD.getValue());
 	KeyboardRow row5 = new KeyboardRow();
-	row5.add(Constants.BTN_CANCEL);
+	row5.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row1, row2, row3, row4, row5))
 	  .selective(true)
@@ -125,7 +120,7 @@ public class KeyboardHelper {
 
 
 	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Constants.BTN_CANCEL);
+	row1.add(Constants.BUTTON_BACK);
 	keyboardRows.add(row1);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(keyboardRows)
@@ -143,7 +138,7 @@ public class KeyboardHelper {
 	KeyboardRow row3 = new KeyboardRow();
 	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
 	KeyboardRow row4 = new KeyboardRow();
-	row4.add(Constants.BTN_CANCEL);
+	row4.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row1, row2, row3, row4))
 	  .selective(true)
@@ -156,13 +151,13 @@ public class KeyboardHelper {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Constants.BTN_CANCEL);
+	cancelRow.add(Constants.BUTTON_CANCEL);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(buttonsList)
 	  .selective(true)
-	  .resizeKeyboard(true)
+	  .resizeKeyboard(false)
 	  .oneTimeKeyboard(false)
 	  .build();
   }
@@ -170,7 +165,7 @@ public class KeyboardHelper {
   private void setDeleteButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
 	for (String category : allCategories) {
 	  final KeyboardRow row = new KeyboardRow();
-	  row.add(category + Constants.BTN_CANCEL);
+	  row.add(category + "                                                                                                  " + Constants.BUTTON_DELETE);
 	  buttonsList.add(row);
 	}
   }
@@ -187,6 +182,17 @@ public class KeyboardHelper {
   public ReplyKeyboardMarkup buildСonfirm() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.SUCCESS);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(row))
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(true)
+	  .build();
+  }
+
+  public ReplyKeyboardMarkup buildSetDateMenu() {
+	final KeyboardRow row = new KeyboardRow();
+	row.add(Messages.ENTER_DATE);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row))
 	  .selective(true)

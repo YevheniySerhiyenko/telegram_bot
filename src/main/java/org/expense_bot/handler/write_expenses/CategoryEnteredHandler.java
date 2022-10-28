@@ -1,6 +1,7 @@
 package org.expense_bot.handler.write_expenses;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
@@ -26,7 +27,8 @@ public class CategoryEnteredHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
-	telegramService.sendMessage(userRequest.getChatId(), "✍️Введи суму витрат⤵️");
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildSetDateMenu();
+	telegramService.sendMessage(userRequest.getChatId(), Messages.ENTER_SUM, replyKeyboardMarkup);
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final UserSession session = userRequest.getUserSession();
 	session.setCategory(category);

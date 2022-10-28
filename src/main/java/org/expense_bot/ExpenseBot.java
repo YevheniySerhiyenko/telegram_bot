@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.UserSessionService;
+import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 
 @Slf4j
 @Component
@@ -33,6 +34,8 @@ public class ExpenseBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
+        Update update1 = update;
+        final Sticker sticker = update1.getMessage().getSticker();
         if(update.hasMessage() && update.getMessage().hasText()) {
             String textFromUser = update.getMessage().getText();
 

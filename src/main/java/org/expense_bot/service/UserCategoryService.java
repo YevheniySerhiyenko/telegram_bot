@@ -12,8 +12,5 @@ public interface UserCategoryService {
 
   void delete(Long userId, String categoryName);
 
-  List<UserCategory> getByUser(User userId);
-
-  boolean existByUser(Long userId,Category category);
-
+  List<UserCategory> getByUserId(Long userId);
 }

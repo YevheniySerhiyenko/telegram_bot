@@ -30,7 +30,9 @@ public class SumEnteredHandler extends UserRequestHandler {
   private static Expense getSpent(UserSession session) {
 	return Expense.builder()
 	  .category(session.getCategory())
-	  .sum(session.getSum()).dateTime(NOW).build();
+	  .sum(session.getSum())
+	  .chatId(session.getChatId())
+	  .dateTime(NOW).build();
   }
 
   @Override
@@ -48,7 +50,11 @@ public class SumEnteredHandler extends UserRequestHandler {
 	userSessionService.saveSession(userRequest.getChatId(), session);
 	expenseService.save(getSpent(session));
 	telegramService.sendMessage(userRequest.getChatId(), Messages.SUCCESS);
+	String sticker= "CAACAgIAAxkBAAEGPCZjXCduBV8lf6WqJTijK4wukRdcZwAC2xAAAqiC8EpeQO7muByd-yoE";
 	telegramService.sendMessage(userRequest.getChatId(), Messages.SUCCESS_SENT_SUM, replyKeyboardMarkup);
+	telegramService.sendSticker(userRequest.getChatId(),sticker);
+
+
   }
 
   @Override

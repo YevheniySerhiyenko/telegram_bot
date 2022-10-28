@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.expense_bot.enums.CategoryAction;
-import org.expense_bot.enums.CategoryState;
 import org.expense_bot.enums.ConversationState;
 
 @Getter
@@ -17,7 +16,6 @@ import org.expense_bot.enums.ConversationState;
 public class UserSession {
     private Long chatId;
     private ConversationState state;
-    private CategoryState categoryState;
     private CategoryAction categoryAction;
     private String action;
     private String category;

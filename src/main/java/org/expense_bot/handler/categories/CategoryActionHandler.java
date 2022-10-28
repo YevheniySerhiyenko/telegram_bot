@@ -1,20 +1,20 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
-import org.expense_bot.enums.CategoryState;
+import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Category;
-import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.CategoryService;
-import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.UserService;
+import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -35,7 +35,8 @@ public class CategoryActionHandler extends UserRequestHandler {
 
   @Override
   public boolean isApplicable(UserRequest request) {
-	return isTextMessage(request.getUpdate()) && CategoryState.WAITING_CATEGORY_ACTION.equals(request.getUserSession().getCategoryState());
+	return isTextMessage(request.getUpdate())
+	  && ConversationState.WAITING_CATEGORY_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -48,7 +49,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 	}
 
 	final UserSession session = userRequest.getUserSession();
-	session.setCategoryState(CategoryState.WAITING_FINAL_ACTION);
+	session.setState(ConversationState.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
   }
@@ -89,7 +90,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 		break;
 	}
 	final UserSession session = userRequest.getUserSession();
-	session.setCategoryState(CategoryState.WAITING_FINAL_ACTION);
+	session.setState(ConversationState.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
   }
@@ -100,19 +101,12 @@ public class CategoryActionHandler extends UserRequestHandler {
 
 
   private void handleShowAll(Long chatId) {
-	final User user = getUser(chatId);
-	final List<String> allCategories = userCategoryService.getByUser(user)
+	final List<String> allCategories = userCategoryService.getByUserId(chatId)
 	  .stream()
 	  .map(UserCategory::getCategory)
-	  .map(Category::getName)
 	  .collect(Collectors.toList());
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
-	telegramService.sendMessage(chatId, Messages.YOUR_CATEGORIES, replyKeyboardMarkup);
-  }
-
-  private User getUser(Long chatId) {
-	return userService.getByChatId(chatId)
-	  .orElseThrow(() -> new RuntimeException(Messages.USER_NOT_FOUND + chatId));
+	telegramService.sendMessage(chatId, Messages.ASK_TO_DELETE + " " + Constants.BUTTON_DELETE, replyKeyboardMarkup);
   }
 
   private void handleAddFromDefault(Long chatId) {

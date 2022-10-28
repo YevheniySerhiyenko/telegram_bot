@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface UserCategoryRepository extends JpaRepository<UserCategory, Long> {
 
-  Optional<UserCategory> getByChatIdAndCategoryLike(User chatId, Category category);
+  Optional<UserCategory> getByChatIdAndCategoryLike(Long chatId, String categoryName);
 
-  List<UserCategory> getByChatId(User userId);
+  List<UserCategory> getByChatId(Long userId);
 
 }

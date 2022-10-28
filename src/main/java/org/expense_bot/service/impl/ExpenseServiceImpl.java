@@ -21,8 +21,8 @@ public class ExpenseServiceImpl implements ExpenseService {
   private static final LocalDate NOW = LocalDate.now();
   private static final int FIRST_DAY = 1;
 
-  public Expense save(Expense spent) {
-	return expenseRepository.save(spent);
+  public Expense save(Expense expense) {
+	return expenseRepository.save(expense);
   }
 
   public List<Expense> getByOneDay() {

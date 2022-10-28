@@ -10,25 +10,34 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "user_categories")
 @Getter
 @Setter
+@Entity
+@Table(name = "stickers")
 @Builder
-@RequiredArgsConstructor
 @AllArgsConstructor
-public class UserCategory {
+@RequiredArgsConstructor
+public class Sticker {
 
   @Id
   @GeneratedValue
   private Long id;
 
-  @Column(nullable = false, unique = true)
-  private String category;
+  @Column(nullable = false)
+  private String token;
 
   @Column(nullable = false)
-  private Long chatId;
+  private String action;
+
+  @Column(nullable = false)
+  private boolean enabled;
+
+  @JoinColumn(name = "user_id")
+  @OneToOne(targetEntity = User.class)
+  private User chatId;
 
 }

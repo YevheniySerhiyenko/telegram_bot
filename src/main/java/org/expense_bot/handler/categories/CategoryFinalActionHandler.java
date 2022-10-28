@@ -3,7 +3,7 @@ package org.expense_bot.handler.categories;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
-import org.expense_bot.enums.CategoryState;
+import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
@@ -21,13 +21,13 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 
   private final TelegramService telegramService;
   private final UserSessionService userSessionService;
-  private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
   private final KeyboardHelper keyboardHelper;
 
   @Override
   public boolean isApplicable(UserRequest request) {
-	return isTextMessage(request.getUpdate()) && CategoryState.WAITING_FINAL_ACTION.equals(request.getUserSession().getCategoryState());
+	return isTextMessage(request.getUpdate())
+	  && ConversationState.WAITING_FINAL_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -47,15 +47,12 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 
 	}
 	final UserSession session = userRequest.getUserSession();
-	session.setCategoryState(CategoryState.WAITING_CATEGORY_ACTION);
+	session.setState(ConversationState.CONVERSATION_STARTED);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoriesMenu(chatId);
 	telegramService.sendMessage(chatId, Messages.YOUR_CATEGORIES,replyKeyboardMarkup);
   }
-
-
-
 
   @Override
   public boolean isGlobal() {
