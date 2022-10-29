@@ -6,6 +6,8 @@ import org.expense_bot.repository.StickerRepository;
 import org.expense_bot.service.StickerService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class StickerServiceImpl implements StickerService {
@@ -13,18 +15,13 @@ public class StickerServiceImpl implements StickerService {
   private final StickerRepository stickerRepository;
 
   @Override
-  public Sticker save(Sticker sticker) {
-	return null;
+  public Optional<Sticker> getOne(String action) {
+	return stickerRepository.findByEnabledIsTrueAndActionLike(action);
   }
 
   @Override
-  public Sticker get(String action) {
-	return null;
-  }
-
-  @Override
-  public Sticker setEnable(Boolean enable) {
-	return null;
+  public void setEnable(Boolean enable, String action, Long userId) {
+    stickerRepository.setEnabled(enable, action, userId);
   }
 
 }

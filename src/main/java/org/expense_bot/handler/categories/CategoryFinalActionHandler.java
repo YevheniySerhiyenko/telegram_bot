@@ -5,10 +5,10 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init_handler.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
-import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
@@ -23,6 +23,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   private final UserSessionService userSessionService;
   private final UserCategoryService userCategoryService;
   private final KeyboardHelper keyboardHelper;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -33,21 +34,22 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
-	final String categoryParam = userRequest.getUpdate().getMessage().getText();
+	final String param = userRequest.getUpdate().getMessage().getText();
+	backButtonHandler.handleBackButton(userRequest);
 	final CategoryAction categoryAction = userSessionService.getLastSession(chatId).getCategoryAction();
 
-	switch (categoryAction){
+	switch (categoryAction) {
 	  case ADD_NEW_CATEGORY:
 	  case ADD_FROM_DEFAULT:
-		userCategoryService.add(chatId,categoryParam);
+		userCategoryService.add(chatId, param);
 		break;
 	  case SHOW_MY_CATEGORIES:
-	    userCategoryService.delete(chatId,categoryParam);
-	    break;
+		userCategoryService.delete(chatId, param);
+		break;
 
 	}
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.CONVERSATION_STARTED);
+	session.setState(ConversationState.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoriesMenu(chatId);

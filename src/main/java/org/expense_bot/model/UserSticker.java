@@ -12,23 +12,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "user_categories")
 @Getter
 @Setter
+@Entity
+@Table(name = "user_stickers")
 @Builder
-@RequiredArgsConstructor
 @AllArgsConstructor
-public class UserCategory {
+@RequiredArgsConstructor
+public class UserSticker{
 
   @Id
   @GeneratedValue
   private Long id;
 
-  @Column(nullable = false, unique = true)
-  private String category;
+  @Column(nullable = false)
+  private String action;
+
+  @Column(nullable = false)
+  private String token;
 
   @Column(nullable = false)
   private Long userId;
+
+  @Column(nullable = false)
+  private boolean enabled;
 
 }

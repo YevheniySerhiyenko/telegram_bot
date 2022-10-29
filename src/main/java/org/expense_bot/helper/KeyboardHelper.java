@@ -4,12 +4,9 @@ import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
-import org.expense_bot.model.Category;
-import org.expense_bot.model.User;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
-import org.expense_bot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -106,15 +103,15 @@ public class KeyboardHelper {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildCheckCategoriesMenu() {
-	final List<String> categoryList = categoryService.getDefault()
+  public ReplyKeyboardMarkup buildCheckCategoriesMenu(Long userId) {
+	final List<String> categoryList = userCategoryService.getByUserId(userId)
 	  .stream()
-	  .map(Category::getName)
+	  .map(UserCategory::getCategory)
 	  .collect(Collectors.toList());
 
 	final List<KeyboardRow> keyboardRows = new ArrayList<>();
 	final KeyboardRow row = new KeyboardRow();
-	row.add("По всім категоріям");
+	row.add(Messages.BY_ALL_CATEGORIES);
 	keyboardRows.add(row);
 	setButtons(keyboardRows, categoryList);
 
@@ -151,25 +148,16 @@ public class KeyboardHelper {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Constants.BUTTON_CANCEL);
+	cancelRow.add(Constants.BUTTON_BACK);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(buttonsList)
 	  .selective(true)
-	  .resizeKeyboard(false)
+	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
 	  .build();
   }
-
-  private void setDeleteButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
-	for (String category : allCategories) {
-	  final KeyboardRow row = new KeyboardRow();
-	  row.add(category + "                                                                                                  " + Constants.BUTTON_DELETE);
-	  buttonsList.add(row);
-	}
-  }
-
 
   private void setButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
 	for (String category : allCategories) {
@@ -193,6 +181,28 @@ public class KeyboardHelper {
   public ReplyKeyboardMarkup buildSetDateMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.ENTER_DATE);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(row))
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(true)
+	  .build();
+  }
+
+  public ReplyKeyboardMarkup buildBackButtonMenu() {
+	final KeyboardRow row = new KeyboardRow();
+	row.add(Constants.BUTTON_BACK);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(row))
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(true)
+	  .build();
+  }
+
+  public ReplyKeyboardMarkup buildSettingsMenu() {
+	final KeyboardRow row = new KeyboardRow();
+	row.add(Messages.MY_STICKERS);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row))
 	  .selective(true)

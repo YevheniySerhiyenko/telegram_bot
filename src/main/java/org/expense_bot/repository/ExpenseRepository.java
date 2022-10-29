@@ -10,6 +10,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
   List<Expense> getAllByDateTimeIsAfter(LocalDateTime dateTime);
 
-  List<Expense> getAllByDateTimeBetween(LocalDateTime dateTime, LocalDateTime dateTime2);
+  List<Expense> getAllByDateTimeIsAfterAndCategory(LocalDateTime dateTime,String category);
+
+  List<Expense> getAllByDateTimeBetween(LocalDateTime dateFrom, LocalDateTime dateTo);
+
+  List<Expense> getAllByDateTimeBetweenAndCategory(LocalDateTime dateFrom, LocalDateTime dateTo, String category);
 
 }

@@ -51,8 +51,6 @@ public class Messages {
 
   public static final String CATEGORY_ADDED_TO_YOUR_LIST = "Категорія додана до вашого списку";
 
-  public static final String CATEGORY_FOUND_IN_DEFAULT = "Категорія знайдена в загальному списку";
-
   public static final String CATEGORY_DELETED = "Категорія %s видалена";
 
   public static final String CATEGORY_NOT_FOUND = "Категорія не знайдена в списку";
@@ -66,5 +64,13 @@ public class Messages {
   public static final String RESPONSE_MESSAGE = "Сума витрат %s : ";
 
   public static final String HELLO = "Привіт. Ти вперше в цьому боті";
+
+  public static final String ERROR_STICKER_MESSAGE = "Something went wrong";
+
+  public static final String BY_ALL_CATEGORIES = "По всім категоріям";
+
+  public static final String MY_STICKERS = "Мої стікери";
+
+  public static final String CHOOSE_ACTION_TO_SHOW_STICKER = "Виберіть дію щоб подивитись стікер";
 
 }

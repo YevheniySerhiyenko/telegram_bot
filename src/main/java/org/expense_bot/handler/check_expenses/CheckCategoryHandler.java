@@ -22,7 +22,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class CheckCategoryHandler extends UserRequestHandler {
 
-
   private final TelegramService telegramService;
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
@@ -46,7 +45,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	session.setPeriod(period);
 	session.setState(ConversationState.CONVERSATION_STARTED);
 	userSessionService.saveSession(chatId, session);
-	final List<Expense> expenses = getExpenses(session);
+	final List<Expense> expenses = getExpenses(chatId, session.getPeriod(),session.getCategory());
 	if(expenses == null || expenses.isEmpty()){
 	  telegramService.sendMessage(chatId, Messages.NOT_FOUND_FOR_PERIOD, replyKeyboardMarkup);
 	}else {
@@ -65,18 +64,17 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	return expense.getCategory() + " : " + expense.getSum();
   }
 
-  private List<Expense> getExpenses(UserSession session) {
+  private List<Expense> getExpenses(Long chatId,String period,String category) {
 	List<Expense> expenses = new ArrayList<>();
-	final String period = session.getPeriod();
 	switch (period) {
 	  case Messages.DAY:
-		expenses = expenseService.getByOneDay();
+		expenses = expenseService.getByOneDay(chatId,category);
 		break;
 	  case Messages.WEEK:
-		expenses = expenseService.getByOneWeek();
+		expenses = expenseService.getByOneWeek(chatId,category);
 		break;
 	  case Messages.MONTH:
-		expenses = expenseService.getByOneMonth();
+		expenses = expenseService.getByOneMonth(chatId,category);
 		break;
 	}
 	return expenses;

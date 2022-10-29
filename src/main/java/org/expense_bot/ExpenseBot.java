@@ -34,8 +34,6 @@ public class ExpenseBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        Update update1 = update;
-        final Sticker sticker = update1.getMessage().getSticker();
         if(update.hasMessage() && update.getMessage().hasText()) {
             String textFromUser = update.getMessage().getText();
 

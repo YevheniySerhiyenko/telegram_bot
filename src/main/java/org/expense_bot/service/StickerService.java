@@ -2,12 +2,12 @@ package org.expense_bot.service;
 
 import org.expense_bot.model.Sticker;
 
+import java.util.Optional;
+
 public interface StickerService {
 
-  Sticker save(Sticker sticker);
+  Optional<Sticker> getOne(String action);
 
-  Sticker get(String action);
-
-  Sticker setEnable(Boolean enable);
+  void setEnable(Boolean enable, String action, Long userId);
 
 }

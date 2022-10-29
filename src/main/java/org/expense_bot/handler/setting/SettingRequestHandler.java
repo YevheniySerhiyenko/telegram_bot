@@ -1,4 +1,4 @@
-package org.expense_bot.handler.categories;
+package org.expense_bot.handler.setting;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
@@ -15,14 +15,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 
 @Component
 @RequiredArgsConstructor
-public class CategoryActionRequestHandler extends UserRequestHandler {
-  
-  private static final String COMMAND = "/categories";
+public class SettingRequestHandler extends UserRequestHandler {
+
+  private static final String COMMAND = "/settings";
 
   private final TelegramService telegramService;
   private final UserSessionService userSessionService;
   private final KeyboardHelper keyboardHelper;
-  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -31,12 +30,11 @@ public class CategoryActionRequestHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
-	backButtonHandler.handleBackButton(userRequest);
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildSettingsMenu();
 	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	final Long chatId = userRequest.getChatId();
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.WAITING_CATEGORY_ACTION);
+	session.setState(ConversationState.WAITING_SETTINGS_ACTION);
 	userSessionService.saveSession(chatId, session);
   }
 
@@ -44,4 +42,5 @@ public class CategoryActionRequestHandler extends UserRequestHandler {
   public boolean isGlobal() {
 	return true;
   }
+
 }

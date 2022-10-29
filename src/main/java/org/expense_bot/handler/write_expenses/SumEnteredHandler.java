@@ -8,6 +8,7 @@ import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
+import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
@@ -26,14 +27,8 @@ public class SumEnteredHandler extends UserRequestHandler {
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
   private final ExpenseService expenseService;
+  private final StickerSender stickerSender;
 
-  private static Expense getSpent(UserSession session) {
-	return Expense.builder()
-	  .category(session.getCategory())
-	  .sum(session.getSum())
-	  .chatId(session.getChatId())
-	  .dateTime(NOW).build();
-  }
 
   @Override
   public boolean isApplicable(UserRequest userRequest) {
@@ -47,19 +42,33 @@ public class SumEnteredHandler extends UserRequestHandler {
 	final UserSession session = userRequest.getUserSession();
 	session.setSum(sum);
 	session.setState(ConversationState.CONVERSATION_STARTED);
-	userSessionService.saveSession(userRequest.getChatId(), session);
+	final Long chatId = userRequest.getChatId();
+	userSessionService.saveSession(chatId, session);
 	expenseService.save(getSpent(session));
-	telegramService.sendMessage(userRequest.getChatId(), Messages.SUCCESS);
-	String sticker= "CAACAgIAAxkBAAEGPCZjXCduBV8lf6WqJTijK4wukRdcZwAC2xAAAqiC8EpeQO7muByd-yoE";
-	telegramService.sendMessage(userRequest.getChatId(), Messages.SUCCESS_SENT_SUM, replyKeyboardMarkup);
-	telegramService.sendSticker(userRequest.getChatId(),sticker);
+	telegramService.sendMessage(chatId, Messages.SUCCESS);
+	final String successSentSum = Messages.SUCCESS_SENT_SUM;
+	getSticker(chatId, successSentSum);
+	telegramService.sendMessage(chatId, successSentSum, replyKeyboardMarkup);
+  }
 
-
+  private void getSticker(Long chatId, String successSentSum) {
+	final String token = stickerSender.getSticker(chatId, successSentSum);
+	if(token != null && !token.isEmpty()){
+	  telegramService.sendSticker(chatId,token);
+	}
   }
 
   @Override
   public boolean isGlobal() {
 	return false;
+  }
+
+  private static Expense getSpent(UserSession session) {
+	return Expense.builder()
+	  .category(session.getCategory())
+	  .sum(session.getSum())
+	  .chatId(session.getChatId())
+	  .dateTime(NOW).build();
   }
 
 }

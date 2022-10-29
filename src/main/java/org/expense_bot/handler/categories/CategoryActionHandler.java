@@ -6,6 +6,7 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init_handler.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.UserCategory;
@@ -13,7 +14,6 @@ import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
-import org.expense_bot.service.UserService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class CategoryActionHandler extends UserRequestHandler {
   private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
   private final KeyboardHelper keyboardHelper;
-  private final UserService userService;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -42,6 +42,7 @@ public class CategoryActionHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
+	backButtonHandler.handleBackButton(userRequest);
 	final CategoryAction categoryAction = parseAction(userRequest.getUpdate().getMessage().getText());
 
 	if(categoryAction != null) {
@@ -96,7 +97,8 @@ public class CategoryActionHandler extends UserRequestHandler {
   }
 
   private void handleAddNew(Long chatId) {
-	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME);
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildBackButtonMenu();
+	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME,replyKeyboardMarkup);
   }
 
 
