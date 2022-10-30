@@ -46,11 +46,10 @@ public class KeyboardHelper {
 	  .build();
   }
 
-
   public ReplyKeyboardMarkup buildMainMenu() {
 	KeyboardRow row = new KeyboardRow();
-	row.add(Messages.WRITE_EXPENSES);
-	row.add(Messages.CHECK_EXPENSES);
+	row.add(Messages.EXPENSES);
+	row.add(Messages.INCOMES);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row))
 	  .selective(true)
@@ -58,19 +57,34 @@ public class KeyboardHelper {
 	  .oneTimeKeyboard(false).build();
   }
 
-  public ReplyKeyboardMarkup buildCategoryActionsMenuWithCancel() {
-	final ReplyKeyboardMarkup replyKeyboardMarkup = buildCategoryOptionsMenu();
+
+  public ReplyKeyboardMarkup buildExpenseMenu() {
 	KeyboardRow row = new KeyboardRow();
-	row.add(Constants.BUTTON_CANCEL);
-	final List<KeyboardRow> keyboard = replyKeyboardMarkup.getKeyboard();
-	keyboard.add(row);
+	row.add(Messages.WRITE_EXPENSES);
+	row.add(Messages.CHECK_EXPENSES);
+	KeyboardRow row1 = new KeyboardRow();
+	row1.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(keyboard)
+	  .keyboard(List.of(row, row1))
 	  .selective(true)
 	  .resizeKeyboard(true)
-	  .oneTimeKeyboard(false)
-	  .build();
+	  .oneTimeKeyboard(false).build();
+  }
 
+  public ReplyKeyboardMarkup buildIncomeMenu() {
+	KeyboardRow row = new KeyboardRow();
+	row.add(Messages.WRITE_INCOMES);
+	KeyboardRow row1 = new KeyboardRow();
+	row1.add(Messages.CHECK_INCOMES);
+	KeyboardRow row2 = new KeyboardRow();
+	row2.add(Messages.CHECK_BALANCE);
+	KeyboardRow row3 = new KeyboardRow();
+	row3.add(Constants.BUTTON_BACK);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(row, row1, row2, row3))
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(false).build();
   }
 
   public ReplyKeyboardMarkup buildMenuWithCancel() {
@@ -165,17 +179,6 @@ public class KeyboardHelper {
 	  row.add(category);
 	  buttonsList.add(row);
 	}
-  }
-
-  public ReplyKeyboardMarkup buildСonfirm() {
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Messages.SUCCESS);
-	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row))
-	  .selective(true)
-	  .resizeKeyboard(true)
-	  .oneTimeKeyboard(true)
-	  .build();
   }
 
   public ReplyKeyboardMarkup buildSetDateMenu() {

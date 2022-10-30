@@ -1,4 +1,4 @@
-package org.expense_bot.handler.check_expenses;
+package org.expense_bot.handler.expenses.check;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;

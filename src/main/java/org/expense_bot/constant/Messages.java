@@ -15,8 +15,6 @@ public class Messages {
 
   public static final String CHOOSE_ACTION = "Оберіть дію";
 
-  public static final String CHOOSE_CATEGORY_FOR_DELETE = "Виберіть категорію для видалення";
-
   public static final String ENTER_CATEGORY_NAME = "Введіть назву категорії";
 
   public static final String YOUR_CATEGORIES = "Ваші категорії";
@@ -37,11 +35,7 @@ public class Messages {
 
   public static final String WRITE_EXPENSES = "Записати витрати";
 
-  public static final String ERROR = "❌";
-
   public static final String ALREADY_HAD_SUCH_CATEGORY = "Ви вже маєте дану категорію";
-
-  public static final String USER_NOT_FOUND = "User not found by chat id: ";
 
   public static final String ADD_CATEGORY = "Додати свою категорію";
 
@@ -52,8 +46,6 @@ public class Messages {
   public static final String CATEGORY_ADDED_TO_YOUR_LIST = "Категорія додана до вашого списку";
 
   public static final String CATEGORY_DELETED = "Категорія %s видалена";
-
-  public static final String CATEGORY_NOT_FOUND = "Категорія не знайдена в списку";
 
   public static final String ENTER_SUM = "✍️Введи суму витрат⤵️";
 
@@ -72,5 +64,25 @@ public class Messages {
   public static final String MY_STICKERS = "Мої стікери";
 
   public static final String CHOOSE_ACTION_TO_SHOW_STICKER = "Виберіть дію щоб подивитись стікер";
+
+  public static final String CHECK_INCOMES = "Перевірити доходи";
+
+  public static final String WRITE_INCOMES = "Записати доходи";
+
+  public static final String CHECK_BALANCE = "Перевірити поточний залишок";
+
+  public static final String INCOMES = "Доходи";
+
+  public static final String EXPENSES = "Витрати";
+
+  public static final String ALL_EXPENSES_SUM = "Витрати за поточний місяць: ";
+
+  public static final String ALL_INCOMES_SUM = "Доходи за поточний місяць: ";
+
+  public static final String ACTUAL_BALANCE = "Поточний залишок: ";
+
+  public static final String ENTER_INCOME_SUM = "Введіть суму доходу";
+
+  public static final String SUCCESS_INCOME = "Сума доходу записана";
 
 }

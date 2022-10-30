@@ -1,11 +1,10 @@
 package org.expense_bot;
 
-import lombok.RequiredArgsConstructor;
+import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.model.UserRequest;
 
 import java.util.Comparator;
 import java.util.List;

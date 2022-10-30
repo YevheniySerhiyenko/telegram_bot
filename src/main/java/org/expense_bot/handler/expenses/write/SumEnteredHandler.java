@@ -1,4 +1,4 @@
-package org.expense_bot.handler.write_expenses;
+package org.expense_bot.handler.expenses.write;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
@@ -37,10 +37,10 @@ public class SumEnteredHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMainMenu();
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 	final Double sum = Double.valueOf(userRequest.getUpdate().getMessage().getText());
 	final UserSession session = userRequest.getUserSession();
-	session.setSum(sum);
+	session.setExpenseSum(sum);
 	session.setState(ConversationState.CONVERSATION_STARTED);
 	final Long chatId = userRequest.getChatId();
 	userSessionService.saveSession(chatId, session);
@@ -66,7 +66,7 @@ public class SumEnteredHandler extends UserRequestHandler {
   private static Expense getSpent(UserSession session) {
 	return Expense.builder()
 	  .category(session.getCategory())
-	  .sum(session.getSum())
+	  .sum(session.getExpenseSum())
 	  .chatId(session.getChatId())
 	  .dateTime(NOW).build();
   }

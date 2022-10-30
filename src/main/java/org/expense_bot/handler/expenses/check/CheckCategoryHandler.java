@@ -1,4 +1,4 @@
-package org.expense_bot.handler.check_expenses;
+package org.expense_bot.handler.expenses.check;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
@@ -36,7 +36,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMainMenu();
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 	final Long chatId = userRequest.getChatId();
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final String period = userSessionService.getLastSession(chatId).getPeriod();

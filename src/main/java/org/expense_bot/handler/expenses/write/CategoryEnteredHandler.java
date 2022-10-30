@@ -1,4 +1,4 @@
-package org.expense_bot.handler.write_expenses;
+package org.expense_bot.handler.expenses.write;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;

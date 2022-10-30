@@ -1,4 +1,4 @@
-package org.expense_bot.handler.init_handler;
+package org.expense_bot.handler.init;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.enums.ConversationState;
@@ -29,7 +29,7 @@ public class CancelHandler extends UserRequestHandler {
 
     @Override
     public void handle(UserRequest userRequest) {
-        final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMainMenu();
+        final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
         telegramService.sendMessage(userRequest.getChatId(),"Обирайте з меню нижче ⤵️",replyKeyboardMarkup);
 
         UserSession userSession = userRequest.getUserSession();

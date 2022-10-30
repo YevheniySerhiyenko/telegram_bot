@@ -1,4 +1,4 @@
-package org.expense_bot.handler.init_handler;
+package org.expense_bot.handler.init;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Constants;

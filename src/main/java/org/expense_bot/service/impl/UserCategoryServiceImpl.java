@@ -47,7 +47,8 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   }
 
   private void checkExpenses(Long chatId, UserCategory userCategory) {
-//    expenseRepository.
+    //todo check if expenses exist
+    repository.delete(userCategory);
   }
 
   @Override

@@ -6,7 +6,7 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.handler.init_handler.BackButtonHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.UserCategory;

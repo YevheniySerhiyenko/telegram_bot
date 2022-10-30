@@ -1,4 +1,4 @@
-package org.expense_bot.handler.write_expenses;
+package org.expense_bot.handler.expenses.write;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
@@ -7,7 +7,6 @@ import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
-import org.expense_bot.service.UserService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,6 @@ public class WriteHandler extends UserRequestHandler {
     private final TelegramService telegramService;
     private final KeyboardHelper keyboardHelper;
     private final UserSessionService userSessionService;
-    private final UserService userService;
 
     public boolean isApplicable(UserRequest userRequest) {
         return isTextMessage(userRequest.getUpdate(), Messages.WRITE_EXPENSES);

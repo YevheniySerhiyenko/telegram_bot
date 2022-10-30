@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
+import org.expense_bot.enums.IncomeAction;
 
 @Getter
 @Setter
@@ -19,16 +20,8 @@ public class UserSession {
     private CategoryAction categoryAction;
     private String action;
     private String category;
-    private Double sum;
+    private Double expenseSum;
+    private Double incomeSum;
+    private IncomeAction incomeAction;
     private String period;
-
-    public UserSession(Long chatId, ConversationState state, String action, String category, Double sum, String period) {
-        this.chatId = chatId;
-        this.state = state;
-        this.action = action;
-        this.category = category;
-        this.sum = sum;
-        this.period = period;
-    }
-
 }
