@@ -35,7 +35,7 @@ public class StartCommandHandler extends UserRequestHandler {
         telegramService.sendMessage(request.getChatId(), Messages.HELLO_MESSAGE, replyKeyboard);
         telegramService.sendMessage(request.getChatId(), Messages.CHOOSE_YOUR_ACTION);
         final UserSession session = request.getUserSession();
-        session.setState(ConversationState.WAITING_INIT_ACTION);
+        session.setState(ConversationState.CONVERSATION_STARTED);
         sessionService.saveSession(request.getChatId(), session);
         log.info(request.getUserSession().toString());
     }

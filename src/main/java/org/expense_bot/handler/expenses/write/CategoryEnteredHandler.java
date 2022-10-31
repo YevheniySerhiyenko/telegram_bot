@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
@@ -19,6 +20,7 @@ public class CategoryEnteredHandler extends UserRequestHandler {
   private final TelegramService telegramService;
   private final UserSessionService userSessionService;
   private final KeyboardHelper keyboardHelper;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest userRequest) {
@@ -27,13 +29,15 @@ public class CategoryEnteredHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
+    backButtonHandler.handleExpensesBackButton(userRequest);
+	final Long chatId = userRequest.getChatId();
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildSetDateMenu();
-	telegramService.sendMessage(userRequest.getChatId(), Messages.ENTER_SUM, replyKeyboardMarkup);
+	telegramService.sendMessage(chatId, Messages.ENTER_SUM, replyKeyboardMarkup);
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final UserSession session = userRequest.getUserSession();
 	session.setCategory(category);
 	session.setState(ConversationState.WAITING_FOR_SUM);
-	userSessionService.saveSession(userRequest.getChatId(), session);
+	userSessionService.saveSession(chatId, session);
   }
 
   public boolean isGlobal() {

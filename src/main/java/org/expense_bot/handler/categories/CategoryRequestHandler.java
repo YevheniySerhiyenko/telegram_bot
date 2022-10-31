@@ -31,7 +31,7 @@ public class CategoryRequestHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
-	backButtonHandler.handleBackButton(userRequest);
+	backButtonHandler.handleCategoriesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
 	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	final Long chatId = userRequest.getChatId();

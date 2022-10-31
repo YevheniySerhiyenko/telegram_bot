@@ -29,7 +29,7 @@ public class Income {
   private Long id;
 
   @Column(nullable = false)
-  private Double sum;
+  private BigDecimal sum;
 
   @Column(nullable = false)
   private LocalDateTime incomeDate;

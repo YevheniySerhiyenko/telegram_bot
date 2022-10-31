@@ -5,6 +5,7 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Income;
@@ -16,6 +17,9 @@ import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -27,6 +31,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
   private final KeyboardHelper keyboardHelper;
   private final IncomeService incomeService;
   private final ExpenseService expenseService;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -36,6 +41,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
+    backButtonHandler.handleMainMenuBackButton(userRequest);
     final Long chatId = userRequest.getChatId();
     final String incomeAction = userRequest.getUpdate().getMessage().getText();
     final UserSession userSession = userRequest.getUserSession();
@@ -47,12 +53,10 @@ public class IncomeRequestHandler extends UserRequestHandler {
       case Messages.CHECK_INCOMES:
         incomes.forEach(income -> telegramService.sendMessage(chatId, getIncome(income)));
         break;
-
       case Messages.CHECK_BALANCE:
         handleCheckBalance(chatId, incomes, userSession);
         break;
     }
-
   }
 
   private void handleWriteIncomes(Long chatId, UserSession userSession) {
@@ -60,25 +64,29 @@ public class IncomeRequestHandler extends UserRequestHandler {
     telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardHelper.buildBackButtonMenu());
     userSession.setIncomeAction(IncomeAction.WRITE);
     userSessionService.saveSession(chatId, userSession);
-    userSession.setState(ConversationState.WAITING_ENTERED_ACTION);
+  }
+
+  private void handleCheckBalance(Long chatId, List<Income> incomes, UserSession userSession) {
+    final BigDecimal allExpensesSum = getAllExpensesSum(chatId);
+
+    final BigDecimal allIncomesSum = incomes.stream()
+      .map(Income::getSum)
+      .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    final BigDecimal actualBalance = allIncomesSum.subtract(allExpensesSum);
+
+    telegramService.sendMessage(chatId, Messages.ALL_EXPENSES_SUM + allExpensesSum);
+    telegramService.sendMessage(chatId, Messages.ALL_INCOMES_SUM + allIncomesSum);
+    telegramService.sendMessage(chatId, Messages.ACTUAL_BALANCE + actualBalance);
     userSession.setIncomeAction(IncomeAction.WRITE);
     userSessionService.saveSession(chatId, userSession);
   }
 
-  private void handleCheckBalance(Long chatId, List<Income> incomes, UserSession userSession) {
+  private BigDecimal getAllExpensesSum(Long chatId) {
     final List<Expense> expenses = expenseService.getByOneMonth(chatId, Messages.BY_ALL_CATEGORIES);
-    final Double allExpensesSum = expenses.stream()
+    return expenses.stream()
       .map(Expense::getSum)
-      .reduce(Double.MIN_NORMAL, Double::sum);
-    final Double allIncomesSum = incomes.stream()
-      .map(Income::getSum)
-      .reduce(Double.MIN_NORMAL, Double::sum);
-
-    telegramService.sendMessage(chatId, Messages.ALL_EXPENSES_SUM + allExpensesSum);
-    telegramService.sendMessage(chatId, Messages.ALL_INCOMES_SUM + allIncomesSum);
-    telegramService.sendMessage(chatId, Messages.ACTUAL_BALANCE + (allIncomesSum - allExpensesSum));
-    userSession.setIncomeAction(IncomeAction.WRITE);
-    userSessionService.saveSession(chatId, userSession);
+      .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   @Override
@@ -87,7 +95,10 @@ public class IncomeRequestHandler extends UserRequestHandler {
   }
 
   private String getIncome(Income income) {
-    return income.getSum().toString() + "    Дата :" + income.getIncomeDate();
+    return getDate(income.getIncomeDate()) + " - " + income.getSum() + " грн";
   }
 
+  private String getDate(LocalDateTime localDate) {
+    return localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+  }
 }

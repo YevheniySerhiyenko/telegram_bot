@@ -9,6 +9,8 @@ import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -20,8 +22,9 @@ public class UserSession {
     private CategoryAction categoryAction;
     private String action;
     private String category;
-    private Double expenseSum;
-    private Double incomeSum;
+    private BigDecimal expenseSum;
+    private BigDecimal incomeSum;
     private IncomeAction incomeAction;
     private String period;
+    private String stickerAction;
 }

@@ -39,7 +39,7 @@ public class Messages {
 
   public static final String ADD_CATEGORY = "Додати свою категорію";
 
-  public static final String SHOW_MY_CATEGORIES = "Мої категорії";
+  public static final String DELETE_MY_CATEGORIES = "Видалити мої категорії";
 
   public static final String ADD_FROM_DEFAULT = "Додати існуючу категорію";
 
@@ -51,7 +51,7 @@ public class Messages {
 
   public static final String ENTER_DATE = "\uD83D\uDCC5 Обрати інший день";
 
-  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення";
+  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення \uD83D\uDDD1";
 
   public static final String RESPONSE_MESSAGE = "Сума витрат %s : ";
 
@@ -84,5 +84,13 @@ public class Messages {
   public static final String ENTER_INCOME_SUM = "Введіть суму доходу";
 
   public static final String SUCCESS_INCOME = "Сума доходу записана";
+
+  public static final String ALL_CATEGORIES_ADDED = "Всі стандартні категорії додані";
+
+  public static final String ALL_CATEGORIES_DELETED = "Всі категорії видалені";
+
+  public static final String NOTHING_TO_DELETE = "Категорії для видалення відсутні";
+
+  public static final String NO_ONE_CATEGORY_FOUND = "Ви не маєте жодної категорії";
 
 }

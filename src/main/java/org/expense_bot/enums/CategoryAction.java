@@ -3,7 +3,7 @@ package org.expense_bot.enums;
 public enum CategoryAction {
 
   ADD_NEW_CATEGORY("Додати свою категорію"),
-  SHOW_MY_CATEGORIES("Мої категорії"),
+  DELETE_MY_CATEGORIES("Видалити мої категорії"),
   ADD_FROM_DEFAULT("Додати існуючу категорію");
 
   private final String value;

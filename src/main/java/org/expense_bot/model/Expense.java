@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,7 +37,7 @@ public class Expense {
   private String category;
 
   @Column(name = "sum",nullable = false)
-  private Double sum;
+  private BigDecimal sum;
 
   @Column(name = "date_time",nullable = false)
   private LocalDateTime dateTime;

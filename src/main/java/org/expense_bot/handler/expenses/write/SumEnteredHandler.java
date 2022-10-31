@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.UserRequest;
@@ -15,6 +16,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
@@ -28,6 +30,7 @@ public class SumEnteredHandler extends UserRequestHandler {
   private final UserSessionService userSessionService;
   private final ExpenseService expenseService;
   private final StickerSender stickerSender;
+  private final BackButtonHandler backButtonHandler;
 
 
   @Override
@@ -37,8 +40,9 @@ public class SumEnteredHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
+    backButtonHandler.handleExpensesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
-	final Double sum = Double.valueOf(userRequest.getUpdate().getMessage().getText());
+	final BigDecimal sum = new BigDecimal(userRequest.getUpdate().getMessage().getText());
 	final UserSession session = userRequest.getUserSession();
 	session.setExpenseSum(sum);
 	session.setState(ConversationState.CONVERSATION_STARTED);
@@ -68,7 +72,8 @@ public class SumEnteredHandler extends UserRequestHandler {
 	  .category(session.getCategory())
 	  .sum(session.getExpenseSum())
 	  .chatId(session.getChatId())
-	  .dateTime(NOW).build();
+	  .dateTime(NOW)
+	  .build();
   }
 
 }

@@ -6,6 +6,7 @@ import org.expense_bot.repository.StickerRepository;
 import org.expense_bot.service.StickerService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,11 @@ public class StickerServiceImpl implements StickerService {
   @Override
   public void setEnable(Boolean enable, String action, Long userId) {
     stickerRepository.setEnabled(enable, action, userId);
+  }
+
+  @Override
+  public List<Sticker> getAll(Long chatId) {
+	return stickerRepository.getAllByUserId(chatId);
   }
 
 }

@@ -43,7 +43,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
     final Optional<UserCategory> category = repository.getByUserIdAndCategory(chatId, categoryName);
     category.ifPresent(userCategory -> checkExpenses(chatId, userCategory));
     final String message = String.format(Messages.CATEGORY_DELETED, categoryName);
-    telegramService.sendMessage(chatId, message + Constants.BUTTON_DELETE);
+    telegramService.sendMessage(chatId, message + Constants.BUTTON_TRASH);
   }
 
   private void checkExpenses(Long chatId, UserCategory userCategory) {

@@ -10,8 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Getter
@@ -36,8 +34,7 @@ public class Sticker {
   @Column(nullable = false)
   private boolean enabled;
 
-  @JoinColumn(name = "user_id")
-  @OneToOne(targetEntity = User.class)
-  private User chatId;
+  @Column(nullable = false)
+  private Long userId;
 
 }

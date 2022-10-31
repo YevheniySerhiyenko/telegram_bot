@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
@@ -19,6 +20,7 @@ public class CheckHandler extends UserRequestHandler {
   private final TelegramService telegramService;
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
+  private final BackButtonHandler backButtonHandler;
 
 
   public boolean isApplicable(UserRequest userRequest) {
@@ -26,13 +28,14 @@ public class CheckHandler extends UserRequestHandler {
   }
 
   public void handle(UserRequest userRequest) {
-	ReplyKeyboardMarkup replyKeyboardMarkup = this.keyboardHelper.buildCheckPeriodMenu();
-	this.telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_PERIOD, replyKeyboardMarkup);
-	String action = userRequest.getUpdate().getMessage().getText();
-	UserSession session = userRequest.getUserSession();
+    backButtonHandler.handleExpensesBackButton(userRequest);
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCheckPeriodMenu();
+	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_PERIOD, replyKeyboardMarkup);
+	final String action = userRequest.getUpdate().getMessage().getText();
+	final UserSession session = userRequest.getUserSession();
 	session.setAction(action);
 	session.setState(ConversationState.WAITING_FOR_PERIOD);
-	this.userSessionService.saveSession(userRequest.getChatId(), session);
+	userSessionService.saveSession(userRequest.getChatId(), session);
   }
 
   public boolean isGlobal() {

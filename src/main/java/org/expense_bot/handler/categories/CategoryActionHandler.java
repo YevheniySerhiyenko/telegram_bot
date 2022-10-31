@@ -1,7 +1,6 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
@@ -42,7 +41,7 @@ public class CategoryActionHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
-	backButtonHandler.handleBackButton(userRequest);
+	backButtonHandler.handleCategoriesBackButton(userRequest);
 	final CategoryAction categoryAction = parseAction(userRequest.getUpdate().getMessage().getText());
 
 	if(categoryAction != null) {
@@ -61,8 +60,8 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  case Messages.ADD_CATEGORY:
 		categoryState = CategoryAction.ADD_NEW_CATEGORY;
 		break;
-	  case Messages.SHOW_MY_CATEGORIES:
-		categoryState = CategoryAction.SHOW_MY_CATEGORIES;
+	  case Messages.DELETE_MY_CATEGORIES:
+		categoryState = CategoryAction.DELETE_MY_CATEGORIES;
 		break;
 	  case Messages.ADD_FROM_DEFAULT:
 		categoryState = CategoryAction.ADD_FROM_DEFAULT;
@@ -83,8 +82,8 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  case ADD_NEW_CATEGORY:
 		handleAddNew(chatId);
 		break;
-	  case SHOW_MY_CATEGORIES:
-		handleShowAll(chatId);
+	  case DELETE_MY_CATEGORIES:
+		handleDelete(chatId);
 		break;
 	  case ADD_FROM_DEFAULT:
 		handleAddFromDefault(chatId);
@@ -102,20 +101,41 @@ public class CategoryActionHandler extends UserRequestHandler {
   }
 
 
-  private void handleShowAll(Long chatId) {
-	final List<String> allCategories = userCategoryService.getByUserId(chatId)
+  private void handleDelete(Long chatId) {
+	final List<String> defaultCategories = getCategories(chatId);
+	if(defaultCategories.isEmpty()){
+	  telegramService.sendMessage(chatId,Messages.NOTHING_TO_DELETE,keyboardHelper.buildBackButtonMenu());
+	  throw new RuntimeException(Messages.NOTHING_TO_DELETE);
+	}
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(defaultCategories);
+	telegramService.sendMessage(chatId, Messages.ASK_TO_DELETE, replyKeyboardMarkup);
+  }
+
+  private List<String> getCategories(Long chatId) {
+	return userCategoryService.getByUserId(chatId)
 	  .stream()
 	  .map(UserCategory::getCategory)
 	  .collect(Collectors.toList());
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
-	telegramService.sendMessage(chatId, Messages.ASK_TO_DELETE + " " + Constants.BUTTON_DELETE, replyKeyboardMarkup);
   }
 
   private void handleAddFromDefault(Long chatId) {
-	final List<String> allCategories = categoryService.getDefault().stream().map(Category::getName)
-	  .collect(Collectors.toList());
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(allCategories);
+	List<String> defaultCategories = subtractCategories(chatId);
+	if(defaultCategories.isEmpty()){
+	  telegramService.sendMessage(chatId, Messages.ALL_CATEGORIES_ADDED);
+	  throw new RuntimeException(Messages.ALL_CATEGORIES_ADDED);
+	}
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(defaultCategories);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FROM_LIST, replyKeyboardMarkup);
+  }
+
+  public List<String> subtractCategories(Long chatId) {
+	final List<String> defaultCategories = categoryService.getDefault()
+	  .stream()
+	  .map(Category::getName)
+	  .collect(Collectors.toList());
+	final List<String> userCategories = getCategories(chatId);
+	defaultCategories.removeAll(userCategories);
+	return defaultCategories;
   }
 
 }

@@ -18,15 +18,17 @@ public class ActionCommandHandler extends UserRequestHandler {
   private final UserSessionService userSessionService;
   private final TelegramService telegramService;
   private final KeyboardHelper keyboardHelper;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_INIT_ACTION.equals(request.getUserSession().getState());
+	  && ConversationState.CONVERSATION_STARTED.equals(request.getUserSession().getState());
   }
 
   @Override
   public void handle(UserRequest userRequest) {
+    backButtonHandler.handleMainMenuBackButton(userRequest);
 	final Long chatId = userRequest.getChatId();
 	final String initAction = userRequest.getUpdate().getMessage().getText();
 	switch (initAction) {
@@ -45,7 +47,7 @@ public class ActionCommandHandler extends UserRequestHandler {
   }
 
   private void handleExpenses(Long chatId) {
-	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.WAITING_FOR_PERIOD));
+	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.WAITING_EXPENSE_ACTION));
 	telegramService.sendMessage(chatId,Messages.CHOOSE_ACTION, keyboardHelper.buildExpenseMenu());
   }
 

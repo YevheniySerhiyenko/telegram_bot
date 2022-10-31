@@ -4,15 +4,21 @@ import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
+import org.expense_bot.model.Sticker;
 import org.expense_bot.model.UserCategory;
-import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.LoginUrl;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,8 +27,6 @@ public class KeyboardHelper {
 
   @Autowired
   private UserCategoryService userCategoryService;
-  @Autowired
-  private CategoryService categoryService;
 
   public ReplyKeyboardMarkup buildCategoriesMenu(Long userId) {
 
@@ -145,7 +149,7 @@ public class KeyboardHelper {
 	KeyboardRow row1 = new KeyboardRow();
 	row1.add(CategoryAction.ADD_NEW_CATEGORY.getValue());
 	KeyboardRow row2 = new KeyboardRow();
-	row2.add(CategoryAction.SHOW_MY_CATEGORIES.getValue());
+	row2.add(CategoryAction.DELETE_MY_CATEGORIES.getValue());
 	KeyboardRow row3 = new KeyboardRow();
 	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
 	KeyboardRow row4 = new KeyboardRow();
@@ -183,9 +187,11 @@ public class KeyboardHelper {
 
   public ReplyKeyboardMarkup buildSetDateMenu() {
 	final KeyboardRow row = new KeyboardRow();
+	final KeyboardRow row1 = new KeyboardRow();
 	row.add(Messages.ENTER_DATE);
+	row1.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row))
+	  .keyboard(List.of(row, row1))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(true)
@@ -212,6 +218,46 @@ public class KeyboardHelper {
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(true)
 	  .build();
+  }
+
+  public ReplyKeyboard buildStickerOptions(String action) {
+	InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+	List<List<InlineKeyboardButton>> lst2 = new ArrayList<>();
+	List<InlineKeyboardButton> lst = new ArrayList<>();
+	InlineKeyboardButton button = new InlineKeyboardButton();
+	button.setText("Вимкнути");
+	button.setCallbackData(action);
+	InlineKeyboardButton button2 = new InlineKeyboardButton();
+	button2.setText("Змінити");
+	button2.setCallbackData(action);
+	lst.add(button);
+	lst.add(button2);
+	lst2.add(lst);
+	inlineKeyboardMarkup.setKeyboard(lst2);
+	return inlineKeyboardMarkup;
+  }
+
+  public ReplyKeyboardMarkup buildStickersActionMenu(List<Sticker> actualStickers) {
+	final List<KeyboardRow> buttonsList = new ArrayList<>();
+	final KeyboardRow cancelRow = new KeyboardRow();
+	cancelRow.add(Constants.BUTTON_BACK);
+	setStickerActionButtons(buttonsList, actualStickers);
+	buttonsList.add(cancelRow);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(buttonsList)
+	  .selective(true)
+	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(false)
+	  .build();
+  }
+
+  private void setStickerActionButtons(List<KeyboardRow> buttonsList, List<Sticker> stickers) {
+	for (Sticker sticker : stickers) {
+	  final KeyboardRow row = new KeyboardRow();
+	  row.add(sticker.getAction());
+	  row.add(Constants.BUTTON_ON);
+	  buttonsList.add(row);
+	}
   }
 
 }

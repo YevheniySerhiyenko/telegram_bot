@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
@@ -19,6 +20,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
   private final TelegramService telegramService;
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -29,6 +31,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
+    backButtonHandler.handleExpensesBackButton(userRequest);
 	final Long chatId = userRequest.getChatId();
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCheckCategoriesMenu(chatId);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, replyKeyboardMarkup);

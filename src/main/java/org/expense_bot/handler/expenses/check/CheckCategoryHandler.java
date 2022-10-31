@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.UserRequest;
@@ -14,6 +15,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +28,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
   private final ExpenseService expenseService;
+  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -36,15 +39,12 @@ public class CheckCategoryHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
+    backButtonHandler.handleExpensesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 	final Long chatId = userRequest.getChatId();
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final String period = userSessionService.getLastSession(chatId).getPeriod();
-	final UserSession session = userRequest.getUserSession();
-	session.setCategory(category);
-	session.setPeriod(period);
-	session.setState(ConversationState.CONVERSATION_STARTED);
-	userSessionService.saveSession(chatId, session);
+	final UserSession session = setValuesUserSession(userRequest, chatId, category, period);
 	final List<Expense> expenses = getExpenses(chatId, session.getPeriod(),session.getCategory());
 	if(expenses == null || expenses.isEmpty()){
 	  telegramService.sendMessage(chatId, Messages.NOT_FOUND_FOR_PERIOD, replyKeyboardMarkup);
@@ -55,8 +55,17 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	}
   }
 
+  private UserSession setValuesUserSession(UserRequest userRequest, Long chatId, String category, String period) {
+	final UserSession session = userRequest.getUserSession();
+	session.setCategory(category);
+	session.setPeriod(period);
+	session.setState(ConversationState.CONVERSATION_STARTED);
+	userSessionService.saveSession(chatId, session);
+	return session;
+  }
+
   private String getSumMessage(List<Expense> expenses, String period) {
-	final Double sum = expenses.stream().map(Expense::getSum).reduce(Double::sum).orElse(null);
+	final BigDecimal sum = expenses.stream().map(Expense::getSum).reduce(BigDecimal::add).orElse(null);
 	return String.format(Messages.RESPONSE_MESSAGE, period.toLowerCase(Locale.ROOT)) + sum;
   }
 

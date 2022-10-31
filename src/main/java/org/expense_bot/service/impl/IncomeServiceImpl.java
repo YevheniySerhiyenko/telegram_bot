@@ -6,6 +6,7 @@ import org.expense_bot.repository.IncomeRepository;
 import org.expense_bot.service.IncomeService;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,7 +23,7 @@ public class IncomeServiceImpl implements IncomeService {
 
 
   @Override
-  public Income save(Long userId, Double sum, LocalDateTime incomeDate) {
+  public Income save(Long userId, BigDecimal sum, LocalDateTime incomeDate) {
 	return incomeRepository.save(buildIncome(userId, sum, incomeDate));
   }
 
@@ -32,7 +33,7 @@ public class IncomeServiceImpl implements IncomeService {
 	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, dateTime);
   }
 
-  private Income buildIncome(Long userId, Double sum, LocalDateTime incomeDate) {
+  private Income buildIncome(Long userId, BigDecimal sum, LocalDateTime incomeDate) {
 	return Income.builder()
 	  .userId(userId)
 	  .sum(sum)

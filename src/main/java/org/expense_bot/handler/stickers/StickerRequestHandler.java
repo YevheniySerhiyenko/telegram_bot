@@ -1,13 +1,14 @@
-package org.expense_bot.handler.setting;
+package org.expense_bot.handler.stickers;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.model.Sticker;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
-import org.expense_bot.model.UserSticker;
+import org.expense_bot.service.StickerService;
 import org.expense_bot.service.UserStickerService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
@@ -19,12 +20,13 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class SettingsActionHandler extends UserRequestHandler {
+public class StickerRequestHandler extends UserRequestHandler {
 
   private final TelegramService telegramService;
   private final KeyboardHelper keyboardHelper;
   private final UserSessionService userSessionService;
   private final UserStickerService userStickerService;
+  private final StickerService stickerService;
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -39,22 +41,26 @@ public class SettingsActionHandler extends UserRequestHandler {
 	final UserSession session = userRequest.getUserSession();
 	session.setAction(action);
 	handleAction(chatId);
-	session.setState(ConversationState.WAITING_CHANGE_SETTING_ACTION);
+	session.setState(ConversationState.WAITING_STICKERS_ACTION);
 	userSessionService.saveSession(chatId, session);
   }
 
   private void handleAction(Long chatId) {
-	final List<String> userStickers = userStickerService.getAll(chatId)
-	  .stream()
-	  .map(UserSticker::getAction)
-	  .collect(Collectors.toList());
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCustomCategoriesMenu(userStickers);
+	final List<Sticker> actualStickers = getActualStickersAction(chatId);
+	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildStickersActionMenu(actualStickers);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION_TO_SHOW_STICKER,replyKeyboardMarkup);
   }
 
   @Override
   public boolean isGlobal() {
 	return false;
+  }
+
+  public List<Sticker> getActualStickersAction(Long chatId){
+	return stickerService.getAll(chatId)
+	  .stream()
+	  .distinct()
+	  .collect(Collectors.toList());
   }
 
 }
