@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
   public User checkUser(UserRequest userRequest) {
 	final String firstName = userRequest.getUpdate().getMessage().getFrom().getFirstName();
 	final Optional<User> user = getByChatId(userRequest.getChatId());
-	if(user.isEmpty()){
+	if(!user.isPresent()){
 	  firstEnterHandle(userRequest);
 	}
 

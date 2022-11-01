@@ -12,14 +12,14 @@ public class Calendar {
 
   public static ReplyKeyboard buildCalendar(Month month) {
 	InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-	List<List<InlineKeyboardButton>> keyboard = List.of(
-	  getFirstLine(month.name()),
-	  getNumbersLine(1, month.length(true)),
-	  getNumbersLine(9, month.length(true)),
-	  getNumbersLine(17, month.length(true)),
-	  getNumbersLine(25, month.length(true))
-	);
-	keyboardMarkup.setKeyboard(keyboard);
+	List<List<InlineKeyboardButton>> keyboardList = new ArrayList<>();
+	keyboardList.add(getFirstLine(month.name()));
+	keyboardList.add(getNumbersLine(1, month.length(true)));
+	keyboardList.add(getNumbersLine(9, month.length(true)));
+	keyboardList.add(getNumbersLine(17, month.length(true)));
+	keyboardList.add(getNumbersLine(25, month.length(true)));
+
+	keyboardMarkup.setKeyboard(keyboardList);
 	return keyboardMarkup;
   }
 
