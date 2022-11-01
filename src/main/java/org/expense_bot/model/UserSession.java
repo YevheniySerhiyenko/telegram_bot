@@ -10,6 +10,7 @@ import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -24,6 +25,8 @@ public class UserSession {
     private String category;
     private BigDecimal expenseSum;
     private BigDecimal incomeSum;
+    private LocalDate expenseDate;
+    private LocalDate incomeDate;
     private IncomeAction incomeAction;
     private String period;
     private String stickerAction;
