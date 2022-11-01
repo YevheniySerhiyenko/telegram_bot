@@ -30,7 +30,10 @@ public class UserServiceImpl implements UserService {
 
   private void firstEnterHandle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
+	String token = "CAACAgIAAxkBAAEGRjFjYPXCrp0yRZdeOjiCZ1o5rvO9QAACGQAD6dgTKFdhEtpsYKrLKgQ";
 	telegramService.sendMessage(chatId, Messages.HELLO);
+	telegramService.sendSticker(chatId,token);
+
   }
 
   @Override
