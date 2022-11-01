@@ -13,8 +13,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
 
@@ -39,6 +39,8 @@
         <commons-logging.version>1.2</commons-logging.version>
         <lombok.version>1.18.20</lombok.version>
         <spring-boot.version>2.5.9</spring-boot.version>
+        <maven.compiler.source>1.8</maven.compiler.source>`
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
