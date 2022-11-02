@@ -11,27 +11,28 @@ import java.util.List;
 public class Calendar {
 
   public static ReplyKeyboard buildCalendar(Month month) {
-	InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-	List<List<InlineKeyboardButton>> keyboardList = new ArrayList<>();
-	keyboardList.add(getFirstLine(month.name()));
-	keyboardList.add(getNumbersLine(1, month.length(true)));
-	keyboardList.add(getNumbersLine(9, month.length(true)));
-	keyboardList.add(getNumbersLine(17, month.length(true)));
-	keyboardList.add(getNumbersLine(25, month.length(true)));
+	final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+	final List<List<InlineKeyboardButton>> keyboardList = List.of(
+	  getFirstLine(month.name()),
+	  getNumbersLine(1, month.length(true)),
+	  getNumbersLine(9, month.length(true)),
+	  getNumbersLine(17, month.length(true)),
+	  getNumbersLine(25, month.length(true))
+	);
 
 	keyboardMarkup.setKeyboard(keyboardList);
 	return keyboardMarkup;
   }
 
   private static List<InlineKeyboardButton> getFirstLine(String month) {
-	List<InlineKeyboardButton> buttons = new ArrayList<>();
-	InlineKeyboardButton button = new InlineKeyboardButton();
+	final List<InlineKeyboardButton> buttons = new ArrayList<>();
+	final InlineKeyboardButton button = new InlineKeyboardButton();
 	button.setText("<");
 	button.setCallbackData("back");
-	InlineKeyboardButton button2 = new InlineKeyboardButton();
+	final InlineKeyboardButton button2 = new InlineKeyboardButton();
 	button2.setText(month);
 	button2.setCallbackData(month);
-	InlineKeyboardButton button3 = new InlineKeyboardButton();
+	final InlineKeyboardButton button3 = new InlineKeyboardButton();
 	button3.setText(">");
 	button3.setCallbackData("forward");
 	buttons.add(button);
@@ -41,9 +42,9 @@ public class Calendar {
   }
 
   private static List<InlineKeyboardButton> getNumbersLine(int number, int numberOfDays) {
-	List<InlineKeyboardButton> buttons = new ArrayList<>();
+	final List<InlineKeyboardButton> buttons = new ArrayList<>();
 	for (int i = number; i <= numberOfDays; i++) {
-	  InlineKeyboardButton button = new InlineKeyboardButton();
+	  final InlineKeyboardButton button = new InlineKeyboardButton();
 	  button.setText(String.valueOf(i));
 	  button.setCallbackData(String.valueOf(i));
 	  buttons.add(button);

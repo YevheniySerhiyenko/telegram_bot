@@ -28,7 +28,7 @@ public class KeyboardHelper {
 
   public ReplyKeyboardMarkup buildCategoriesMenu(Long userId) {
 
-	List<KeyboardRow> buttonsList = new ArrayList<>();
+	final List<KeyboardRow> buttonsList = new ArrayList<>();
 
 	final List<String> allCategories = userCategoryService.getByUserId(userId)
 	  .stream()
@@ -49,11 +49,11 @@ public class KeyboardHelper {
   }
 
   public ReplyKeyboardMarkup buildMainMenu() {
-	KeyboardRow row = new KeyboardRow();
+	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.EXPENSES);
 	row.add(Messages.INCOMES);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(Collections.singletonList(row))
+	  .keyboard(List.of(row))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false).build();
@@ -61,38 +61,30 @@ public class KeyboardHelper {
 
 
   public ReplyKeyboardMarkup buildExpenseMenu() {
-	KeyboardRow row = new KeyboardRow();
+	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.WRITE_EXPENSES);
 	row.add(Messages.CHECK_EXPENSES);
-	KeyboardRow row1 = new KeyboardRow();
+	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(Constants.BUTTON_BACK);
-	final List<KeyboardRow> rows = new ArrayList<>();
-	rows.add(row);
-	rows.add(row1);
+
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(rows)
+	  .keyboard(List.of(row, row1))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false).build();
   }
 
   public ReplyKeyboardMarkup buildIncomeMenu() {
-	KeyboardRow row = new KeyboardRow();
+	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.WRITE_INCOMES);
-	KeyboardRow row1 = new KeyboardRow();
+	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(Messages.CHECK_INCOMES);
-	KeyboardRow row2 = new KeyboardRow();
+	final KeyboardRow row2 = new KeyboardRow();
 	row2.add(Messages.CHECK_BALANCE);
-	KeyboardRow row3 = new KeyboardRow();
+	final KeyboardRow row3 = new KeyboardRow();
 	row3.add(Constants.BUTTON_BACK);
-	List<KeyboardRow> rows = new ArrayList<>();
-	rows.add(row);
-	rows.add(row1);
-	rows.add(row2);
-	rows.add(row3);
-
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(rows)
+	  .keyboard(List.of(row,row1, row2, row3))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false).build();
@@ -110,25 +102,18 @@ public class KeyboardHelper {
   }
 
   public ReplyKeyboardMarkup buildCheckPeriodMenu() {
-	KeyboardRow row1 = new KeyboardRow();
+	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(Period.DAY.getValue());
-	KeyboardRow row2 = new KeyboardRow();
+	final KeyboardRow row2 = new KeyboardRow();
 	row2.add(Period.WEEK.getValue());
-	KeyboardRow row3 = new KeyboardRow();
+	final KeyboardRow row3 = new KeyboardRow();
 	row3.add(Period.MONTH.getValue());
-	KeyboardRow row4 = new KeyboardRow();
+	final KeyboardRow row4 = new KeyboardRow();
 	row4.add(Period.PERIOD.getValue());
-	KeyboardRow row5 = new KeyboardRow();
+	final KeyboardRow row5 = new KeyboardRow();
 	row5.add(Constants.BUTTON_BACK);
-	List<KeyboardRow> rows = new ArrayList<>();
-	rows.add(row1);
-	rows.add(row2);
-	rows.add(row3);
-	rows.add(row4);
-	rows.add(row5);
-
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(rows)
+	  .keyboard(List.of(row1, row2, row3, row4, row5))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
@@ -168,13 +153,8 @@ public class KeyboardHelper {
 	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
 	KeyboardRow row4 = new KeyboardRow();
 	row4.add(Constants.BUTTON_BACK);
-	List<KeyboardRow> rows = new ArrayList<>();
-	rows.add(row1);
-	rows.add(row2);
-	rows.add(row3);
-	rows.add(row4);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(rows)
+	  .keyboard(List.of(row1, row2, row3, row4))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)
@@ -209,11 +189,8 @@ public class KeyboardHelper {
 	final KeyboardRow row1 = new KeyboardRow();
 	row.add(Messages.ENTER_DATE);
 	row1.add(Constants.BUTTON_BACK);
-	List<KeyboardRow> rows = new ArrayList<>();
-	rows.add(row);
-	rows.add(row1);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(rows)
+	  .keyboard(List.of(row, row1))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(true)
@@ -224,7 +201,7 @@ public class KeyboardHelper {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(Collections.singletonList(row))
+	  .keyboard(List.of(row))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(true)
@@ -244,18 +221,18 @@ public class KeyboardHelper {
 
   public ReplyKeyboard buildStickerOptions(String action) {
 	InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-	List<List<InlineKeyboardButton>> lst2 = new ArrayList<>();
-	List<InlineKeyboardButton> lst = new ArrayList<>();
+	List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
+	List<InlineKeyboardButton> buttons = new ArrayList<>();
 	InlineKeyboardButton button = new InlineKeyboardButton();
 	button.setText("Вимкнути");
 	button.setCallbackData(action);
 	InlineKeyboardButton button2 = new InlineKeyboardButton();
 	button2.setText("Змінити");
 	button2.setCallbackData(action);
-	lst.add(button);
-	lst.add(button2);
-	lst2.add(lst);
-	inlineKeyboardMarkup.setKeyboard(lst2);
+	buttons.add(button);
+	buttons.add(button2);
+	keyboards.add(buttons);
+	inlineKeyboardMarkup.setKeyboard(keyboards);
 	return inlineKeyboardMarkup;
   }
 
