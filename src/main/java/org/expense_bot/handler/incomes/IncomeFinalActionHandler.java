@@ -1,13 +1,9 @@
-package org.expense_bot.handler.income;
+package org.expense_bot.handler.incomes;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Messages;
-import org.expense_bot.enums.ConversationState;
-import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
-import org.expense_bot.model.Expense;
 import org.expense_bot.model.Income;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.ExpenseService;
@@ -15,9 +11,6 @@ import org.expense_bot.service.IncomeService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

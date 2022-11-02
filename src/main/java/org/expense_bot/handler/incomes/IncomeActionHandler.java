@@ -1,4 +1,4 @@
-package org.expense_bot.handler.income;
+package org.expense_bot.handler.incomes;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;

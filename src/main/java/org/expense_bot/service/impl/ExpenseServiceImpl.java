@@ -54,4 +54,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 	return expenseRepository.getAllByDateTimeBetweenAndCategory(LocalDateTime.from(from), LocalDateTime.from(to), "");
   }
 
+  @Override
+  public Expense update(Expense expense) {
+	return expenseRepository.save(expense);
+  }
+
 }

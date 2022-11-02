@@ -17,4 +17,6 @@ public interface ExpenseService {
 
   List<Expense> getByPeriod(LocalDate from, LocalDate to);
 
+  Expense update(Expense expense);
+
 }

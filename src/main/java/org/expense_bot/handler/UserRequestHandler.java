@@ -1,7 +1,7 @@
 package org.expense_bot.handler;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.expense_bot.model.UserRequest;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 public abstract class UserRequestHandler {
 

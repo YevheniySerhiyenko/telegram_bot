@@ -1,14 +1,14 @@
 package org.expense_bot;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.UserSessionService;
-import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
 @Component
@@ -44,13 +44,14 @@ public class ExpenseBot extends TelegramLongPollingBot {
 
             Long chatId = update.getMessage().getChatId();
             UserSession session = userSessionService.getSession(chatId);
-
+            CallbackQuery callbackQuery = update.getCallbackQuery();
             UserRequest userRequest = UserRequest
-                    .builder()
-                    .update(update)
-                    .userSession(session)
-                    .chatId(chatId)
-                    .build();
+              .builder()
+              .update(update)
+              .userSession(session)
+              .callbackQuery(callbackQuery)
+              .chatId(chatId)
+              .build();
 
             boolean dispatched = dispatcher.dispatch(userRequest);
 
