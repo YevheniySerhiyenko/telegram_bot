@@ -145,13 +145,13 @@ public class KeyboardHelper {
   }
 
   public ReplyKeyboardMarkup buildCategoryOptionsMenu() {
-	KeyboardRow row1 = new KeyboardRow();
+	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(CategoryAction.ADD_NEW_CATEGORY.getValue());
-	KeyboardRow row2 = new KeyboardRow();
+	final KeyboardRow row2 = new KeyboardRow();
 	row2.add(CategoryAction.DELETE_MY_CATEGORIES.getValue());
-	KeyboardRow row3 = new KeyboardRow();
+	final KeyboardRow row3 = new KeyboardRow();
 	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
-	KeyboardRow row4 = new KeyboardRow();
+	final KeyboardRow row4 = new KeyboardRow();
 	row4.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row1, row2, row3, row4))
@@ -220,13 +220,13 @@ public class KeyboardHelper {
   }
 
   public ReplyKeyboard buildStickerOptions(String action) {
-	InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-	List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
-	List<InlineKeyboardButton> buttons = new ArrayList<>();
-	InlineKeyboardButton button = new InlineKeyboardButton();
+	final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+	final List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
+	final List<InlineKeyboardButton> buttons = new ArrayList<>();
+	final InlineKeyboardButton button = new InlineKeyboardButton();
 	button.setText("Вимкнути");
 	button.setCallbackData(action);
-	InlineKeyboardButton button2 = new InlineKeyboardButton();
+	final InlineKeyboardButton button2 = new InlineKeyboardButton();
 	button2.setText("Змінити");
 	button2.setCallbackData(action);
 	buttons.add(button);
