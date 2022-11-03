@@ -7,7 +7,6 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
@@ -34,46 +33,60 @@ public class ExpenseBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        if(update.hasMessage() && update.getMessage().hasText()) {
-            String textFromUser = update.getMessage().getText();
+      String textFromUser = getText(update);
+      Long chatId = getChatId(update);
+      String userFirstName = getFirstName(update);
 
-            Long userId = update.getMessage().getFrom().getId();
-            String userFirstName = update.getMessage().getFrom().getFirstName();
+      log.info("[{}, {}] : {}", chatId, userFirstName, textFromUser);
 
-            log.info("[{}, {}] : {}", userId, userFirstName, textFromUser);
+      UserSession session = userSessionService.getSession(chatId);
+      UserRequest userRequest = UserRequest
+        .builder()
+        .update(update)
+        .userSession(session)
+        .chatId(chatId)
+        .build();
 
-            Long chatId = update.getMessage().getChatId();
-            UserSession session = userSessionService.getSession(chatId);
-            CallbackQuery callbackQuery = update.getCallbackQuery();
-            UserRequest userRequest = UserRequest
-              .builder()
-              .update(update)
-              .userSession(session)
-              .callbackQuery(callbackQuery)
-              .chatId(chatId)
-              .build();
+      boolean dispatched = dispatcher.dispatch(userRequest);
 
-            boolean dispatched = dispatcher.dispatch(userRequest);
-
-            if (!dispatched) {
-                log.warn("Unexpected update from user");
-            }
-        } else {
-            log.warn("Unexpected update from user");
-        }
+      if(!dispatched) {
+        log.warn("Unexpected update from user");
+      }
     }
 
+  private String getText(Update update) {
+      if(update.hasMessage()){
+        return update.getMessage().getText();
+      }
+      return update.getCallbackQuery().getData();
+  }
 
-    @Override
-    public String getBotUsername() {
-        // username which you give to your bot bia BotFather (without @)
-        return botUsername;
+  private String getFirstName(Update update) {
+    if(update.hasMessage()) {
+      return update.getMessage().getFrom().getFirstName();
     }
+    return update.getCallbackQuery().getFrom().getFirstName();
+  }
 
-    @Override
-    public String getBotToken() {
-        // do not expose the token to the repository,
-        // always provide it externally(for example as environmental variable)
-        return botToken;
+  private Long getChatId(Update update) {
+    if(update.hasMessage()) {
+      return update.getMessage().getChatId();
     }
+    return update.getCallbackQuery().getFrom().getId();
+  }
+
+
+  @Override
+  public String getBotUsername() {
+    // username which you give to your bot bia BotFather (without @)
+    return botUsername;
+  }
+
+  @Override
+  public String getBotToken() {
+    // do not expose the token to the repository,
+    // always provide it externally(for example as environmental variable)
+    return botToken;
+  }
+
 }

@@ -19,13 +19,20 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User checkUser(UserRequest userRequest) {
-	final String firstName = userRequest.getUpdate().getMessage().getFrom().getFirstName();
+	final String firstName = getFirstName(userRequest);
 	final Optional<User> user = getByChatId(userRequest.getChatId());
 	if(!user.isPresent()){
 	  firstEnterHandle(userRequest);
 	}
 
 	return user.orElse(userRepository.save(getUser(userRequest, firstName)));
+  }
+
+  private String getFirstName(UserRequest userRequest) {
+    if(userRequest.getUpdate().hasMessage()){
+	  return userRequest.getUpdate().getMessage().getFrom().getFirstName();
+	}
+    return userRequest.getUpdate().getCallbackQuery().getFrom().getFirstName();
   }
 
   private void firstEnterHandle(UserRequest userRequest) {

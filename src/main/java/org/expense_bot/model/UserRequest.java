@@ -11,5 +11,4 @@ public class UserRequest {
     private Update update;
     private Long chatId;
     private UserSession userSession;
-    private CallbackQuery callbackQuery;
 }

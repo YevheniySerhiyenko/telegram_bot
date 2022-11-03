@@ -34,15 +34,17 @@ public class BackButtonHandler {
   }
 
   public void handleExpensesBackButton(UserRequest userRequest) {
-	final String param = userRequest.getUpdate().getMessage().getText();
-	if(param.equals(Constants.BUTTON_BACK)){
-	  final Long chatId = userRequest.getChatId();
-	  final UserSession session = userRequest.getUserSession();
-	  session.setState(ConversationState.WAITING_EXPENSE_ACTION);
-	  userSessionService.saveSession(chatId, session);
-	  final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,replyKeyboardMarkup);
-	  throw new RuntimeException("Handle back button in expenses");
+	if(userRequest.getUpdate().hasMessage()) {
+	  final String param = userRequest.getUpdate().getMessage().getText();
+	  if(param.equals(Constants.BUTTON_BACK)) {
+		final Long chatId = userRequest.getChatId();
+		final UserSession session = userRequest.getUserSession();
+		session.setState(ConversationState.WAITING_EXPENSE_ACTION);
+		userSessionService.saveSession(chatId, session);
+		final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
+		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
+		throw new RuntimeException("Handle back button in expenses");
+	  }
 	}
   }
 

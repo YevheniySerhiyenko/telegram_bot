@@ -15,10 +15,6 @@ import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.Calendar;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
@@ -49,20 +45,21 @@ public class SumEnteredHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
 	checkEnterDate(userRequest);
-//	handleAnotherDay(userRequest);
     backButtonHandler.handleExpensesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
-	final BigDecimal sum = new BigDecimal(userRequest.getUpdate().getMessage().getText());
-	final UserSession session = userRequest.getUserSession();
-	session.setExpenseSum(sum);
-	session.setState(ConversationState.CONVERSATION_STARTED);
-	final Long chatId = userRequest.getChatId();
-	userSessionService.saveSession(chatId, session);
-	expenseService.save(getSpent(session));
-	telegramService.sendMessage(chatId, Messages.SUCCESS);
-	final String successSentSum = Messages.SUCCESS_SENT_SUM;
-	getSticker(chatId, successSentSum);
-	telegramService.sendMessage(chatId, successSentSum, replyKeyboardMarkup);
+	if(userRequest.getUpdate().hasMessage()) {
+	  final BigDecimal sum = new BigDecimal(userRequest.getUpdate().getMessage().getText());
+	  final UserSession session = userRequest.getUserSession();
+	  session.setExpenseSum(sum);
+	  session.setState(ConversationState.WAITING_EXPENSE_ACTION);
+	  final Long chatId = userRequest.getChatId();
+	  userSessionService.saveSession(chatId, session);
+	  expenseService.save(getSpent(session));
+	  telegramService.sendMessage(chatId, Messages.SUCCESS);
+	  final String successSentSum = Messages.SUCCESS_SENT_SUM;
+	  getSticker(chatId, successSentSum);
+	  telegramService.sendMessage(chatId, successSentSum, replyKeyboardMarkup);
+	}
   }
 
   private void checkEnterDate(UserRequest userRequest) {
@@ -74,8 +71,8 @@ public class SumEnteredHandler extends UserRequestHandler {
 	  session.setState(ConversationState.WAITING_FOR_SUM_ANOTHER_DATE);
 	  final Long chatId = userRequest.getChatId();
 	  userSessionService.saveSession(chatId, session);
+	  throw new RuntimeException("   ");
 	}
-
   }
 
 
@@ -96,19 +93,8 @@ public class SumEnteredHandler extends UserRequestHandler {
 	  .category(session.getCategory())
 	  .sum(session.getExpenseSum())
 	  .chatId(session.getChatId())
-	  .dateTime(NOW)
+	  .dateTime(session.getExpenseDate() != null ? session.getExpenseDate().atStartOfDay() : NOW)
 	  .build();
-  }
-
-  private void handleAnotherDay(UserRequest userRequest){
-	final String text = userRequest.getUpdate().getCallbackQuery().getMessage().getText();
-	if(text.isEmpty()){
-	  throw new RuntimeException("bad request");
-	}
-	switch (text){
-	  case "back":
-	    Calendar.buildCalendar(LocalDate.now().minusMonths(1));
-	}
   }
 
 }
