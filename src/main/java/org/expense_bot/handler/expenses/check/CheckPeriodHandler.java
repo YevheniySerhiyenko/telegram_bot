@@ -25,7 +25,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_FOR_PERIOD.equals(request.getUserSession().getState());
+	  && ConversationState.Expenses.WAITING_FOR_PERIOD.equals(request.getUserSession().getState());
 
   }
 
@@ -38,7 +38,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
 	final String period = userRequest.getUpdate().getMessage().getText();
 	final UserSession session = userRequest.getUserSession();
 	session.setPeriod(period);
-	session.setState(ConversationState.WAITING_CHECK_CATEGORY);
+	session.setState(ConversationState.Expenses.WAITING_CHECK_CATEGORY);
 	userSessionService.saveSession(chatId, session);
   }
 

@@ -24,17 +24,19 @@ public class CheckHandler extends UserRequestHandler {
 
 
   public boolean isApplicable(UserRequest userRequest) {
-	return isTextMessage(userRequest.getUpdate(), Messages.CHECK_EXPENSES);
+//	return isTextMessage(userRequest.getUpdate(), Messages.CHECK_EXPENSES)
+//	  && ConversationState.Expenses.WAITING_FOR_PERIOD.equals(userRequest.getUserSession().getState());
+	return false;
   }
 
   public void handle(UserRequest userRequest) {
-    backButtonHandler.handleExpensesBackButton(userRequest);
+    backButtonHandler.handleMainMenuBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCheckPeriodMenu();
 	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_PERIOD, replyKeyboardMarkup);
 	final String action = userRequest.getUpdate().getMessage().getText();
 	final UserSession session = userRequest.getUserSession();
 	session.setAction(action);
-	session.setState(ConversationState.WAITING_FOR_PERIOD);
+	session.setState(ConversationState.Expenses.WAITING_FOR_PERIOD);
 	userSessionService.saveSession(userRequest.getChatId(), session);
   }
 

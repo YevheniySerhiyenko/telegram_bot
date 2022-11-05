@@ -20,7 +20,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   private static final int DAYS_TO_SUBTRACT = 7;
   private static final LocalDate NOW = LocalDate.now();
-  private static final int FIRST_DAY = 1;
+  private static final int DAY_VALUE = 1;
 
   public Expense save(Expense expense) {
 	return expenseRepository.save(expense);
@@ -28,10 +28,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   public List<Expense> getByOneDay(Long chatId, String category) {
 	final LocalDateTime from = LocalDateTime.from(NOW.atTime(LocalTime.MIDNIGHT));
+	final LocalDateTime dateTo = from.plusDays(DAY_VALUE);
 	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByDateTimeIsAfter(from);
+	  return expenseRepository.getAllByDateTimeBetween(from, dateTo);
 	}
-	return expenseRepository.getAllByDateTimeIsAfterAndCategory(from, category);
+	return expenseRepository.getAllByDateTimeBetweenAndCategory(from, dateTo, category);
   }
 
   public List<Expense> getByOneWeek(Long chatId, String category) {
@@ -43,7 +44,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   public List<Expense> getByOneMonth(Long chatId, String category) {
-	final LocalDateTime dateTime = LocalDate.of(NOW.getYear(), NOW.getMonth(), FIRST_DAY).atTime(LocalTime.MIDNIGHT);
+	final LocalDateTime dateTime = LocalDate.of(NOW.getYear(), NOW.getMonth(), DAY_VALUE).atTime(LocalTime.MIDNIGHT);
 	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
 	  return expenseRepository.getAllByDateTimeIsAfter(dateTime);
 	}

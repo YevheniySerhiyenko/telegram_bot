@@ -36,7 +36,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
     return isTextMessage(request.getUpdate())
-      && ConversationState.WAITING_INCOME_ACTION.equals(request.getUserSession().getState());
+      && ConversationState.Init.WAITING_INCOME_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -60,7 +60,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
   }
 
   private void handleWriteIncomes(Long chatId, UserSession userSession) {
-    userSession.setState(ConversationState.WAITING_ENTERED_ACTION);
+    userSession.setState(ConversationState.Incomes.WAITING_ENTERED_SUM_ACTION);
     telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardHelper.buildBackButtonMenu());
     userSession.setIncomeAction(IncomeAction.WRITE);
     userSessionService.saveSession(chatId, userSession);

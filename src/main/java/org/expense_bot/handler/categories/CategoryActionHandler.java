@@ -35,13 +35,12 @@ public class CategoryActionHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_CATEGORY_ACTION.equals(request.getUserSession().getState());
+	  && ConversationState.Categories.WAITING_CATEGORY_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
   public void handle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
-	backButtonHandler.handleCategoriesBackButton(userRequest);
 	final CategoryAction categoryAction = parseAction(userRequest.getUpdate().getMessage().getText());
 
 	if(categoryAction != null) {
@@ -49,7 +48,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 	}
 
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.WAITING_FINAL_ACTION);
+	session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
   }
@@ -90,7 +89,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 		break;
 	}
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.WAITING_FINAL_ACTION);
+	session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
   }

@@ -24,7 +24,8 @@ public class CategoryEnteredHandler extends UserRequestHandler {
 
   @Override
   public boolean isApplicable(UserRequest userRequest) {
-	return isTextMessage(userRequest.getUpdate()) && ConversationState.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
+	return isTextMessage(userRequest.getUpdate())
+	  && ConversationState.Expenses.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
   }
 
   @Override
@@ -36,7 +37,7 @@ public class CategoryEnteredHandler extends UserRequestHandler {
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final UserSession session = userRequest.getUserSession();
 	session.setCategory(category);
-	session.setState(ConversationState.WAITING_FOR_SUM);
+	session.setState(ConversationState.Expenses.WAITING_FOR_SUM);
 	userSessionService.saveSession(chatId, session);
   }
 

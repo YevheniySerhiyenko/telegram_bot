@@ -28,9 +28,9 @@ public class WriteHandler extends UserRequestHandler {
     private final BackButtonHandler backButtonHandler;
 
     public boolean isApplicable(UserRequest userRequest) {
-        return isTextMessage(userRequest.getUpdate())
-          && ConversationState.WAITING_EXPENSE_ACTION.equals(userRequest.getUserSession().getState());
-
+//        return isTextMessage(userRequest.getUpdate())
+//          && ConversationState.Expenses.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
+        return false;
     }
 
     public void handle(UserRequest userRequest) {
@@ -41,7 +41,7 @@ public class WriteHandler extends UserRequestHandler {
         final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoriesMenu(chatId);
         telegramService.sendMessage(chatId, Messages.CHOOSE_EXPENSES_CATEGORY, replyKeyboardMarkup);
         UserSession userSession = userRequest.getUserSession();
-        userSession.setState(ConversationState.WAITING_FOR_CATEGORY);
+        userSession.setState(ConversationState.Expenses.WAITING_FOR_CATEGORY);
         userSessionService.saveSession(userSession.getChatId(), userSession);
     }
 

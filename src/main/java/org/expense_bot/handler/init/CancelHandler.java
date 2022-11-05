@@ -33,7 +33,7 @@ public class CancelHandler extends UserRequestHandler {
         telegramService.sendMessage(userRequest.getChatId(),"Обирайте з меню нижче ⤵️",replyKeyboardMarkup);
 
         UserSession userSession = userRequest.getUserSession();
-        userSession.setState(ConversationState.CONVERSATION_STARTED);
+        userSession.setState(ConversationState.Init.CONVERSATION_STARTED);
         userSessionService.saveSession(userSession.getChatId(), userSession);
     }
 

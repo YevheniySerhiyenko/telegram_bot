@@ -33,8 +33,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_CHECK_CATEGORY.equals(request.getUserSession().getState());
-
+	  && ConversationState.Expenses.WAITING_CHECK_CATEGORY.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -59,7 +58,7 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	final UserSession session = userRequest.getUserSession();
 	session.setCategory(category);
 	session.setPeriod(period);
-	session.setState(ConversationState.CONVERSATION_STARTED);
+	session.setState(ConversationState.Init.WAITING_EXPENSE_ACTION);
 	userSessionService.saveSession(chatId, session);
 	return session;
   }

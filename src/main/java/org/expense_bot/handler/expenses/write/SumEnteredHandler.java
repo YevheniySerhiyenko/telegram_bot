@@ -39,7 +39,7 @@ public class SumEnteredHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest userRequest) {
 	return isTextMessage(userRequest.getUpdate())
-	  && ConversationState.WAITING_FOR_SUM.equals(userRequest.getUserSession().getState());
+	  && ConversationState.Expenses.WAITING_FOR_SUM.equals(userRequest.getUserSession().getState());
   }
 
   @Override
@@ -51,7 +51,7 @@ public class SumEnteredHandler extends UserRequestHandler {
 	  final BigDecimal sum = new BigDecimal(userRequest.getUpdate().getMessage().getText());
 	  final UserSession session = userRequest.getUserSession();
 	  session.setExpenseSum(sum);
-	  session.setState(ConversationState.WAITING_EXPENSE_ACTION);
+	  session.setState(ConversationState.Init.WAITING_EXPENSE_ACTION);
 	  final Long chatId = userRequest.getChatId();
 	  userSessionService.saveSession(chatId, session);
 	  expenseService.save(getSpent(session));
@@ -68,7 +68,7 @@ public class SumEnteredHandler extends UserRequestHandler {
 	  final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
 	  telegramService.sendMessage(userRequest.getChatId(),Messages.ENTER_DATE, calendar);
 	  final UserSession session = userRequest.getUserSession();
-	  session.setState(ConversationState.WAITING_FOR_SUM_ANOTHER_DATE);
+	  session.setState(ConversationState.Expenses.WAITING_FOR_SUM_ANOTHER_DATE);
 	  final Long chatId = userRequest.getChatId();
 	  userSessionService.saveSession(chatId, session);
 	  throw new RuntimeException("   ");

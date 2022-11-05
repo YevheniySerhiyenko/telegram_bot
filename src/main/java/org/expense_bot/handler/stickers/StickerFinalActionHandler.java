@@ -25,7 +25,7 @@ public class StickerFinalActionHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
     return isTextMessage(request.getUpdate())
-      && ConversationState.WAITING_STICKERS_FINAL_ACTION.equals(request.getUserSession().getState());
+      && ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override

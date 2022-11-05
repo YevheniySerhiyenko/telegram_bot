@@ -31,7 +31,7 @@ public class StickerRequestHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_SETTINGS_ACTION.equals(request.getUserSession().getState());
+	  && ConversationState.Settings.WAITING_SETTINGS_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -41,7 +41,7 @@ public class StickerRequestHandler extends UserRequestHandler {
 	final UserSession session = userRequest.getUserSession();
 	session.setAction(action);
 	handleAction(chatId);
-	session.setState(ConversationState.WAITING_STICKERS_ACTION);
+	session.setState(ConversationState.Settings.WAITING_STICKERS_ACTION);
 	userSessionService.saveSession(chatId, session);
   }
 

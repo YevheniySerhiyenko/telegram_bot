@@ -33,7 +33,7 @@ public class SettingRequestHandler extends UserRequestHandler {
 	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	final Long chatId = userRequest.getChatId();
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.WAITING_SETTINGS_ACTION);
+	session.setState(ConversationState.Settings.WAITING_SETTINGS_ACTION);
 	userSessionService.saveSession(chatId, session);
   }
 

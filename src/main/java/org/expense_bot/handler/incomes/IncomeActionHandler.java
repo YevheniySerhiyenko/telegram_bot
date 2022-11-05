@@ -28,7 +28,7 @@ public class IncomeActionHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_ENTERED_ACTION.equals(request.getUserSession().getState());
+	  && ConversationState.Incomes.WAITING_ENTERED_SUM_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -49,7 +49,7 @@ public class IncomeActionHandler extends UserRequestHandler {
 	}
 
 	final UserSession userSession = userRequest.getUserSession();
-	userSession.setState(ConversationState.WAITING_INCOME_ACTION);
+	userSession.setState(ConversationState.Init.WAITING_INCOME_ACTION);
 	userSessionService.saveSession(chatId, userSession);
   }
 

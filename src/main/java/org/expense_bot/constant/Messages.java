@@ -23,7 +23,7 @@ public class Messages {
 
   public static final String CHOOSE_PERIOD = "Оберіть період!";
 
-  public static final String CHECK_EXPENSES = "Перевірити витрати";
+  public static final String CHECK_EXPENSES = "\uD83D\uDCCA Перевірити витрати";
 
   public static final String CHOOSE_CATEGORY = "Оберіть категорію!";
 
@@ -31,9 +31,9 @@ public class Messages {
 
   public static final String CHOOSE_YOUR_ACTION = "Обирайте що хочете зробити ⤵️";
 
-  public static final String CHOOSE_EXPENSES_CATEGORY = "Оберіть категорію витрат зі списку або опишіть вручну⤵️";
+  public static final String CHOOSE_EXPENSES_CATEGORY = "Оберіть категорію витрат ⤵️";
 
-  public static final String WRITE_EXPENSES = "Записати витрати";
+  public static final String WRITE_EXPENSES = "\uD83D\uDCDD Записати витрати";
 
   public static final String ALREADY_HAD_SUCH_CATEGORY = "Ви вже маєте дану категорію";
 
@@ -67,13 +67,13 @@ public class Messages {
 
   public static final String CHECK_INCOMES = "Перевірити доходи";
 
-  public static final String WRITE_INCOMES = "Записати доходи";
+  public static final String WRITE_INCOMES = "\uD83D\uDCDD Записати доходи";
 
   public static final String CHECK_BALANCE = "Перевірити поточний залишок";
 
-  public static final String INCOMES = "Доходи";
+  public static final String INCOMES = "\uD83D\uDCB0\uD83D\uDFE2 Доходи";
 
-  public static final String EXPENSES = "Витрати";
+  public static final String EXPENSES = "\uD83D\uDCB0\uD83D\uDD34 Витрати";
 
   public static final String ALL_EXPENSES_SUM = "Витрати за поточний місяць: ";
 

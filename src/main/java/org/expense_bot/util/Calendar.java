@@ -2,10 +2,8 @@ package org.expense_bot.util;
 
 import org.expense_bot.model.UserRequest;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -14,9 +12,8 @@ import java.util.List;
 
 public class Calendar {
 
-  public static ReplyKeyboard buildCalendar(LocalDate now) {
+  public static InlineKeyboardMarkup buildCalendar(LocalDate now) {
 	final Month month = now.getMonth();
-	final DayOfWeek dayOfWeek = now.getDayOfWeek();
 	final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 	final int numberOfDays = month.length(true);
 	final List<List<InlineKeyboardButton>> keyboardList = List.of(
@@ -56,18 +53,22 @@ public class Calendar {
   }
 
   private static List<InlineKeyboardButton> getNumbersLine(int number, int numberOfDays, LocalDate now) {
-	final Month month = now.getMonth();
 	final List<InlineKeyboardButton> buttons = new ArrayList<>();
 	for (int i = number; i <= numberOfDays; i++) {
 	  final InlineKeyboardButton button = new InlineKeyboardButton();
 	  button.setText(String.valueOf(i));
-	  button.setCallbackData(i + "." + month.getValue() + "." + now.getYear());
+	  button.setCallbackData(getCallbackData(now, i));
 	  buttons.add(button);
 	}
 	return buttons;
   }
 
-  public static ReplyKeyboard handleAnotherDate(UserRequest userRequest) {
+  private static String getCallbackData(LocalDate now, int i) {
+	final String callBackDayValue = String.valueOf(i).length() == 1 ? "0" + i : String.valueOf(i);
+	return callBackDayValue + "." + now.getMonth().getValue() + "." + now.getYear();
+  }
+
+  public static InlineKeyboardMarkup handleAnotherDate(UserRequest userRequest) {
 	if(userRequest.getUpdate().hasCallbackQuery()) {
 	  final String data = userRequest.getUpdate().getCallbackQuery().getData();
 	  if(data.startsWith("back") || data.startsWith("forward")) {
@@ -96,6 +97,30 @@ public class Calendar {
 	  return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 	}
 	return LocalDate.now();
+  }
+
+  public static InlineKeyboardMarkup buildMonthCalendar(LocalDate now) {
+	final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+	final List<List<InlineKeyboardButton>> keyboardList = List.of(
+	 getDateLine("", now.getYear()),
+	  getMonths(),
+	  getLastLine(now)
+	);
+
+	keyboardMarkup.setKeyboard(keyboardList);
+	return keyboardMarkup;
+  }
+
+  private static List<InlineKeyboardButton> getMonths() {
+	final List<InlineKeyboardButton> buttonsMonths = new ArrayList<>();
+	final Month[] values = Month.values();
+	for (int i = 1; i <= values.length; i++) {
+	  final InlineKeyboardButton button = new InlineKeyboardButton();
+	  button.setText(String.valueOf(i));
+	  button.setCallbackData(String.valueOf(i));
+	  buttonsMonths.add(button);
+	}
+	return buttonsMonths;
   }
 
 }

@@ -29,7 +29,7 @@ public class StickerActionHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
     return isTextMessage(request.getUpdate())
-      && ConversationState.WAITING_STICKERS_ACTION.equals(request.getUserSession().getState());
+      && ConversationState.Settings.WAITING_STICKERS_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -41,7 +41,7 @@ public class StickerActionHandler extends UserRequestHandler {
     final String token = getSticker(chatId, action);
     telegramService.sendSticker(chatId,token);
     telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,keyboardHelper.buildStickerOptions(action));
-    session.setState(ConversationState.WAITING_STICKERS_FINAL_ACTION);
+    session.setState(ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION);
     userSessionService.saveSession(chatId, session);
     handleCallBack(userRequest);
   }

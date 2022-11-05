@@ -1,6 +1,7 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.Dispatcher;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
@@ -35,7 +36,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.WAITING_FINAL_ACTION.equals(request.getUserSession().getState());
+	  && ConversationState.Categories.WAITING_FINAL_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -47,6 +48,8 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 
 	switch (categoryAction) {
 	  case ADD_NEW_CATEGORY:
+		addCategory(chatId, param);
+		break;
 	  case ADD_FROM_DEFAULT:
 		userCategoryService.add(chatId, param);
 		sendListNotSelected(chatId);
@@ -58,9 +61,17 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 
 	}
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.WAITING_FINAL_ACTION);
+	session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
 	userSessionService.saveSession(chatId, session);
+  }
+
+  private void addCategory(Long chatId, String param) {
+	userCategoryService.add(chatId, param);
+	telegramService.sendMessage(chatId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardHelper.buildCategoryOptionsMenu());
+	final UserSession session = userSessionService.getSession(chatId);
+	session.setState(ConversationState.Categories.WAITING_CATEGORY_ACTION);
+	throw new RuntimeException("");
   }
 
   private void sendListNotDeleted(Long chatId) {

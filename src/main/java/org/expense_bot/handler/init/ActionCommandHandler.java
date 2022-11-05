@@ -23,7 +23,7 @@ public class ActionCommandHandler extends UserRequestHandler {
   @Override
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
-	  && ConversationState.CONVERSATION_STARTED.equals(request.getUserSession().getState());
+	  && ConversationState.Init.WAITING_INIT_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
@@ -42,12 +42,12 @@ public class ActionCommandHandler extends UserRequestHandler {
   }
 
   private void handleIncomes(Long chatId) {
-	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.WAITING_INCOME_ACTION));
+	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.Init.WAITING_INCOME_ACTION));
 	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboardHelper.buildIncomeMenu());
   }
 
   private void handleExpenses(Long chatId) {
-	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.WAITING_EXPENSE_ACTION));
+	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION));
 	telegramService.sendMessage(chatId,Messages.CHOOSE_ACTION, keyboardHelper.buildExpenseMenu());
   }
 

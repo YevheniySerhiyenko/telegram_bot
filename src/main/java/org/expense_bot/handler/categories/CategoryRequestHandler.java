@@ -36,7 +36,7 @@ public class CategoryRequestHandler extends UserRequestHandler {
 	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	final Long chatId = userRequest.getChatId();
 	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.WAITING_CATEGORY_ACTION);
+	session.setState(ConversationState.Categories.WAITING_CATEGORY_ACTION);
 	userSessionService.saveSession(chatId, session);
   }
 
