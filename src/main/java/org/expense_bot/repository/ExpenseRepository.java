@@ -4,7 +4,6 @@ import org.expense_bot.model.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,8 +13,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
   List<Expense> getAllByDateTimeIsAfterAndCategory(LocalDateTime dateTime,String category);
 
-  List<Expense> getAllByDateTimeBetween(LocalDateTime dateFrom, LocalDateTime dateTo);
+  List<Expense> getAllByChatIdAndDateTimeBetween(Long chatId,LocalDateTime dateFrom, LocalDateTime dateTo);
 
-  List<Expense> getAllByDateTimeBetweenAndCategory(LocalDateTime dateFrom, LocalDateTime dateTo, String category);
+  @Query("select e from Expense e where e.chatId = ?1 and e.dateTime between ?2 and ?3 and e.category = ?4")
+  List<Expense> getAllByChatIdAndDateTimeBetweenAndCategory(Long chatId, LocalDateTime dateFrom, LocalDateTime dateTo, String category);
+
 
 }

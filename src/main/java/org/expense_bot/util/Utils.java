@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 
-import org.slf4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.EntityType;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -21,7 +20,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-public class TelegramUtils {
+public class Utils {
 
   public static User getEffectiveUser(Update update) {
     User user = null;
@@ -155,7 +154,7 @@ public class TelegramUtils {
 
     for (Entry<String, String> button : buttons.entrySet()) {
       keyboardBuilder.keyboardRow(
-          List.of(TelegramUtils.buildButton(button.getKey(), button.getValue()))
+          List.of(Utils.buildButton(button.getKey(), button.getValue()))
       );
     }
 

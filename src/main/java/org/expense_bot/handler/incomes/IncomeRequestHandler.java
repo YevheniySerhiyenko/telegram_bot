@@ -15,10 +15,13 @@ import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.IncomeService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.util.Calendar;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -51,7 +54,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
         handleWriteIncomes(chatId, userSession);
         break;
       case Messages.CHECK_INCOMES:
-        incomes.forEach(income -> telegramService.sendMessage(chatId, getIncome(income)));
+        checkIncomes(chatId, incomes, userSession, userRequest);
         break;
       case Messages.CHECK_BALANCE:
         handleCheckBalance(chatId, incomes, userSession);
@@ -59,9 +62,21 @@ public class IncomeRequestHandler extends UserRequestHandler {
     }
   }
 
+  private void checkIncomes(Long chatId, List<Income> incomes, UserSession userSession, UserRequest userRequest) {
+    incomes.forEach(income -> telegramService.sendMessage(chatId, getIncome(income)));
+    telegramService.sendMessage(chatId, Messages.CHOOSE_PERIOD, keyboardHelper.buildSetDateMenu());
+    userSession.setState(ConversationState.Incomes.WAITING_FOR_PERIOD);
+    if(userRequest.getUpdate().hasCallbackQuery()) {
+      userSession.setState(ConversationState.Incomes.WAITING_FOR_PERIOD);
+    } else {
+      final Month month = userRequest.getUserSession().getIncomePeriod();
+      incomeService.getAll(chatId, month);
+    }
+  }
+
   private void handleWriteIncomes(Long chatId, UserSession userSession) {
-    userSession.setState(ConversationState.Incomes.WAITING_ENTERED_SUM_ACTION);
-    telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardHelper.buildBackButtonMenu());
+    userSession.setState(ConversationState.Incomes.WAITING_FOR_SUM);
+    telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardHelper.buildSetDateMenu());
     userSession.setIncomeAction(IncomeAction.WRITE);
     userSessionService.saveSession(chatId, userSession);
   }

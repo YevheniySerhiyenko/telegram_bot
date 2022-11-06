@@ -14,6 +14,7 @@ import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.Calendar;
+import org.expense_bot.util.UserSessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -34,17 +35,17 @@ public class SumEnteredHandler extends UserRequestHandler {
   private final ExpenseService expenseService;
   private final StickerSender stickerSender;
   private final BackButtonHandler backButtonHandler;
+  private final UserSessionUtil userSessionUtil;
 
 
   @Override
   public boolean isApplicable(UserRequest userRequest) {
-	return isTextMessage(userRequest.getUpdate())
-	  && ConversationState.Expenses.WAITING_FOR_SUM.equals(userRequest.getUserSession().getState());
+	return ConversationState.Expenses.WAITING_FOR_SUM.equals(userRequest.getUserSession().getState());
   }
 
   @Override
   public void handle(UserRequest userRequest) {
-	checkEnterDate(userRequest);
+	userSessionUtil.checkEnteredDate(userRequest,ConversationState.Expenses.WAITING_FOR_ANOTHER_DATE);
     backButtonHandler.handleExpensesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 	if(userRequest.getUpdate().hasMessage()) {
@@ -61,20 +62,6 @@ public class SumEnteredHandler extends UserRequestHandler {
 	  telegramService.sendMessage(chatId, successSentSum, replyKeyboardMarkup);
 	}
   }
-
-  private void checkEnterDate(UserRequest userRequest) {
-	final String text = userRequest.getUpdate().getMessage().getText();
-	if(text.equals(Messages.ENTER_DATE)){
-	  final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
-	  telegramService.sendMessage(userRequest.getChatId(),Messages.ENTER_DATE, calendar);
-	  final UserSession session = userRequest.getUserSession();
-	  session.setState(ConversationState.Expenses.WAITING_FOR_SUM_ANOTHER_DATE);
-	  final Long chatId = userRequest.getChatId();
-	  userSessionService.saveSession(chatId, session);
-	  throw new RuntimeException("   ");
-	}
-  }
-
 
   private void getSticker(Long chatId, String successSentSum) {
 	final String token = stickerSender.getSticker(chatId, successSentSum);

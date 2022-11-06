@@ -11,6 +11,7 @@ import org.expense_bot.enums.IncomeAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 
 @Getter
 @Setter
@@ -21,6 +22,7 @@ public class UserSession {
     private Long chatId;
     private ConversationState state;
     private CategoryAction categoryAction;
+    private Month incomePeriod;
     private String action;
     private String category;
     private BigDecimal expenseSum;

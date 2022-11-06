@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.List;
 
 @Component
@@ -31,6 +32,12 @@ public class IncomeServiceImpl implements IncomeService {
   public List<Income> getAllCurrentMonth(Long userId) {
 	final LocalDateTime dateTime = LocalDate.of(NOW.getYear(), NOW.getMonth(), FIRST_DAY).atTime(LocalTime.MIDNIGHT);
 	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, dateTime);
+  }
+
+  @Override
+  public List<Income> getAll(Long chatId, Month month) {
+
+    return null;
   }
 
   private Income buildIncome(Long userId, BigDecimal sum, LocalDateTime incomeDate) {

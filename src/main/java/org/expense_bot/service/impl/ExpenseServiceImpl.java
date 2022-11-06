@@ -18,7 +18,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   private final ExpenseRepository expenseRepository;
 
-  private static final int DAYS_TO_SUBTRACT = 7;
+  private static final int DAYS_TO_SUBTRACT = 6;
   private static final LocalDate NOW = LocalDate.now();
   private static final int DAY_VALUE = 1;
 
@@ -30,33 +30,34 @@ public class ExpenseServiceImpl implements ExpenseService {
 	final LocalDateTime from = LocalDateTime.from(NOW.atTime(LocalTime.MIDNIGHT));
 	final LocalDateTime dateTo = from.plusDays(DAY_VALUE);
 	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByDateTimeBetween(from, dateTo);
+	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, from, dateTo);
 	}
-	return expenseRepository.getAllByDateTimeBetweenAndCategory(from, dateTo, category);
+	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, from, dateTo, category);
   }
 
   public List<Expense> getByOneWeek(Long chatId, String category) {
 	final LocalDateTime dateTime = NOW.minusDays(DAYS_TO_SUBTRACT).atTime(LocalTime.MIDNIGHT);
 	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByDateTimeIsAfter(dateTime);
+	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, dateTime, NOW.plusDays(DAY_VALUE).atTime(LocalTime.MIDNIGHT));
 	}
-	return expenseRepository.getAllByDateTimeIsAfterAndCategory(LocalDateTime.from(dateTime), category);
+	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, LocalDateTime.from(dateTime), NOW.atTime(LocalTime.MIDNIGHT), category);
   }
 
   public List<Expense> getByOneMonth(Long chatId, String category) {
 	final LocalDateTime dateTime = LocalDate.of(NOW.getYear(), NOW.getMonth(), DAY_VALUE).atTime(LocalTime.MIDNIGHT);
 	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByDateTimeIsAfter(dateTime);
+	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, dateTime, NOW.atTime(LocalTime.MIDNIGHT));
 	}
-	return expenseRepository.getAllByDateTimeIsAfterAndCategory(dateTime, category);
+	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, dateTime, NOW.atTime(LocalTime.MIDNIGHT), category);
   }
 
-  public List<Expense> getByPeriod(LocalDate from, LocalDate to) {
-	return expenseRepository.getAllByDateTimeBetweenAndCategory(LocalDateTime.from(from), LocalDateTime.from(to), "");
+  public List<Expense> getByPeriod(Long chatId, LocalDate from, LocalDate to) {
+//	return expenseRepository.getAllByDateTimeBetweenAndCategory(LocalDateTime.from(from), LocalDateTime.from(to), "");
+	return null;
   }
 
   @Override
-  public Expense update(Expense expense) {
+  public Expense update(Long chatId, Expense expense) {
 	return expenseRepository.save(expense);
   }
 

@@ -62,15 +62,17 @@ public class BackButtonHandler {
   }
 
   public void handleIncomeBackButton(UserRequest userRequest) {
-	final String param = userRequest.getUpdate().getMessage().getText();
-	if(param.equals(Constants.BUTTON_BACK)) {
-	  final Long chatId = userRequest.getChatId();
-	  final UserSession session = userRequest.getUserSession();
-	  session.setState(ConversationState.Init.WAITING_INCOME_ACTION);
-	  userSessionService.saveSession(chatId, session);
-	  final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildIncomeMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
-	  throw new RuntimeException("Handle main menu back button");
+	if(userRequest.getUpdate().hasMessage()) {
+	  final String param = userRequest.getUpdate().getMessage().getText();
+	  if(param.equals(Constants.BUTTON_BACK)) {
+		final Long chatId = userRequest.getChatId();
+		final UserSession session = userRequest.getUserSession();
+		session.setState(ConversationState.Init.WAITING_INCOME_ACTION);
+		userSessionService.saveSession(chatId, session);
+		final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildIncomeMenu();
+		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
+		throw new RuntimeException("Handle main menu back button");
+	  }
 	}
   }
 

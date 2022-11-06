@@ -15,8 +15,8 @@ public interface ExpenseService {
 
   List<Expense> getByOneMonth(Long chatId, String category);
 
-  List<Expense> getByPeriod(LocalDate from, LocalDate to);
+  List<Expense> getByPeriod(Long chatId, LocalDate from, LocalDate to);
 
-  Expense update(Expense expense);
+  Expense update(Long chatId, Expense expense);
 
 }

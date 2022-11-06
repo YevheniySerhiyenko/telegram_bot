@@ -58,7 +58,7 @@ public interface ConversationState {
 
     //write
     WAITING_FOR_CATEGORY,
-    WAITING_FOR_SUM_ANOTHER_DATE,
+    WAITING_FOR_ANOTHER_DATE,
     WAITING_FOR_SUM;
 
     public static ConversationState getByOrdinal(Integer ordinal) {
@@ -70,7 +70,10 @@ public interface ConversationState {
 
 
   enum Incomes implements ConversationState {
-    WAITING_ENTERED_SUM_ACTION, WAITING_INCOME_ACTION;
+    WAITING_FOR_SUM,
+    WAITING_INCOME_ACTION,
+    WAITING_FOR_ANOTHER_DATE,
+    WAITING_FOR_PERIOD;
 
     public static ConversationState getByOrdinal(Integer ordinal) {
       return Arrays.stream(Incomes.values())

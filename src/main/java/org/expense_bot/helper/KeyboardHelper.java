@@ -151,10 +151,8 @@ public class KeyboardHelper {
 	row2.add(CategoryAction.DELETE_MY_CATEGORIES.getValue());
 	final KeyboardRow row3 = new KeyboardRow();
 	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
-	final KeyboardRow row4 = new KeyboardRow();
-	row4.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row1, row2, row3, row4))
+	  .keyboard(List.of(row1, row2, row3))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false)

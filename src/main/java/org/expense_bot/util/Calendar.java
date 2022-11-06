@@ -64,11 +64,16 @@ public class Calendar {
   }
 
   private static String getCallbackData(LocalDate now, int i) {
-	final String callBackDayValue = String.valueOf(i).length() == 1 ? "0" + i : String.valueOf(i);
-	return callBackDayValue + "." + now.getMonth().getValue() + "." + now.getYear();
+	final String callBackDayValue = getCallBackFormatValue(String.valueOf(i));
+	final String callBackMonthValue = getCallBackFormatValue(String.valueOf(now.getMonth().getValue()));
+	return callBackDayValue + "." + callBackMonthValue + "." + now.getYear();
   }
 
-  public static InlineKeyboardMarkup handleAnotherDate(UserRequest userRequest) {
+  private static String getCallBackFormatValue(String value) {
+	return value.length() == 1 ? "0" + value : value;
+  }
+
+  public static InlineKeyboardMarkup changeMonth(UserRequest userRequest) {
 	if(userRequest.getUpdate().hasCallbackQuery()) {
 	  final String data = userRequest.getUpdate().getCallbackQuery().getData();
 	  if(data.startsWith("back") || data.startsWith("forward")) {
@@ -103,7 +108,10 @@ public class Calendar {
 	final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 	final List<List<InlineKeyboardButton>> keyboardList = List.of(
 	 getDateLine("", now.getYear()),
-	  getMonths(),
+	  getMonths(0,2),
+	  getMonths(3,5),
+	  getMonths(6,8),
+	  getMonths(9,11),
 	  getLastLine(now)
 	);
 
@@ -111,16 +119,20 @@ public class Calendar {
 	return keyboardMarkup;
   }
 
-  private static List<InlineKeyboardButton> getMonths() {
+  private static List<InlineKeyboardButton> getMonths(Integer startMonth, Integer lastMonth) {
 	final List<InlineKeyboardButton> buttonsMonths = new ArrayList<>();
 	final Month[] values = Month.values();
-	for (int i = 1; i <= values.length; i++) {
+	for (int i = startMonth; i <= lastMonth; i++) {
 	  final InlineKeyboardButton button = new InlineKeyboardButton();
-	  button.setText(String.valueOf(i));
-	  button.setCallbackData(String.valueOf(i));
+	  button.setText(String.valueOf(values[i]));
+	  button.setCallbackData(String.valueOf(values[i]));
 	  buttonsMonths.add(button);
 	}
 	return buttonsMonths;
+  }
+
+  public static Month parseMonth(String month){
+    return Month.valueOf(month);
   }
 
 }

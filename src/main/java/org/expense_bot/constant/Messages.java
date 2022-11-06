@@ -35,7 +35,7 @@ public class Messages {
 
   public static final String WRITE_EXPENSES = "\uD83D\uDCDD Записати витрати";
 
-  public static final String ALREADY_HAD_SUCH_CATEGORY = "Ви вже маєте дану категорію";
+  public static final String ALREADY_HAD_SUCH_CATEGORY = "Ви вже маєте дану категорію!";
 
   public static final String ADD_CATEGORY = "Додати свою категорію";
 
@@ -43,15 +43,15 @@ public class Messages {
 
   public static final String ADD_FROM_DEFAULT = "Додати існуючу категорію";
 
-  public static final String CATEGORY_ADDED_TO_YOUR_LIST = "Категорія додана до вашого списку";
+  public static final String CATEGORY_ADDED_TO_YOUR_LIST = "Категорія додана до вашого списку!";
 
-  public static final String CATEGORY_DELETED = "Категорія %s видалена";
+  public static final String CATEGORY_DELETED = "Категорія %s видалена!";
 
   public static final String ENTER_SUM = "✍️Введи суму витрат⤵️";
 
-  public static final String ENTER_DATE = "\uD83D\uDCC5 Обрати інший день";
+  public static final String ENTER_DATE = "\uD83D\uDCC5 Обрати іншу дату!";
 
-  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення \uD83D\uDDD1";
+  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення \uD83D\uDDD1!";
 
   public static final String RESPONSE_MESSAGE = "Сума витрат %s : ";
 
@@ -71,9 +71,9 @@ public class Messages {
 
   public static final String CHECK_BALANCE = "Перевірити поточний залишок";
 
-  public static final String INCOMES = "\uD83D\uDCB0\uD83D\uDFE2 Доходи";
+  public static final String INCOMES = "\uD83D\uDFE2 Доходи";
 
-  public static final String EXPENSES = "\uD83D\uDCB0\uD83D\uDD34 Витрати";
+  public static final String EXPENSES = "\uD83D\uDD34 Витрати";
 
   public static final String ALL_EXPENSES_SUM = "Витрати за поточний місяць: ";
 
@@ -92,5 +92,7 @@ public class Messages {
   public static final String NOTHING_TO_DELETE = "Категорії для видалення відсутні";
 
   public static final String NO_ONE_CATEGORY_FOUND = "Ви не маєте жодної категорії";
+
+  public static final String DATE = "Вибрана дата: %s";
 
 }

@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -24,7 +25,7 @@ public class TelegramService {
         this.botSender = botSender;
     }
 
-    public void editMessage(UserRequest userRequest, InlineKeyboardMarkup replyKeyboard){
+    public void editKeyboardMarkup(UserRequest userRequest, InlineKeyboardMarkup replyKeyboard){
         final Long chatId = userRequest.getChatId();
         if(userRequest.getUpdate().hasCallbackQuery()) {
             final Integer messageId = userRequest.getUpdate().getCallbackQuery().getMessage().getMessageId();
@@ -40,6 +41,20 @@ public class TelegramService {
 
     public void sendMessage(Long chatId, String text) {
         sendMessage(chatId, text, null);
+    }
+
+    public void editMessage(UserRequest userRequest, String text) {
+        final Long chatId = userRequest.getChatId();
+        if(userRequest.getUpdate().hasCallbackQuery()){
+            final Integer messageId = userRequest.getUpdate().getCallbackQuery().getMessage().getMessageId();
+            EditMessageText replyMarkup = EditMessageText.builder()
+              .chatId(String.valueOf(chatId))
+              .text(text)
+              .messageId(messageId + 1)
+              .build();
+
+            execute(replyMarkup);
+        }
     }
 
     public void sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard) {

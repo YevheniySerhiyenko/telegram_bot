@@ -1,0 +1,14 @@
+package org.expense_bot.enums;
+
+public enum StickerAction {
+  SUCCESS_EXPENSE_SUM,
+  SUCCESS_INCOME_SUM,
+  ADDED_YOUR_CATEGORY,
+  ALREADY_EXISTS_CATEGORY,
+  BIG_EXPENSE_SUM,
+  WRONG_ENTERED_SUM,
+  NOTHING_FOR_TODAY,
+  DATE_FROM_FUTURE //date from future
+
+
+}

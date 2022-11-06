@@ -33,8 +33,8 @@ public class ExpenseBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-      String textFromUser = getText(update);
-      Long chatId = getChatId(update);
+      final String textFromUser = getText(update);
+      final Long chatId = getChatId(update);
       String userFirstName = getFirstName(update);
 
       log.info("[{}, {}] : {}", chatId, userFirstName, textFromUser);
