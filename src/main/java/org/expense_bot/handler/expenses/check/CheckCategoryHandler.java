@@ -42,15 +42,19 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 	final Long chatId = userRequest.getChatId();
 	final String category = userRequest.getUpdate().getMessage().getText();
-	final String period = userSessionService.getLastSession(chatId).getPeriod();
+	final String period = userSessionService.getSession(chatId).getPeriod();
 	final UserSession session = setValuesUserSession(userRequest, chatId, category, period);
-	final List<Expense> expenses = getExpenses(chatId, session.getPeriod(),session.getCategory());
+	sendExpenses(replyKeyboardMarkup, chatId, period, session);
+  }
+
+  private void sendExpenses(ReplyKeyboardMarkup replyKeyboardMarkup, Long chatId, String period, UserSession session) {
+	final List<Expense> expenses = getExpenses(chatId, session.getPeriod(), session.getCategory());
 	if(expenses == null || expenses.isEmpty()){
-	  telegramService.sendMessage(chatId, Messages.NOT_FOUND_FOR_PERIOD, replyKeyboardMarkup);
+	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, replyKeyboardMarkup);
 	}else {
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
 	  expenses.forEach(expense -> telegramService.sendMessage(chatId, getMessage(expense)));
-	  telegramService.sendMessage(chatId, getSumMessage(expenses,period), replyKeyboardMarkup);
+	  telegramService.sendMessage(chatId, getSumMessage(expenses, period), replyKeyboardMarkup);
 	}
   }
 

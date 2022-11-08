@@ -22,7 +22,6 @@ public class UserSession {
     private Long chatId;
     private ConversationState state;
     private CategoryAction categoryAction;
-    private Month incomePeriod;
     private String action;
     private String category;
     private BigDecimal expenseSum;

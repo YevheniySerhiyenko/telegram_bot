@@ -17,6 +17,7 @@ import org.expense_bot.util.UserSessionUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
@@ -29,6 +30,8 @@ public class IncomeActionHandler extends UserRequestHandler {
   private final KeyboardHelper keyboardHelper;
   private final BackButtonHandler backButtonHandler;
   private final UserSessionUtil userSessionUtil;
+  
+  private static final LocalDateTime NOW = LocalDateTime.now();
 
   @Override
   public boolean isApplicable(UserRequest request) {
@@ -45,11 +48,11 @@ public class IncomeActionHandler extends UserRequestHandler {
 	switch (incomeAction) {
 	  case WRITE:
 		final BigDecimal sum = new BigDecimal(userRequest.getUpdate().getMessage().getText());
-		incomeService.save(chatId, sum, LocalDateTime.now());
+		final LocalDate incomeDate = userRequest.getUserSession().getIncomeDate();
+		incomeService.save(chatId, sum, incomeDate == null ? NOW : incomeDate.atStartOfDay());
 		telegramService.sendMessage(chatId, Messages.SUCCESS);
 		telegramService.sendMessage(chatId, Messages.SUCCESS_INCOME, keyboardHelper.buildIncomeMenu());
 		break;
-	  case CHECK:
 	}
 
 	final UserSession userSession = userRequest.getUserSession();

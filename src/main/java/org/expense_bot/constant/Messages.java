@@ -5,7 +5,7 @@ public class Messages {
 
   public static final String SUCCESS = "✅";
 
-  public static final String NOT_FOUND_FOR_PERIOD = "Не знайдено витрат за період";
+  public static final String NO_EXPENSES_FOR_PERIOD = "Не знайдено витрат за період";
 
   public static final String DAY = "За день";
 
@@ -51,7 +51,7 @@ public class Messages {
 
   public static final String ENTER_DATE = "\uD83D\uDCC5 Обрати іншу дату!";
 
-  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення \uD83D\uDDD1!";
+  public static final String ASK_TO_DELETE = "Натисніть на категорію для видалення \uD83D\uDDD1";
 
   public static final String RESPONSE_MESSAGE = "Сума витрат %s : ";
 
@@ -94,5 +94,9 @@ public class Messages {
   public static final String NO_ONE_CATEGORY_FOUND = "Ви не маєте жодної категорії";
 
   public static final String DATE = "Вибрана дата: %s";
+
+  public static final String CHOOSE_ANOTHER_PERIOD = "Оберіть інший період";
+
+  public static final String NO_INCOMES_FOR_PERIOD = "Не знайдено доходів за ";
 
 }

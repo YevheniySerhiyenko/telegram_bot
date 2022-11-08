@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.model.Income;
 import org.expense_bot.repository.IncomeRepository;
 import org.expense_bot.service.IncomeService;
+import org.expense_bot.util.DateUtil;
+import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
 
@@ -19,33 +19,22 @@ public class IncomeServiceImpl implements IncomeService {
 
   private final IncomeRepository incomeRepository;
 
-  private static final LocalDateTime NOW = LocalDateTime.now();
-  private static final int FIRST_DAY = 1;
-
-
   @Override
   public Income save(Long userId, BigDecimal sum, LocalDateTime incomeDate) {
-	return incomeRepository.save(buildIncome(userId, sum, incomeDate));
+	return incomeRepository.save(IncomeUtil.buildIncome(userId, sum, incomeDate));
   }
 
   @Override
   public List<Income> getAllCurrentMonth(Long userId) {
-	final LocalDateTime dateTime = LocalDate.of(NOW.getYear(), NOW.getMonth(), FIRST_DAY).atTime(LocalTime.MIDNIGHT);
+	final LocalDateTime dateTime = DateUtil.getBeginOfMonth();
 	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, dateTime);
   }
 
+
   @Override
-  public List<Income> getAll(Long chatId, Month month) {
-
-    return null;
+  public List<Income> getAll(Long chatId, Month monthValue) {
+	return incomeRepository.getAllBy(chatId, monthValue.getValue());
   }
 
-  private Income buildIncome(Long userId, BigDecimal sum, LocalDateTime incomeDate) {
-	return Income.builder()
-	  .userId(userId)
-	  .sum(sum)
-	  .incomeDate(incomeDate)
-	  .build();
-  }
 
 }

@@ -26,7 +26,6 @@ public class CheckPeriodHandler extends UserRequestHandler {
   public boolean isApplicable(UserRequest request) {
 	return isTextMessage(request.getUpdate())
 	  && ConversationState.Expenses.WAITING_FOR_PERIOD.equals(request.getUserSession().getState());
-
   }
 
   @Override

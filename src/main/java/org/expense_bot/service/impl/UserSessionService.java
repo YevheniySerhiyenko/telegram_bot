@@ -21,8 +21,5 @@ public class UserSessionService {
     public UserSession saveSession(Long chatId, UserSession session) {
         return userSessionMap.put(chatId, session);
     }
-    public UserSession getLastSession(Long chatId) {
-        return userSessionMap.get(chatId);
-    }
 
 }

@@ -13,6 +13,6 @@ public interface IncomeService {
 
   List<Income> getAllCurrentMonth(Long userId);
 
-  List<Income> getAll(Long chatId, Month month);
+  List<Income> getAll(Long chatId, Month monthValue);
 
 }

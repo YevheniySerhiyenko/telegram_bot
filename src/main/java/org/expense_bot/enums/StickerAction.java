@@ -8,7 +8,8 @@ public enum StickerAction {
   BIG_EXPENSE_SUM,
   WRONG_ENTERED_SUM,
   NOTHING_FOR_TODAY,
-  DATE_FROM_FUTURE //date from future
+  DATE_FROM_FUTURE,//date from future
+  NOTIFICATION
 
 
 }

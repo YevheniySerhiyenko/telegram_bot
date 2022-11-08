@@ -1,7 +1,6 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.Dispatcher;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
@@ -41,10 +40,10 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 
   @Override
   public void handle(UserRequest userRequest) {
+	backButtonHandler.handleCategoriesBackButton(userRequest);
 	final Long chatId = userRequest.getChatId();
 	final String param = userRequest.getUpdate().getMessage().getText();
-	backButtonHandler.handleCategoriesBackButton(userRequest);
-	final CategoryAction categoryAction = userSessionService.getLastSession(chatId).getCategoryAction();
+	final CategoryAction categoryAction = userSessionService.getSession(chatId).getCategoryAction();
 
 	switch (categoryAction) {
 	  case ADD_NEW_CATEGORY:
@@ -71,7 +70,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 	telegramService.sendMessage(chatId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardHelper.buildCategoryOptionsMenu());
 	final UserSession session = userSessionService.getSession(chatId);
 	session.setState(ConversationState.Categories.WAITING_CATEGORY_ACTION);
-	throw new RuntimeException("");
+	throw new RuntimeException(Messages.CATEGORY_ADDED_TO_YOUR_LIST);
   }
 
   private void sendListNotDeleted(Long chatId) {

@@ -16,6 +16,7 @@ import org.expense_bot.service.IncomeService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.Calendar;
+import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -63,14 +64,11 @@ public class IncomeRequestHandler extends UserRequestHandler {
   }
 
   private void checkIncomes(Long chatId, List<Income> incomes, UserSession userSession, UserRequest userRequest) {
-    incomes.forEach(income -> telegramService.sendMessage(chatId, getIncome(income)));
-    telegramService.sendMessage(chatId, Messages.CHOOSE_PERIOD, keyboardHelper.buildSetDateMenu());
+    incomes.forEach(income -> telegramService.sendMessage(chatId, IncomeUtil.getIncome(income)));
+    telegramService.sendMessage(chatId, Messages.CHOOSE_ANOTHER_PERIOD, keyboardHelper.buildSetDateMenu());
     userSession.setState(ConversationState.Incomes.WAITING_FOR_PERIOD);
     if(userRequest.getUpdate().hasCallbackQuery()) {
       userSession.setState(ConversationState.Incomes.WAITING_FOR_PERIOD);
-    } else {
-      final Month month = userRequest.getUserSession().getIncomePeriod();
-      incomeService.getAll(chatId, month);
     }
   }
 
@@ -107,13 +105,5 @@ public class IncomeRequestHandler extends UserRequestHandler {
   @Override
   public boolean isGlobal() {
     return false;
-  }
-
-  private String getIncome(Income income) {
-    return getDate(income.getIncomeDate()) + " - " + income.getSum() + " грн";
-  }
-
-  private String getDate(LocalDateTime localDate) {
-    return localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
   }
 }
