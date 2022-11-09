@@ -13,14 +13,12 @@ import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
-import org.expense_bot.util.Calendar;
 import org.expense_bot.util.UserSessionUtil;
+import org.expense_bot.util.Utils;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
@@ -49,22 +47,23 @@ public class SumEnteredHandler extends UserRequestHandler {
     backButtonHandler.handleExpensesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 	if(userRequest.getUpdate().hasMessage()) {
-	  final BigDecimal sum = new BigDecimal(userRequest.getUpdate().getMessage().getText());
-	  final UserSession session = userRequest.getUserSession();
-	  session.setExpenseSum(sum);
-	  session.setState(ConversationState.Init.WAITING_EXPENSE_ACTION);
+	  final BigDecimal sum = new BigDecimal(Utils.getUpdateData(userRequest));
 	  final Long chatId = userRequest.getChatId();
-	  userSessionService.saveSession(chatId, session);
-	  expenseService.save(getSpent(session));
+	  userSessionService.updateSession(getSession(sum, chatId));
+	  expenseService.save(getSpent(userRequest));
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
 	  final String successSentSum = Messages.SUCCESS_SENT_SUM;
-	  getSticker(chatId, successSentSum);
+	  getSticker(chatId);
 	  telegramService.sendMessage(chatId, successSentSum, replyKeyboardMarkup);
 	}
   }
 
-  private void getSticker(Long chatId, String successSentSum) {
-	final String token = stickerSender.getSticker(chatId, successSentSum);
+  private UserSession getSession(BigDecimal sum, Long chatId) {
+	return UserSession.builder().chatId(chatId).expenseSum(sum).state(ConversationState.Init.WAITING_EXPENSE_ACTION).build();
+  }
+
+  private void getSticker(Long chatId) {
+	final String token = stickerSender.getSticker(chatId, Messages.SUCCESS_SENT_SUM);
 	if(token != null && !token.isEmpty()){
 	  telegramService.sendSticker(chatId,token);
 	}
@@ -75,7 +74,8 @@ public class SumEnteredHandler extends UserRequestHandler {
 	return false;
   }
 
-  private static Expense getSpent(UserSession session) {
+  private static Expense getSpent(UserRequest request) {
+	final UserSession session = request.getUserSession();
 	return Expense.builder()
 	  .category(session.getCategory())
 	  .sum(session.getExpenseSum())

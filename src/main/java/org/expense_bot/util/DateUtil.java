@@ -42,6 +42,10 @@ public class DateUtil {
 	}
   }
 
+  public static LocalDateTime getTomorrowMidnight(LocalDate localDate) {
+	return localDate.plusDays(ONE_DAY_VALUE).atStartOfDay();
+  }
+
   public static LocalDateTime getTomorrowMidnight() {
 	return NOW.plusDays(ONE_DAY_VALUE).atStartOfDay();
   }

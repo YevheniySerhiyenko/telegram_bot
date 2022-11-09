@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.repository.ExpenseRepository;
@@ -64,7 +63,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
       telegramService.sendMessage(chatId, Messages.ALREADY_HAD_SUCH_CATEGORY);
       final UserSession session = sessionService.getSession(chatId);
       session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
-      sessionService.saveSession(chatId, session);
+      sessionService.saveSession(session);
       throw new RuntimeException(Messages.ALREADY_HAD_SUCH_CATEGORY);
     }
   }

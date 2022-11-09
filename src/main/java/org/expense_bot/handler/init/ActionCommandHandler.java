@@ -42,12 +42,12 @@ public class ActionCommandHandler extends UserRequestHandler {
   }
 
   private void handleIncomes(Long chatId) {
-	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.Init.WAITING_INCOME_ACTION));
+	userSessionService.saveSession(buildSession(chatId, ConversationState.Init.WAITING_INCOME_ACTION));
 	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboardHelper.buildIncomeMenu());
   }
 
   private void handleExpenses(Long chatId) {
-	userSessionService.saveSession(chatId, buildSession(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION));
+	userSessionService.saveSession(buildSession(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION));
 	telegramService.sendMessage(chatId,Messages.CHOOSE_ACTION, keyboardHelper.buildExpenseMenu());
   }
 

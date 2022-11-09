@@ -22,43 +22,42 @@ public class ExpenseServiceImpl implements ExpenseService {
 	return expenseRepository.save(expense);
   }
 
+  @Override
   public List<Expense> getByOneDay(Long chatId, String category) {
 	final LocalDateTime from = DateUtil.getTodayMidnight();
-	final LocalDateTime dateTo = DateUtil.getTomorrowMidnight();
-	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, from, dateTo);
-	}
-	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, from, dateTo, category);
+	final LocalDateTime to = DateUtil.getTomorrowMidnight();
+	return getExpenses(chatId, category, from, to);
   }
 
-
+  @Override
   public List<Expense> getByOneWeek(Long chatId, String category) {
-	final LocalDateTime dateFrom = DateUtil.getStartOfWeek();
-	final LocalDateTime dateTo = DateUtil.getTomorrowMidnight();
-	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, dateFrom, dateTo);
-	}
-	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, dateFrom, dateTo, category);
+	final LocalDateTime from = DateUtil.getStartOfWeek();
+	final LocalDateTime to = DateUtil.getTomorrowMidnight();
+	return getExpenses(chatId, category, from, to);
   }
 
-
+  @Override
   public List<Expense> getByOneMonth(Long chatId, String category) {
-	final LocalDateTime dateFrom = DateUtil.getStartOfMonth();
-	final LocalDateTime dateTo = DateUtil.getTomorrowMidnight();
-	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, dateFrom, dateTo);
-	}
-	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, dateFrom, dateTo, category);
+	final LocalDateTime from = DateUtil.getStartOfMonth();
+	final LocalDateTime to = DateUtil.getTomorrowMidnight();
+	return getExpenses(chatId, category, from, to);
   }
 
-  public List<Expense> getByPeriod(Long chatId, LocalDate from, LocalDate to) {
-//	return expenseRepository.getAllByDateTimeBetweenAndCategory(LocalDateTime.from(from), LocalDateTime.from(to), "");
-	return null;
+  @Override
+  public List<Expense> getByPeriod(Long chatId, LocalDate from, LocalDate to, String category) {
+	return getExpenses(chatId, category, from.atStartOfDay(), DateUtil.getTomorrowMidnight(to));
   }
 
   @Override
   public Expense update(Long chatId, Expense expense) {
 	return expenseRepository.save(expense);
+  }
+
+  private List<Expense> getExpenses(Long chatId, String category, LocalDateTime from, LocalDateTime to) {
+	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
+	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, from, to);
+	}
+	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, from, to, category);
   }
 
 }

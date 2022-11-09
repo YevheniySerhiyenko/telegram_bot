@@ -15,6 +15,7 @@ import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.util.Utils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
@@ -42,7 +43,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   public void handle(UserRequest userRequest) {
 	backButtonHandler.handleCategoriesBackButton(userRequest);
 	final Long chatId = userRequest.getChatId();
-	final String param = userRequest.getUpdate().getMessage().getText();
+	final String param = Utils.getUpdateData(userRequest);
 	final CategoryAction categoryAction = userSessionService.getSession(chatId).getCategoryAction();
 
 	switch (categoryAction) {
@@ -62,7 +63,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 	final UserSession session = userRequest.getUserSession();
 	session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
 	session.setCategoryAction(categoryAction);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.saveSession(session);
   }
 
   private void addCategory(Long chatId, String param) {

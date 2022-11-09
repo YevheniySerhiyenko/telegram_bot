@@ -7,7 +7,6 @@ import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardHelper;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -33,11 +32,9 @@ public class CategoryRequestHandler extends UserRequestHandler {
   public void handle(UserRequest userRequest) {
 	backButtonHandler.handleCategoriesBackButton(userRequest);
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
-	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION,replyKeyboardMarkup);
+	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION, replyKeyboardMarkup);
 	final Long chatId = userRequest.getChatId();
-	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.Categories.WAITING_CATEGORY_ACTION);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 
   @Override

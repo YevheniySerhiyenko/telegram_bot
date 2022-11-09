@@ -20,6 +20,9 @@ public class UserSessionUtil {
   private final TelegramService telegramService;
   private final UserSessionService userSessionService;
 
+  public void update(UserSession session){
+    userSessionService.saveSession(session);
+  }
   public void checkEnteredDate(UserRequest userRequest, ConversationState state) {
 	if(userRequest.getUpdate().hasMessage()) {
 	  final String text = userRequest.getUpdate().getMessage().getText();
@@ -29,7 +32,7 @@ public class UserSessionUtil {
 		final UserSession session = userRequest.getUserSession();
 		session.setState(state);
 		final Long chatId = userRequest.getChatId();
-		userSessionService.saveSession(chatId, session);
+		userSessionService.saveSession(session);
 		throw new RuntimeException("Build calendar");
 	  }
 	}
@@ -41,7 +44,7 @@ public class UserSessionUtil {
 		final LocalDate date = Calendar.getDate(userRequest);
 		telegramService.editMessage(userRequest, String.format(Messages.DATE, date));
 		session.setExpenseDate(date);
-		userSessionService.saveSession(chatId, session);
+		userSessionService.saveSession(session);
 		throw new RuntimeException("Change day");
 	  }
 	  telegramService.editKeyboardMarkup(userRequest,keyboardMarkup);

@@ -15,15 +15,10 @@ import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.IncomeService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
-import org.expense_bot.util.Calendar;
 import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -76,7 +71,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
     userSession.setState(ConversationState.Incomes.WAITING_FOR_SUM);
     telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardHelper.buildSetDateMenu());
     userSession.setIncomeAction(IncomeAction.WRITE);
-    userSessionService.saveSession(chatId, userSession);
+    userSessionService.saveSession(userSession);
   }
 
   private void handleCheckBalance(Long chatId, List<Income> incomes, UserSession userSession) {
@@ -92,7 +87,7 @@ public class IncomeRequestHandler extends UserRequestHandler {
     telegramService.sendMessage(chatId, Messages.ALL_INCOMES_SUM + allIncomesSum);
     telegramService.sendMessage(chatId, Messages.ACTUAL_BALANCE + actualBalance);
     userSession.setIncomeAction(IncomeAction.WRITE);
-    userSessionService.saveSession(chatId, userSession);
+    userSessionService.saveSession(userSession);
   }
 
   private BigDecimal getAllExpensesSum(Long chatId) {

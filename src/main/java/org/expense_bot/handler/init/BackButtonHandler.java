@@ -26,7 +26,7 @@ public class BackButtonHandler {
 	  final Long chatId = userRequest.getChatId();
 	  final UserSession session = userRequest.getUserSession();
 	  session.setState(ConversationState.Categories.WAITING_CATEGORY_ACTION);
-	  userSessionService.saveSession(chatId, session);
+	  userSessionService.saveSession(session);
 	  final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	  throw new RuntimeException("Handle back button");
@@ -40,7 +40,7 @@ public class BackButtonHandler {
 		final Long chatId = userRequest.getChatId();
 		final UserSession session = userRequest.getUserSession();
 		session.setState(ConversationState.Init.WAITING_EXPENSE_ACTION);
-		userSessionService.saveSession(chatId, session);
+		userSessionService.saveSession(session);
 		final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
 		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
 		throw new RuntimeException("Handle back button in expenses");
@@ -54,7 +54,7 @@ public class BackButtonHandler {
 	  final Long chatId = userRequest.getChatId();
 	  final UserSession session = userRequest.getUserSession();
 	  session.setState(ConversationState.Init.WAITING_INIT_ACTION);
-	  userSessionService.saveSession(chatId, session);
+	  userSessionService.saveSession(session);
 	  final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMainMenu();
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,replyKeyboardMarkup);
 	  throw new RuntimeException("Handle main menu back button");
@@ -68,7 +68,7 @@ public class BackButtonHandler {
 		final Long chatId = userRequest.getChatId();
 		final UserSession session = userRequest.getUserSession();
 		session.setState(ConversationState.Init.WAITING_INCOME_ACTION);
-		userSessionService.saveSession(chatId, session);
+		userSessionService.saveSession(session);
 		final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildIncomeMenu();
 		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
 		throw new RuntimeException("Handle main menu back button");
@@ -85,7 +85,7 @@ public class BackButtonHandler {
 
 	  final ConversationState previousState = getPreviousState(state);
 	  session.setState(previousState);
-	  userSessionService.saveSession(chatId, session);
+	  userSessionService.saveSession(session);
 	}
 	return back;
   }

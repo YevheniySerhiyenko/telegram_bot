@@ -12,6 +12,7 @@ import org.expense_bot.model.UserSession;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.util.Utils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,24 +36,21 @@ public class ExpenseHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
     backButtonHandler.handleMainMenuBackButton(userRequest);
-	final String text = userRequest.getUpdate().getMessage().getText();
+	final String text = Utils.getUpdateData(userRequest);
 	final Long chatId = userRequest.getChatId();
-	final UserSession session = sessionService.getSession(chatId);
 
 	switch (text){
 	  case Messages.CHECK_EXPENSES:
-	    telegramService.sendMessage(chatId,Messages.CHOOSE_PERIOD,keyboardHelper.buildCheckPeriodMenu());
-	    session.setState(ConversationState.Expenses.WAITING_FOR_PERIOD);
-	    break;
+		telegramService.sendMessage(chatId, Messages.CHOOSE_PERIOD, keyboardHelper.buildCheckPeriodMenu());
+		sessionService.updateState(chatId, ConversationState.Expenses.WAITING_FOR_PERIOD);
+		break;
 	  case Messages.WRITE_EXPENSES:
 		final List<UserCategory> byUserId = userCategoryService.getByUserId(chatId);
 		checkEmpty(chatId, byUserId);
-		telegramService.sendMessage(chatId,Messages.CHOOSE_EXPENSES_CATEGORY,keyboardHelper.buildCategoriesMenu(chatId));
-		session.setState(ConversationState.Expenses.WAITING_FOR_CATEGORY);
+		telegramService.sendMessage(chatId, Messages.CHOOSE_EXPENSES_CATEGORY, keyboardHelper.buildCategoriesMenu(chatId));
+		sessionService.updateState(chatId, ConversationState.Expenses.WAITING_FOR_CATEGORY);
 		break;
 	}
-
-	sessionService.saveSession(chatId, session);
   }
 
 

@@ -99,4 +99,6 @@ public class Messages {
 
   public static final String NO_INCOMES_FOR_PERIOD = "Не знайдено доходів за ";
 
+  public static final String PERIOD = "За період";
+
 }

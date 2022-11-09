@@ -25,6 +25,8 @@ public class UserSession {
     private String action;
     private String category;
     private BigDecimal expenseSum;
+    private LocalDate periodFrom;
+    private LocalDate periodTo;
     private BigDecimal incomeSum;
     private LocalDate expenseDate;
     private LocalDate incomeDate;

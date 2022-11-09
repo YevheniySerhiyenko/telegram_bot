@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,39 +33,37 @@ public class CheckCategoryHandler extends UserRequestHandler {
 
   @Override
   public boolean isApplicable(UserRequest request) {
-	return isTextMessage(request.getUpdate())
-	  && ConversationState.Expenses.WAITING_CHECK_CATEGORY.equals(request.getUserSession().getState());
+	return ConversationState.Expenses.WAITING_CHECK_CATEGORY.equals(request.getUserSession().getState());
   }
 
   @Override
   public void handle(UserRequest userRequest) {
-    backButtonHandler.handleExpensesBackButton(userRequest);
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
+	backButtonHandler.handleExpensesBackButton(userRequest);
+	final ReplyKeyboardMarkup keyboard = keyboardHelper.buildExpenseMenu();
 	final Long chatId = userRequest.getChatId();
 	final String category = userRequest.getUpdate().getMessage().getText();
 	final String period = userSessionService.getSession(chatId).getPeriod();
-	final UserSession session = setValuesUserSession(userRequest, chatId, category, period);
-	sendExpenses(replyKeyboardMarkup, chatId, period, session);
+	userSessionService.updateSession(getSession(chatId, category));
+	sendExpenses(keyboard, chatId, period);
   }
 
-  private void sendExpenses(ReplyKeyboardMarkup replyKeyboardMarkup, Long chatId, String period, UserSession session) {
-	final List<Expense> expenses = getExpenses(chatId, session.getPeriod(), session.getCategory());
-	if(expenses == null || expenses.isEmpty()){
-	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, replyKeyboardMarkup);
-	}else {
+  private UserSession getSession(Long chatId, String category) {
+	return UserSession.builder()
+	  .chatId(chatId)
+	  .category(category)
+	  .state(ConversationState.Init.WAITING_EXPENSE_ACTION)
+	  .build();
+  }
+
+  private void sendExpenses(ReplyKeyboardMarkup keyboard, Long chatId, String period) {
+	final List<Expense> expenses = getExpenses(chatId);
+	if(expenses == null || expenses.isEmpty()) {
+	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, keyboard);
+	} else {
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
 	  expenses.forEach(expense -> telegramService.sendMessage(chatId, getMessage(expense)));
-	  telegramService.sendMessage(chatId, getSumMessage(expenses, period), replyKeyboardMarkup);
+	  telegramService.sendMessage(chatId, getSumMessage(expenses, period), keyboard);
 	}
-  }
-
-  private UserSession setValuesUserSession(UserRequest userRequest, Long chatId, String category, String period) {
-	final UserSession session = userRequest.getUserSession();
-	session.setCategory(category);
-	session.setPeriod(period);
-	session.setState(ConversationState.Init.WAITING_EXPENSE_ACTION);
-	userSessionService.saveSession(chatId, session);
-	return session;
   }
 
   private String getSumMessage(List<Expense> expenses, String period) {
@@ -76,20 +75,24 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	return expense.getCategory() + " : " + expense.getSum();
   }
 
-  private List<Expense> getExpenses(Long chatId,String period,String category) {
-	List<Expense> expenses = new ArrayList<>();
+  private List<Expense> getExpenses(Long chatId) {
+	final UserSession session = userSessionService.getSession(chatId);
+	final String period = session.getPeriod();
+	final String category = session.getCategory();
 	switch (period) {
 	  case Messages.DAY:
-		expenses = expenseService.getByOneDay(chatId,category);
-		break;
+		return expenseService.getByOneDay(chatId, category);
 	  case Messages.WEEK:
-		expenses = expenseService.getByOneWeek(chatId,category);
-		break;
+		return expenseService.getByOneWeek(chatId, category);
 	  case Messages.MONTH:
-		expenses = expenseService.getByOneMonth(chatId,category);
-		break;
+		return expenseService.getByOneMonth(chatId, category);
+	  case Messages.PERIOD:
+		final LocalDate periodFrom = session.getPeriodFrom();
+		final LocalDate periodTo = session.getPeriodTo();
+		return expenseService.getByPeriod(chatId, periodFrom, periodTo, category);
+	  default:
+		return null;
 	}
-	return expenses;
   }
 
   @Override

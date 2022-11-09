@@ -15,10 +15,12 @@ import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.util.Utils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,39 +36,41 @@ public class CategoryActionHandler extends UserRequestHandler {
 
   @Override
   public boolean isApplicable(UserRequest request) {
-	return isTextMessage(request.getUpdate())
-	  && ConversationState.Categories.WAITING_CATEGORY_ACTION.equals(request.getUserSession().getState());
+	return ConversationState.Categories.WAITING_CATEGORY_ACTION.equals(request.getUserSession().getState());
   }
 
   @Override
   public void handle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
-	final CategoryAction categoryAction = parseAction(userRequest.getUpdate().getMessage().getText());
+	final CategoryAction categoryAction = parseAction(Utils.getUpdateData(userRequest));
 
-	if(categoryAction != null) {
-	  processAction(userRequest, categoryAction);
-	}
+	Optional.ofNullable(categoryAction)
+	  .ifPresent(action -> {
+		switch (action) {
+		  case ADD_NEW_CATEGORY:
+			handleAddNew(chatId);
+			break;
+		  case DELETE_MY_CATEGORIES:
+			handleDelete(chatId);
+			break;
+		  case ADD_FROM_DEFAULT:
+			handleAddFromDefault(chatId);
+			break;
+		}
+	  });
 
-	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
-	session.setCategoryAction(categoryAction);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.updateSession(getSession(chatId, categoryAction));
   }
 
   private CategoryAction parseAction(String text) {
-	CategoryAction categoryState = null;
 	switch (text) {
 	  case Messages.ADD_CATEGORY:
-		categoryState = CategoryAction.ADD_NEW_CATEGORY;
-		break;
+		return CategoryAction.ADD_NEW_CATEGORY;
 	  case Messages.DELETE_MY_CATEGORIES:
-		categoryState = CategoryAction.DELETE_MY_CATEGORIES;
-		break;
-	  case Messages.ADD_FROM_DEFAULT:
-		categoryState = CategoryAction.ADD_FROM_DEFAULT;
-		break;
+		return CategoryAction.DELETE_MY_CATEGORIES;
+	  default:
+		return CategoryAction.ADD_FROM_DEFAULT;
 	}
-	return categoryState;
   }
 
   @Override
@@ -74,31 +78,9 @@ public class CategoryActionHandler extends UserRequestHandler {
 	return false;
   }
 
-  public void processAction(UserRequest userRequest, CategoryAction categoryAction) {
-	final Long chatId = userRequest.getChatId();
-
-	switch (categoryAction) {
-	  case ADD_NEW_CATEGORY:
-		handleAddNew(chatId);
-		break;
-	  case DELETE_MY_CATEGORIES:
-		handleDelete(chatId);
-		break;
-	  case ADD_FROM_DEFAULT:
-		handleAddFromDefault(chatId);
-		break;
-	}
-	final UserSession session = userRequest.getUserSession();
-	session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
-	session.setCategoryAction(categoryAction);
-	userSessionService.saveSession(chatId, session);
-  }
-
   private void handleAddNew(Long chatId) {
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildBackButtonMenu();
-	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME,replyKeyboardMarkup);
+	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME, keyboardHelper.buildBackButtonMenu());
   }
-
 
   private void handleDelete(Long chatId) {
 	final List<String> defaultCategories = getCategories(chatId);
@@ -135,6 +117,14 @@ public class CategoryActionHandler extends UserRequestHandler {
 	final List<String> userCategories = getCategories(chatId);
 	defaultCategories.removeAll(userCategories);
 	return defaultCategories;
+  }
+
+  private UserSession getSession(Long chatId, CategoryAction categoryAction) {
+	return UserSession.builder()
+	  .chatId(chatId)
+	  .categoryAction(categoryAction)
+	  .state(ConversationState.Categories.WAITING_FINAL_ACTION)
+	  .build();
   }
 
 }

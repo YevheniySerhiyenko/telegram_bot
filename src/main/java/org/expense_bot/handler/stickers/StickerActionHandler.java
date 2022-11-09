@@ -42,7 +42,7 @@ public class StickerActionHandler extends UserRequestHandler {
     telegramService.sendSticker(chatId,token);
     telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,keyboardHelper.buildStickerOptions(action));
     session.setState(ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION);
-    userSessionService.saveSession(chatId, session);
+    userSessionService.saveSession(session);
     handleCallBack(userRequest);
   }
 

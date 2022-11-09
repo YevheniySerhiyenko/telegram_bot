@@ -45,11 +45,16 @@ public class EnteredDateHandlerExpense extends UserRequestHandler {
 	if(replyKeyboard == null){
 	  localDate = Calendar.getDate(userRequest);
 	}
-	final UserSession session = userRequest.getUserSession();
-	session.setExpenseDate(localDate);
-	session.setState(ConversationState.Expenses.WAITING_FOR_SUM);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.updateSession(getSession(chatId, localDate));
 	telegramService.sendMessage(chatId, String.format(Messages.DATE,localDate));
+  }
+
+  private UserSession getSession(Long chatId, LocalDate localDate) {
+	return UserSession.builder()
+	  .chatId(chatId)
+	  .expenseDate(localDate)
+	  .state(ConversationState.Expenses.WAITING_FOR_SUM)
+	  .build();
   }
 
   private void drawAnotherMonthCalendar(UserRequest userRequest, InlineKeyboardMarkup replyKeyboard) {

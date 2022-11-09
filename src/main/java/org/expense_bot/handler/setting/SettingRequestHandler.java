@@ -34,7 +34,7 @@ public class SettingRequestHandler extends UserRequestHandler {
 	final Long chatId = userRequest.getChatId();
 	final UserSession session = userRequest.getUserSession();
 	session.setState(ConversationState.Settings.WAITING_SETTINGS_ACTION);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.saveSession(session);
   }
 
   @Override

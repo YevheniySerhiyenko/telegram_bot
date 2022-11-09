@@ -34,7 +34,7 @@ public class CancelHandler extends UserRequestHandler {
 
         UserSession userSession = userRequest.getUserSession();
         userSession.setState(ConversationState.Init.CONVERSATION_STARTED);
-        userSessionService.saveSession(userSession.getChatId(), userSession);
+        userSessionService.saveSession(userSession);
     }
 
     @Override

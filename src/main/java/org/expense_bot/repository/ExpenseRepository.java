@@ -15,7 +15,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
   List<Expense> getAllByChatIdAndDateTimeBetween(Long chatId,LocalDateTime dateFrom, LocalDateTime dateTo);
 
-  @Query("select e from Expense e where e.chatId = ?1 and e.dateTime between ?2 and ?3 and e.category = ?4")
   List<Expense> getAllByChatIdAndDateTimeBetweenAndCategory(Long chatId, LocalDateTime dateFrom, LocalDateTime dateTo, String category);
 
 

@@ -42,7 +42,7 @@ public class StickerRequestHandler extends UserRequestHandler {
 	session.setAction(action);
 	handleAction(chatId);
 	session.setState(ConversationState.Settings.WAITING_STICKERS_ACTION);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.saveSession(session);
   }
 
   private void handleAction(Long chatId) {

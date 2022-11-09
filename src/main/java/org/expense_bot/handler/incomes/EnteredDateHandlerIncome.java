@@ -45,7 +45,7 @@ public class EnteredDateHandlerIncome extends UserRequestHandler {
     final UserSession session = userRequest.getUserSession();
     session.setIncomeDate(localDate);
     session.setState(ConversationState.Incomes.WAITING_FOR_SUM);
-    userSessionService.saveSession(chatId, session);
+    userSessionService.saveSession(session);
     telegramService.sendMessage(chatId, String.format(Messages.DATE, localDate));
   }
 

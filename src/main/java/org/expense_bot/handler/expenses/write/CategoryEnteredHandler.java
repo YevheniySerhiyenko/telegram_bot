@@ -24,21 +24,25 @@ public class CategoryEnteredHandler extends UserRequestHandler {
 
   @Override
   public boolean isApplicable(UserRequest userRequest) {
-	return isTextMessage(userRequest.getUpdate())
-	  && ConversationState.Expenses.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
+	return ConversationState.Expenses.WAITING_FOR_CATEGORY.equals(userRequest.getUserSession().getState());
   }
 
   @Override
   public void handle(UserRequest userRequest) {
-    backButtonHandler.handleExpensesBackButton(userRequest);
+	backButtonHandler.handleExpensesBackButton(userRequest);
 	final Long chatId = userRequest.getChatId();
 	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildSetDateMenu();
 	telegramService.sendMessage(chatId, Messages.ENTER_SUM, replyKeyboardMarkup);
 	final String category = userRequest.getUpdate().getMessage().getText();
-	final UserSession session = userRequest.getUserSession();
-	session.setCategory(category);
-	session.setState(ConversationState.Expenses.WAITING_FOR_SUM);
-	userSessionService.saveSession(chatId, session);
+	userSessionService.updateSession(getSession(chatId, category));
+  }
+
+  private UserSession getSession(Long chatId, String category) {
+	return UserSession.builder()
+	  .chatId(chatId)
+	  .category(category)
+	  .state(ConversationState.Expenses.WAITING_FOR_SUM)
+	  .build();
   }
 
   public boolean isGlobal() {

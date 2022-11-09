@@ -1,7 +1,6 @@
 package org.expense_bot.handler.incomes;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
@@ -57,7 +56,7 @@ public class IncomeActionHandler extends UserRequestHandler {
 
 	final UserSession userSession = userRequest.getUserSession();
 	userSession.setState(ConversationState.Init.WAITING_INCOME_ACTION);
-	userSessionService.saveSession(chatId, userSession);
+	userSessionService.saveSession(userSession);
   }
 
   @Override
