@@ -24,43 +24,50 @@ public class BackButtonHandler {
   private final TelegramService telegramService;
 
   public void handleCategoriesBackButton(UserRequest request) {
-	if(isBack(request)) {
-	  final Long chatId = request.getChatId();
-	  userSessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
-	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCategoryOptionsMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	  throw new RuntimeException("Handle back button in categoris");
+	if(!isBack(request)) {
+	  return;
 	}
+	final Long chatId = request.getChatId();
+	userSessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
+	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	throw new RuntimeException("Handle back button in categoris");
   }
 
   public void handleExpensesBackButton(UserRequest request) {
 	if(isBack(request)) {
-	  final Long chatId = request.getChatId();
-	  userSessionService.updateState(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION);
-	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildExpenseMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	  throw new RuntimeException("Handle expenses back button");
+	  return;
 	}
+	final Long chatId = request.getChatId();
+	userSessionService.updateState(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION);
+	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildExpenseMenu();
+	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	throw new RuntimeException("Handle expenses back button");
+
   }
 
   public void handleMainMenuBackButton(UserRequest request) {
 	if(isBack(request)) {
-	  final Long chatId = request.getChatId();
-	  userSessionService.updateState(chatId, ConversationState.Init.WAITING_INIT_ACTION);
-	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildMainMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	  throw new RuntimeException("Handle main menu back button");
+	  return;
 	}
+	final Long chatId = request.getChatId();
+	userSessionService.updateState(chatId, ConversationState.Init.WAITING_INIT_ACTION);
+	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildMainMenu();
+	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	throw new RuntimeException("Handle main menu back button");
+
   }
 
   public void handleIncomeBackButton(UserRequest request) {
-	if(isBack(request)) {
-	  final Long chatId = request.getChatId();
-	  userSessionService.updateState(chatId, ConversationState.Init.WAITING_INCOME_ACTION);
-	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildIncomeMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	  throw new RuntimeException("Handle incomes back button");
+	if(!isBack(request)) {
+	  return;
 	}
+	final Long chatId = request.getChatId();
+	userSessionService.updateState(chatId, ConversationState.Init.WAITING_INCOME_ACTION);
+	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildIncomeMenu();
+	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	throw new RuntimeException("Handle incomes back button");
+
   }
 
 //  public boolean handleButton(UserRequest request, String state) {
