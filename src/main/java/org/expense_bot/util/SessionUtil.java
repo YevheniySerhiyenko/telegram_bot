@@ -36,7 +36,6 @@ public class SessionUtil {
 	  .build();
   }
 
-
   public static UserSession buildExpenseSession(Long chatId, LocalDate date) {
 	return UserSession.builder()
 	  .chatId(chatId)

@@ -1,5 +1,6 @@
 package org.expense_bot.helper;
 
+import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
@@ -8,7 +9,6 @@ import org.expense_bot.model.Sticker;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.util.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class KeyboardBuilder {
 
-  @Autowired
-  private UserCategoryService userCategoryService;
+  private final UserCategoryService userCategoryService;
 
   public ReplyKeyboardMarkup buildCategoriesMenu(Long userId) {
 
