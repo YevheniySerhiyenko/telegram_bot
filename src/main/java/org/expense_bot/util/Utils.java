@@ -46,21 +46,6 @@ public class Utils {
     return user;
   }
 
-  public static boolean hasCallBack(UserRequest request){
-    return request.getUpdate().hasCallbackQuery();
-  }
-
-  public static String getUpdateData(UserRequest userRequest) {
-    String data = null;
-    if(userRequest.getUpdate().hasMessage()){
-      data = userRequest.getUpdate().getMessage().getText();
-    }
-    if(userRequest.getUpdate().hasCallbackQuery()){
-      data = userRequest.getUpdate().getCallbackQuery().getData();
-    }
-    return data;
-  }
-
   public static String getFileId(final Message message) {
     if (message == null) {
       return null;

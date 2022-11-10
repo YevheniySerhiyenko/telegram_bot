@@ -9,8 +9,15 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.expense_bot.handler.UserRequestHandler.getUpdateData;
+import static org.expense_bot.handler.UserRequestHandler.hasCallBack;
 
 public class Calendar {
+
+  private static final String PATTERN = "dd.MM.yyyy";
 
   public static InlineKeyboardMarkup buildCalendar(LocalDate now) {
 	final Month month = now.getMonth();
@@ -31,40 +38,26 @@ public class Calendar {
 
   private static List<InlineKeyboardButton> getLastLine(LocalDate now) {
 	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	final InlineKeyboardButton button = new InlineKeyboardButton();
-	button.setText("<");
-	button.setCallbackData("back " + now.getMonth());
-	final InlineKeyboardButton button3 = new InlineKeyboardButton();
-	button3.setText(">");
-	button3.setCallbackData("forward " + now.getMonth());
-	buttons.add(button);
-	buttons.add(button3);
+	buttons.add(Utils.buildButton("<", "back " + now.getMonth() + " " + now.getYear()));
+	buttons.add(Utils.buildButton(">", "forward " + now.getMonth() + " " + now.getYear()));
 	return buttons;
   }
 
   private static List<InlineKeyboardButton> getDateLine(String month, Integer year) {
 	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	final InlineKeyboardButton button = new InlineKeyboardButton();
 	final String date = month + " " + year;
-	button.setText(date);
-	button.setCallbackData(date);
-	buttons.add(button);
+	buttons.add(Utils.buildButton(date, date));
 	return buttons;
   }
 
   private static List<InlineKeyboardButton> getNumbersLine(int number, int numberOfDays, LocalDate now) {
-	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	for (int i = number; i <= numberOfDays; i++) {
-	  final InlineKeyboardButton button = new InlineKeyboardButton();
-	  button.setText(String.valueOf(i));
-	  button.setCallbackData(getCallbackData(now, i));
-	  buttons.add(button);
-	}
-	return buttons;
+	return IntStream.rangeClosed(number, numberOfDays)
+	  .mapToObj(num -> Utils.buildButton(String.valueOf(num), getCallbackData(now, num)))
+	  .collect(Collectors.toList());
   }
 
-  private static String getCallbackData(LocalDate now, int i) {
-	final String callBackDayValue = getCallBackFormatValue(String.valueOf(i));
+  private static String getCallbackData(LocalDate now, int number) {
+	final String callBackDayValue = getCallBackFormatValue(String.valueOf(number));
 	final String callBackMonthValue = getCallBackFormatValue(String.valueOf(now.getMonth().getValue()));
 	return callBackDayValue + "." + callBackMonthValue + "." + now.getYear();
   }
@@ -73,66 +66,95 @@ public class Calendar {
 	return value.length() == 1 ? "0" + value : value;
   }
 
-  public static InlineKeyboardMarkup changeMonth(UserRequest userRequest) {
-	if(userRequest.getUpdate().hasCallbackQuery()) {
-	  final String data = userRequest.getUpdate().getCallbackQuery().getData();
+  public static InlineKeyboardMarkup changeMonth(UserRequest request) {
+	if(hasCallBack(request)) {
+	  final String data = getUpdateData(request);
 	  if(data.startsWith("back") || data.startsWith("forward")) {
 		final String[] text = data.split(" ");
 		final String command = text[0];
-		final LocalDate of = getNextOrPreviousDate(text);
+		final LocalDate of = getNextOrPreviousMonth(text);
 		switch (command) {
 		  case "back":
 			return Calendar.buildCalendar(of.minusMonths(1));
 		  case "forward":
 			return Calendar.buildCalendar(of.plusMonths(1));
+		  default:
+			return null;
 		}
 	  }
 	}
 	return null;
   }
 
-  private static LocalDate getNextOrPreviousDate(String[] text) {
+  public static InlineKeyboardMarkup changeYear(UserRequest request) {
+	if(hasCallBack(request)) {
+	  final String data = getUpdateData(request);
+	  if(data.startsWith("back") || data.startsWith("forward")) {
+		final String[] text = data.split(" ");
+		final String command = text[0];
+		final LocalDate of = getNextOrPreviousYear(text);
+		switch (command) {
+		  case "back":
+			return Calendar.buildMonthCalendar(of.minusYears(1));
+		  case "forward":
+			return Calendar.buildMonthCalendar(of.plusYears(1));
+		  default:
+			return null;
+		}
+	  }
+	}
+	return null;
+  }
+
+  private static LocalDate getNextOrPreviousYear(String[] text) {
+	final Month month = Month.valueOf(text[1]);
+	final int year = Integer.parseInt(text[2]);
+	return LocalDate.of(year, month,1);
+  }
+
+  private static LocalDate getNextOrPreviousMonth(String[] text) {
 	final Month month = Month.valueOf(text[1]);
 	return LocalDate.of(LocalDate.now().getYear(), month, 1);
   }
 
-  public static LocalDate getDate(UserRequest userRequest) {
-	if(userRequest.getUpdate().hasCallbackQuery()) {
-	  final String date = userRequest.getUpdate().getCallbackQuery().getData();
-	  return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+  public static LocalDate getDate(UserRequest request) {
+	if(hasCallBack(request)) {
+	  return LocalDate.parse(getUpdateData(request), DateTimeFormatter.ofPattern(PATTERN));
 	}
 	return LocalDate.now();
   }
 
-  public static InlineKeyboardMarkup buildMonthCalendar(LocalDate now) {
+  public static InlineKeyboardMarkup buildMonthCalendar(LocalDate date) {
 	final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+	final int year = date.getYear();
 	final List<List<InlineKeyboardButton>> keyboardList = List.of(
-	 getDateLine("", now.getYear()),
-	  getMonths(0,2),
-	  getMonths(3,5),
-	  getMonths(6,8),
-	  getMonths(9,11),
-	  getLastLine(now)
+	  getDateLine("", year),
+	  getMonths(0, 2, year),
+	  getMonths(3, 5, year),
+	  getMonths(6,8, year),
+	  getMonths(9,11, year),
+	  getLastLine(date)
 	);
 
 	keyboardMarkup.setKeyboard(keyboardList);
 	return keyboardMarkup;
   }
 
-  private static List<InlineKeyboardButton> getMonths(Integer startMonth, Integer lastMonth) {
+  private static List<InlineKeyboardButton> getMonths(Integer startMonth, Integer lastMonth, Integer year) {
 	final List<InlineKeyboardButton> buttonsMonths = new ArrayList<>();
 	final Month[] values = Month.values();
 	for (int i = startMonth; i <= lastMonth; i++) {
-	  final InlineKeyboardButton button = new InlineKeyboardButton();
-	  button.setText(String.valueOf(values[i]));
-	  button.setCallbackData(String.valueOf(values[i]));
-	  buttonsMonths.add(button);
+	  final String data = String.valueOf(values[i]);
+	  buttonsMonths.add(Utils.buildButton(data, data + " " + year));
 	}
 	return buttonsMonths;
   }
 
-  public static Month parseMonth(String month){
-    return Month.valueOf(month);
+  public static LocalDate parseMonthYear(String date){
+	final String[] monthYear = date.split(" ");
+	final Month month = Month.valueOf(monthYear[0]);
+	final int year = Integer.parseInt(monthYear[1]);
+	return LocalDate.of(year,month,1);
   }
 
 }

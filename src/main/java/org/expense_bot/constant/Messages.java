@@ -101,4 +101,6 @@ public class Messages {
 
   public static final String PERIOD = "За період";
 
+  public static final String EXPENSES_EXIST_BY_CATEGORY = "Знайдено витрати по категорії";
+
 }

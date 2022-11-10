@@ -6,16 +6,17 @@ import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Income;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.IncomeService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.IncomeUtil;
+import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -27,75 +28,59 @@ public class IncomeRequestHandler extends UserRequestHandler {
 
   private final UserSessionService userSessionService;
   private final TelegramService telegramService;
-  private final KeyboardHelper keyboardHelper;
+  private final KeyboardBuilder keyboardBuilder;
   private final IncomeService incomeService;
   private final ExpenseService expenseService;
   private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
-    return isTextMessage(request.getUpdate())
-      && ConversationState.Init.WAITING_INCOME_ACTION.equals(request.getUserSession().getState());
+    return isEqual(request, ConversationState.Init.WAITING_INCOME_ACTION);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-    backButtonHandler.handleMainMenuBackButton(userRequest);
-    final Long chatId = userRequest.getChatId();
-    final String incomeAction = userRequest.getUpdate().getMessage().getText();
-    final UserSession userSession = userRequest.getUserSession();
+  public void handle(UserRequest request) {
+    backButtonHandler.handleMainMenuBackButton(request);
+    final Long chatId = request.getChatId();
+    final String incomeAction = getUpdateData(request);
     final List<Income> incomes = incomeService.getAllCurrentMonth(chatId);
     switch (incomeAction) {
       case Messages.WRITE_INCOMES:
-        handleWriteIncomes(chatId, userSession);
+        handleWriteIncomes(chatId);
         break;
       case Messages.CHECK_INCOMES:
-        checkIncomes(chatId, incomes, userSession, userRequest);
+        checkIncomes(chatId, incomes);
         break;
       case Messages.CHECK_BALANCE:
-        handleCheckBalance(chatId, incomes, userSession);
+        handleCheckBalance(chatId, incomes);
         break;
     }
   }
 
-  private void checkIncomes(Long chatId, List<Income> incomes, UserSession userSession, UserRequest userRequest) {
+  private void checkIncomes(Long chatId, List<Income> incomes) {
     incomes.forEach(income -> telegramService.sendMessage(chatId, IncomeUtil.getIncome(income)));
-    telegramService.sendMessage(chatId, Messages.CHOOSE_ANOTHER_PERIOD, keyboardHelper.buildSetDateMenu());
-    userSession.setState(ConversationState.Incomes.WAITING_FOR_PERIOD);
-    if(userRequest.getUpdate().hasCallbackQuery()) {
-      userSession.setState(ConversationState.Incomes.WAITING_FOR_PERIOD);
-    }
+    telegramService.sendMessage(chatId, Messages.CHOOSE_ANOTHER_PERIOD, keyboardBuilder.buildSetDateMenu());
+    userSessionService.updateState(chatId, ConversationState.Incomes.WAITING_FOR_PERIOD);
   }
 
-  private void handleWriteIncomes(Long chatId, UserSession userSession) {
-    userSession.setState(ConversationState.Incomes.WAITING_FOR_SUM);
-    telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardHelper.buildSetDateMenu());
-    userSession.setIncomeAction(IncomeAction.WRITE);
-    userSessionService.saveSession(userSession);
+  private void handleWriteIncomes(Long chatId) {
+    telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardBuilder.buildSetDateMenu());
+    userSessionService.update(SessionUtil.getSession(chatId));
   }
 
-  private void handleCheckBalance(Long chatId, List<Income> incomes, UserSession userSession) {
-    final BigDecimal allExpensesSum = getAllExpensesSum(chatId);
-
-    final BigDecimal allIncomesSum = incomes.stream()
-      .map(Income::getSum)
-      .reduce(BigDecimal.ZERO, BigDecimal::add);
+  private void handleCheckBalance(Long chatId, List<Income> incomes) {
+    final List<Expense> expenses = expenseService.getByOneMonth(chatId, Messages.BY_ALL_CATEGORIES);
+    final BigDecimal allExpensesSum = ExpenseUtil.getSum(expenses);
+    final BigDecimal allIncomesSum = IncomeUtil.getSum(incomes);
 
     final BigDecimal actualBalance = allIncomesSum.subtract(allExpensesSum);
 
     telegramService.sendMessage(chatId, Messages.ALL_EXPENSES_SUM + allExpensesSum);
     telegramService.sendMessage(chatId, Messages.ALL_INCOMES_SUM + allIncomesSum);
     telegramService.sendMessage(chatId, Messages.ACTUAL_BALANCE + actualBalance);
-    userSession.setIncomeAction(IncomeAction.WRITE);
-    userSessionService.saveSession(userSession);
+    userSessionService.update(SessionUtil.getSession(chatId,IncomeAction.WRITE));
   }
 
-  private BigDecimal getAllExpensesSum(Long chatId) {
-    final List<Expense> expenses = expenseService.getByOneMonth(chatId, Messages.BY_ALL_CATEGORIES);
-    return expenses.stream()
-      .map(Expense::getSum)
-      .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
 
   @Override
   public boolean isGlobal() {

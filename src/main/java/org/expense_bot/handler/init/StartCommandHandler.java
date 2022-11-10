@@ -5,9 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ public class StartCommandHandler extends UserRequestHandler {
     private static final String command = "/expenses";
 
     private final TelegramService telegramService;
-    private final KeyboardHelper keyboardHelper;
+    private final KeyboardBuilder keyboardBuilder;
     private final UserSessionService sessionService;
 
     @Override
@@ -31,13 +30,10 @@ public class StartCommandHandler extends UserRequestHandler {
 
     @Override
     public void handle(UserRequest request) {
-        final ReplyKeyboard replyKeyboard = keyboardHelper.buildMainMenu();
-        telegramService.sendMessage(request.getChatId(), Messages.HELLO_MESSAGE, replyKeyboard);
-        telegramService.sendMessage(request.getChatId(), Messages.CHOOSE_YOUR_ACTION);
-        final UserSession session = request.getUserSession();
-        session.setState(ConversationState.Init.WAITING_INIT_ACTION);
-        sessionService.saveSession(session);
-        log.info(request.getUserSession().toString());
+        final Long chatId = request.getChatId();
+        telegramService.sendMessage(chatId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
+        telegramService.sendMessage(chatId, Messages.CHOOSE_YOUR_ACTION);
+        sessionService.updateState(chatId,ConversationState.Init.WAITING_INIT_ACTION);
     }
 
     @Override

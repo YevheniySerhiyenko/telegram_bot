@@ -9,10 +9,6 @@ import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
-  List<Expense> getAllByDateTimeIsAfter(LocalDateTime dateTime);
-
-  List<Expense> getAllByDateTimeIsAfterAndCategory(LocalDateTime dateTime,String category);
-
   List<Expense> getAllByChatIdAndDateTimeBetween(Long chatId,LocalDateTime dateFrom, LocalDateTime dateTo);
 
   List<Expense> getAllByChatIdAndDateTimeBetweenAndCategory(Long chatId, LocalDateTime dateFrom, LocalDateTime dateTo, String category);

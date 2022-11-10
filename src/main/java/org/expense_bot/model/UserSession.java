@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
+import org.expense_bot.enums.StickerAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,5 +33,5 @@ public class UserSession {
     private LocalDate incomeDate;
     private IncomeAction incomeAction;
     private String period;
-    private String stickerAction;
+    private StickerAction stickerAction;
 }

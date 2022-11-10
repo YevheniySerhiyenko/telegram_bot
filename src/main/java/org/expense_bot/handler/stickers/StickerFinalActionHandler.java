@@ -3,7 +3,7 @@ package org.expense_bot.handler.stickers;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.StickerService;
 import org.expense_bot.service.UserStickerService;
@@ -20,12 +20,11 @@ public class StickerFinalActionHandler extends UserRequestHandler {
   private final StickerService stickerService;
   private final TelegramService telegramService;
   private final UserStickerService userStickerService;
-  private final KeyboardHelper keyboardHelper;
+  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public boolean isApplicable(UserRequest request) {
-    return isTextMessage(request.getUpdate())
-      && ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION.equals(request.getUserSession().getState());
+    return isEqual(request, ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION);
   }
 
   @Override

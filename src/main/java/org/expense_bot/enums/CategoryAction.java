@@ -1,10 +1,12 @@
 package org.expense_bot.enums;
 
+import org.expense_bot.constant.Messages;
+
 public enum CategoryAction {
 
-  ADD_NEW_CATEGORY("Додати свою категорію"),
-  DELETE_MY_CATEGORIES("Видалити мої категорії"),
-  ADD_FROM_DEFAULT("Додати існуючу категорію");
+  ADD_NEW_CATEGORY(Messages.ADD_CATEGORY),
+  DELETE_MY_CATEGORIES(Messages.DELETE_MY_CATEGORIES),
+  ADD_FROM_DEFAULT(Messages.ADD_FROM_DEFAULT);
 
   private final String value;
 

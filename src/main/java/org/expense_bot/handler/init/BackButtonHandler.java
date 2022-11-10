@@ -4,94 +4,88 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+
+import java.util.Objects;
+
 
 @Component
 @RequiredArgsConstructor
 public class BackButtonHandler {
 
   private final UserSessionService userSessionService;
-  private final KeyboardHelper keyboardHelper;
+  private final KeyboardBuilder keyboardBuilder;
   private final TelegramService telegramService;
 
-  public void handleCategoriesBackButton(UserRequest userRequest) {
-	final String param = userRequest.getUpdate().getMessage().getText();
-	if(param.equals(Constants.BUTTON_BACK)){
-	  final Long chatId = userRequest.getChatId();
-	  final UserSession session = userRequest.getUserSession();
-	  session.setState(ConversationState.Categories.WAITING_CATEGORY_ACTION);
-	  userSessionService.saveSession(session);
-	  final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,replyKeyboardMarkup);
-	  throw new RuntimeException("Handle back button");
+  public void handleCategoriesBackButton(UserRequest request) {
+	if(isBack(request)) {
+	  final Long chatId = request.getChatId();
+	  userSessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
+	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	  throw new RuntimeException("Handle back button in categoris");
 	}
   }
 
-  public void handleExpensesBackButton(UserRequest userRequest) {
-	if(userRequest.getUpdate().hasMessage()) {
-	  final String param = userRequest.getUpdate().getMessage().getText();
-	  if(param.equals(Constants.BUTTON_BACK)) {
-		final Long chatId = userRequest.getChatId();
-		final UserSession session = userRequest.getUserSession();
-		session.setState(ConversationState.Init.WAITING_EXPENSE_ACTION);
-		userSessionService.saveSession(session);
-		final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
-		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
-		throw new RuntimeException("Handle back button in expenses");
-	  }
+  public void handleExpensesBackButton(UserRequest request) {
+	if(isBack(request)) {
+	  final Long chatId = request.getChatId();
+	  userSessionService.updateState(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION);
+	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildExpenseMenu();
+	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	  throw new RuntimeException("Handle expenses back button");
 	}
   }
 
-  public void handleMainMenuBackButton(UserRequest userRequest) {
-	final String param = userRequest.getUpdate().getMessage().getText();
-	if(param.equals(Constants.BUTTON_BACK)){
-	  final Long chatId = userRequest.getChatId();
-	  final UserSession session = userRequest.getUserSession();
-	  session.setState(ConversationState.Init.WAITING_INIT_ACTION);
-	  userSessionService.saveSession(session);
-	  final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildMainMenu();
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION,replyKeyboardMarkup);
+  public void handleMainMenuBackButton(UserRequest request) {
+	if(isBack(request)) {
+	  final Long chatId = request.getChatId();
+	  userSessionService.updateState(chatId, ConversationState.Init.WAITING_INIT_ACTION);
+	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildMainMenu();
+	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
 	  throw new RuntimeException("Handle main menu back button");
 	}
   }
 
-  public void handleIncomeBackButton(UserRequest userRequest) {
-	if(userRequest.getUpdate().hasMessage()) {
-	  final String param = userRequest.getUpdate().getMessage().getText();
-	  if(param.equals(Constants.BUTTON_BACK)) {
-		final Long chatId = userRequest.getChatId();
-		final UserSession session = userRequest.getUserSession();
-		session.setState(ConversationState.Init.WAITING_INCOME_ACTION);
-		userSessionService.saveSession(session);
-		final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildIncomeMenu();
-		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, replyKeyboardMarkup);
-		throw new RuntimeException("Handle main menu back button");
-	  }
+  public void handleIncomeBackButton(UserRequest request) {
+	if(isBack(request)) {
+	  final Long chatId = request.getChatId();
+	  userSessionService.updateState(chatId, ConversationState.Init.WAITING_INCOME_ACTION);
+	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildIncomeMenu();
+	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
+	  throw new RuntimeException("Handle incomes back button");
 	}
   }
 
-  public boolean handleButton(UserRequest userRequest, String state) {
-	final String param = userRequest.getUpdate().getMessage().getText();
-	final boolean back = param.equals(Constants.BUTTON_BACK);
-	if(back) {
-	  final Long chatId = userRequest.getChatId();
-	  final UserSession session = userSessionService.getSession(chatId);
+//  public boolean handleButton(UserRequest request, String state) {
+//	final String param = request.getUpdate().getMessage().getText();
+//	final boolean back = param.equals(Constants.BUTTON_BACK);
+//	if(back) {
+//	  final Long chatId = request.getChatId();
+//	  final UserSession session = userSessionService.getSession(chatId);
+//
+//	  final ConversationState previousState = getPreviousState(state);
+//	  session.setState(previousState);
+//	  userSessionService.saveSession(session);
+//	}
+//	return back;
+//  }
+//
+//  private ConversationState getPreviousState(String state) {
+//	return ConversationState.getPreviousState(state);
+//  }
 
-	  final ConversationState previousState = getPreviousState(state);
-	  session.setState(previousState);
-	  userSessionService.saveSession(session);
+  private boolean isBack(UserRequest request) {
+	if(!UserRequestHandler.hasMessage(request)) {
+	  return false;
 	}
-	return back;
-  }
-
-  private ConversationState getPreviousState(String state) {
-	return ConversationState.getPreviousState(state);
+	return Objects.equals(UserRequestHandler.getUpdateData(request), Constants.BUTTON_BACK);
   }
 
 }

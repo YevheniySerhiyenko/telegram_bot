@@ -5,6 +5,7 @@ import org.expense_bot.model.Income;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class IncomeUtil {
 
@@ -22,5 +23,11 @@ public class IncomeUtil {
 	  .sum(sum)
 	  .incomeDate(incomeDate)
 	  .build();
+  }
+
+  public static BigDecimal getSum(List<Income> incomes) {
+	return incomes.stream()
+	  .map(Income::getSum)
+	  .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }

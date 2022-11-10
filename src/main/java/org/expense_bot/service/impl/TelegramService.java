@@ -1,7 +1,9 @@
 package org.expense_bot.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.realm.AuthenticatedUserRealm;
+import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.sender.ExpenseBotSender;
 import org.springframework.stereotype.Component;
@@ -17,36 +19,36 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class TelegramService {
 
     private final ExpenseBotSender botSender;
 
-    public TelegramService(ExpenseBotSender botSender) {
-        this.botSender = botSender;
+    public void editKeyboardMarkup(UserRequest request, InlineKeyboardMarkup replyKeyboard){
+        final Long chatId = request.getChatId();
+        if(UserRequestHandler.hasCallBack(request)) {
+            final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
+
+            execute(getReplyMarkup(replyKeyboard, chatId, messageId));
+        }
     }
 
-    public void editKeyboardMarkup(UserRequest userRequest, InlineKeyboardMarkup replyKeyboard){
-        final Long chatId = userRequest.getChatId();
-        if(userRequest.getUpdate().hasCallbackQuery()) {
-            final Integer messageId = userRequest.getUpdate().getCallbackQuery().getMessage().getMessageId();
-            EditMessageReplyMarkup replyMarkup = EditMessageReplyMarkup.builder()
-              .chatId(String.valueOf(chatId))
-              .replyMarkup(replyKeyboard)
-              .messageId(messageId)
-              .build();
-
-            execute(replyMarkup);
-        }
+    private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup replyKeyboard, Long chatId, Integer messageId) {
+        return EditMessageReplyMarkup.builder()
+          .chatId(String.valueOf(chatId))
+          .replyMarkup(replyKeyboard)
+          .messageId(messageId)
+          .build();
     }
 
     public void sendMessage(Long chatId, String text) {
         sendMessage(chatId, text, null);
     }
 
-    public void editMessage(UserRequest userRequest, String text) {
-        final Long chatId = userRequest.getChatId();
-        if(userRequest.getUpdate().hasCallbackQuery()){
-            final Integer messageId = userRequest.getUpdate().getCallbackQuery().getMessage().getMessageId();
+    public void editMessage(UserRequest request, String text) {
+        final Long chatId = request.getChatId();
+        if(UserRequestHandler.hasCallBack(request)){
+            final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
             EditMessageText replyMarkup = EditMessageText.builder()
               .chatId(String.valueOf(chatId))
               .text(text)

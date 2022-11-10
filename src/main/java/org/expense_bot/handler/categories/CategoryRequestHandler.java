@@ -5,7 +5,7 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
@@ -20,7 +20,7 @@ public class CategoryRequestHandler extends UserRequestHandler {
 
   private final TelegramService telegramService;
   private final UserSessionService userSessionService;
-  private final KeyboardHelper keyboardHelper;
+  private final KeyboardBuilder keyboardBuilder;
   private final BackButtonHandler backButtonHandler;
 
   @Override
@@ -29,11 +29,11 @@ public class CategoryRequestHandler extends UserRequestHandler {
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-	backButtonHandler.handleCategoriesBackButton(userRequest);
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildCategoryOptionsMenu();
-	telegramService.sendMessage(userRequest.getChatId(), Messages.CHOOSE_ACTION, replyKeyboardMarkup);
-	final Long chatId = userRequest.getChatId();
+  public void handle(UserRequest request) {
+	backButtonHandler.handleCategoriesBackButton(request);
+	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+	telegramService.sendMessage(request.getChatId(), Messages.CHOOSE_ACTION, keyboard);
+	final Long chatId = request.getChatId();
 	userSessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 

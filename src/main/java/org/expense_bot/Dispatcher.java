@@ -26,11 +26,11 @@ public class Dispatcher {
      */
     public Dispatcher(List<UserRequestHandler> handlers) {
         this.handlers = handlers
-                .stream()
-                .sorted(Comparator
-                        .comparing(UserRequestHandler::isGlobal)
-                        .reversed())
-                .collect(Collectors.toList());
+          .stream()
+          .sorted(Comparator
+            .comparing(UserRequestHandler::isGlobal)
+            .reversed())
+          .collect(Collectors.toList());
     }
 
     public boolean dispatch(UserRequest userRequest) {
@@ -44,5 +44,6 @@ public class Dispatcher {
         }
         return false;
     }
+
 }
 

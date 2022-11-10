@@ -6,65 +6,64 @@ import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.Period;
 import org.expense_bot.handler.UserRequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.Calendar;
-import org.expense_bot.util.UserSessionUtil;
-import org.expense_bot.util.Utils;
+import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class CheckPeriodHandler extends UserRequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardHelper keyboardHelper;
+  private final KeyboardBuilder keyboardBuilder;
   private final UserSessionService userSessionService;
   private final BackButtonHandler backButtonHandler;
-  private final UserSessionUtil userSessionUtil;
 
   @Override
   public boolean isApplicable(UserRequest request) {
-	return ConversationState.Expenses.WAITING_FOR_PERIOD.equals(request.getUserSession().getState());
+	return isEqual(request,ConversationState.Expenses.WAITING_FOR_PERIOD);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-	backButtonHandler.handleExpensesBackButton(userRequest);
-	final Long chatId = userRequest.getChatId();
-	final ReplyKeyboardMarkup keyboard = keyboardHelper.buildCheckCategoriesMenu(chatId);
-	String period = Utils.getUpdateData(userRequest);
-	checkPeriod(userRequest, period);
+  public void handle(UserRequest request) {
+	backButtonHandler.handleExpensesBackButton(request);
+	final Long chatId = request.getChatId();
+	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
+	final String period = getUpdateData(request);
+	checkPeriod(request, period);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
-	userSessionService.saveSession(getSession(chatId, period, ConversationState.Expenses.WAITING_CHECK_CATEGORY));
+	userSessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_CHECK_CATEGORY));
   }
 
 
-  private void checkPeriod(UserRequest userRequest, String period) {
-	final Long chatId = userRequest.getChatId();
-	if(period != null && period.equals(Period.PERIOD.getValue())) {
+  private void checkPeriod(UserRequest request, String period) {
+	final Long chatId = request.getChatId();
+	if(Objects.equals(period, Period.PERIOD.getValue())) {
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_PERIOD, Calendar.buildCalendar(LocalDate.now()));
-	  userSessionService.updateSession(getSession(chatId, period, ConversationState.Expenses.WAITING_FOR_PERIOD));
+	  userSessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_FOR_PERIOD));
 	  throw new RuntimeException(Messages.CHOOSE_PERIOD);
 	}
-	if(Utils.hasCallBack(userRequest)) {
-	  final LocalDate date = Calendar.getDate(userRequest);
+	if(hasCallBack(request)) {
+	  final LocalDate date = Calendar.getDate(request);
 	  telegramService.sendMessage(chatId, String.format(Messages.DATE, date));
 
 	  userSessionService.updateState(chatId, ConversationState.Expenses.WAITING_FOR_PERIOD);
-	  setDates(date, userRequest);
+	  setDates(date, request);
 	}
   }
 
-  private void setDates(LocalDate date, UserRequest userRequest) {
-	final Long chatId = userRequest.getChatId();
-	final UserSession session = userRequest.getUserSession();
+  private void setDates(LocalDate date, UserRequest request) {
+	final Long chatId = request.getChatId();
+	final UserSession session = request.getUserSession();
 	final LocalDate periodFrom = session.getPeriodFrom();
 	final LocalDate periodTo = session.getPeriodTo();
 	if(periodFrom == null) {
@@ -75,20 +74,12 @@ public class CheckPeriodHandler extends UserRequestHandler {
 	}
 	if(session.getPeriodFrom() != null && session.getPeriodTo() != null) {
 	  session.setState(ConversationState.Expenses.WAITING_CHECK_CATEGORY);
-	  final ReplyKeyboardMarkup keyboard = keyboardHelper.buildCheckCategoriesMenu(chatId);
+	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
 	}
-	userSessionUtil.update(session);
+	userSessionService.update(session);
 
 	throw new RuntimeException("Dates entered");
-  }
-
-  private UserSession getSession(Long chatId, String period, ConversationState state) {
-	return UserSession.builder()
-	  .chatId(chatId)
-	  .period(period)
-	  .state(state)
-	  .build();
   }
 
   @Override

@@ -9,8 +9,8 @@ import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 @Component
@@ -26,14 +26,13 @@ public class IncomeServiceImpl implements IncomeService {
 
   @Override
   public List<Income> getAllCurrentMonth(Long userId) {
-	final LocalDateTime dateTime = DateUtil.getBeginOfMonth();
-	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, dateTime);
+	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, DateUtil.getBeginOfMonth());
   }
 
 
   @Override
-  public List<Income> getAll(Long chatId, Month monthValue) {
-	return incomeRepository.getAllBy(chatId, monthValue.getValue());
+  public List<Income> getAll(Long chatId, LocalDate date) {
+	return incomeRepository.getAllBy(chatId, date.getMonthValue(), date.getYear());
   }
 
 

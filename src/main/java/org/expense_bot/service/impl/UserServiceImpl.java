@@ -1,7 +1,7 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Messages;
+import org.expense_bot.handler.NewUserHandler;
 import org.expense_bot.model.User;
 import org.expense_bot.model.UserRequest;
 import org.expense_bot.repository.UserRepository;
@@ -20,16 +20,17 @@ public class UserServiceImpl implements UserService {
   private final TelegramService telegramService;
   private final StickerService stickerService;
   private final UserStickerService userStickerService;
+  private final NewUserHandler firstEnteredHandler;
 
   @Override
-  public User checkUser(UserRequest userRequest) {
+  public void checkUser(UserRequest userRequest) {
 	final String firstName = getFirstName(userRequest);
 	final Optional<User> user = getByChatId(userRequest.getChatId());
 	if(!user.isPresent()){
-	  firstEnterHandle(userRequest);
+	  firstEnteredHandler.handle(userRequest);
 	}
 
-	return user.orElse(userRepository.save(getUser(userRequest, firstName)));
+	 userRepository.save(getUser(userRequest, firstName));
   }
 
   private String getFirstName(UserRequest userRequest) {
@@ -39,18 +40,7 @@ public class UserServiceImpl implements UserService {
     return userRequest.getUpdate().getCallbackQuery().getFrom().getFirstName();
   }
 
-  private void firstEnterHandle(UserRequest userRequest) {
-	final Long chatId = userRequest.getChatId();
-//	stickerService.
-	//todo
-	String token = "CAACAgIAAxkBAAEGRjFjYPXCrp0yRZdeOjiCZ1o5rvO9QAACGQAD6dgTKFdhEtpsYKrLKgQ";
-	telegramService.sendMessage(chatId, Messages.HELLO);
-	telegramService.sendSticker(chatId,token);
-
-  }
-
-  @Override
-  public Optional<User> getByChatId(Long chatId) {
+  private Optional<User> getByChatId(Long chatId) {
 	return userRepository.findByChatId(chatId);
   }
 

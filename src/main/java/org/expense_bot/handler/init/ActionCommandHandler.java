@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -17,50 +16,33 @@ public class ActionCommandHandler extends UserRequestHandler {
 
   private final UserSessionService userSessionService;
   private final TelegramService telegramService;
-  private final KeyboardHelper keyboardHelper;
+  private final KeyboardBuilder keyboardBuilder;
   private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(UserRequest request) {
-	return isTextMessage(request.getUpdate())
-	  && ConversationState.Init.WAITING_INIT_ACTION.equals(request.getUserSession().getState());
+	return isEqual(request, ConversationState.Init.WAITING_INIT_ACTION);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-    backButtonHandler.handleMainMenuBackButton(userRequest);
-	final Long chatId = userRequest.getChatId();
-	final String initAction = userRequest.getUpdate().getMessage().getText();
+  public void handle(UserRequest request) {
+	backButtonHandler.handleMainMenuBackButton(request);
+	final Long chatId = request.getChatId();
+	final String initAction = getUpdateData(request);
 	switch (initAction) {
 	  case Messages.EXPENSES:
-		handleExpenses(chatId);
+		userSessionService.updateState(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION);
+		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboardBuilder.buildExpenseMenu());
 		break;
 	  case Messages.INCOMES:
-		handleIncomes(chatId);
+		userSessionService.updateState(chatId, ConversationState.Init.WAITING_INCOME_ACTION);
+		telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboardBuilder.buildIncomeMenu());
 		break;
 	}
-  }
-
-  private void handleIncomes(Long chatId) {
-	userSessionService.saveSession(buildSession(chatId, ConversationState.Init.WAITING_INCOME_ACTION));
-	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboardHelper.buildIncomeMenu());
-  }
-
-  private void handleExpenses(Long chatId) {
-	userSessionService.saveSession(buildSession(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION));
-	telegramService.sendMessage(chatId,Messages.CHOOSE_ACTION, keyboardHelper.buildExpenseMenu());
   }
 
   @Override
   public boolean isGlobal() {
 	return false;
   }
-
-  private UserSession buildSession(Long chatId, ConversationState state) {
-	return UserSession.builder()
-	  .chatId(chatId)
-	  .state(state)
-	  .build();
-  }
-
 }

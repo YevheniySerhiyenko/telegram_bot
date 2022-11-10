@@ -3,9 +3,8 @@ package org.expense_bot.handler.init;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.helper.KeyboardHelper;
+import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
@@ -19,22 +18,18 @@ public class CancelHandler extends UserRequestHandler {
 
     private final TelegramService telegramService;
     private final UserSessionService userSessionService;
-    private final KeyboardHelper keyboardHelper;
-
+    private final KeyboardBuilder keyboardBuilder;
 
     @Override
-    public boolean isApplicable(UserRequest userRequest) {
-        return isTextMessage(userRequest.getUpdate(), BUTTON_CANCEL);
+    public boolean isApplicable(UserRequest request) {
+        return isTextMessage(request.getUpdate(), BUTTON_CANCEL);
     }
 
     @Override
-    public void handle(UserRequest userRequest) {
-        final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardHelper.buildExpenseMenu();
-        telegramService.sendMessage(userRequest.getChatId(),"Обирайте з меню нижче ⤵️",replyKeyboardMarkup);
-
-        UserSession userSession = userRequest.getUserSession();
-        userSession.setState(ConversationState.Init.CONVERSATION_STARTED);
-        userSessionService.saveSession(userSession);
+    public void handle(UserRequest request) {
+        final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildExpenseMenu();
+        telegramService.sendMessage(request.getChatId(), "Обирайте з меню нижче ⤵️", keyboard);
+        userSessionService.updateState(request.getChatId(), ConversationState.Init.CONVERSATION_STARTED);
     }
 
     @Override

@@ -1,12 +1,14 @@
 package org.expense_bot.enums;
 
-public enum Period {
-  DAY("За день"),
-  WEEK("За тиждень"),
-  MONTH("За місяць" ),
-  PERIOD("За період");
+import org.expense_bot.constant.Messages;
 
-  private String value;
+public enum Period {
+  DAY(Messages.DAY),
+  WEEK(Messages.WEEK),
+  MONTH(Messages.MONTH),
+  PERIOD(Messages.PERIOD);
+
+  private final String value;
 
   Period(String value) {
 	this.value = value;

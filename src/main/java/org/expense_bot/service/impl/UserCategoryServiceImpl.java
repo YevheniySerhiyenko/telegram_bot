@@ -5,8 +5,6 @@ import org.expense_bot.constant.Constants;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.model.UserCategory;
-import org.expense_bot.model.UserSession;
-import org.expense_bot.repository.ExpenseRepository;
 import org.expense_bot.repository.UserCategoryRepository;
 import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.UserCategoryService;
@@ -21,10 +19,8 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
   private final UserCategoryRepository repository;
   private final TelegramService telegramService;
-  private final ExpenseRepository expenseRepository;
   private final UserSessionService sessionService;
   private final StickerSender stickerSender;
-
 
   @Override
   public UserCategory add(Long chatId, String categoryName) {
@@ -39,15 +35,10 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
   @Override
   public void delete(Long chatId, String categoryName) {
-    final Optional<UserCategory> category = repository.getByUserIdAndCategory(chatId, categoryName);
-    category.ifPresent(userCategory -> checkExpenses(chatId, userCategory));
+    repository.getByUserIdAndCategory(chatId, categoryName)
+      .ifPresent(repository::delete);
     final String message = String.format(Messages.CATEGORY_DELETED, categoryName);
     telegramService.sendMessage(chatId, message + Constants.BUTTON_TRASH);
-  }
-
-  private void checkExpenses(Long chatId, UserCategory userCategory) {
-    //todo check if expenses exist
-    repository.delete(userCategory);
   }
 
   @Override
@@ -61,9 +52,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
     if(userCategory.isPresent()) {
       telegramService.sendSticker(chatId, getSticker(chatId));
       telegramService.sendMessage(chatId, Messages.ALREADY_HAD_SUCH_CATEGORY);
-      final UserSession session = sessionService.getSession(chatId);
-      session.setState(ConversationState.Categories.WAITING_FINAL_ACTION);
-      sessionService.saveSession(session);
+      sessionService.updateState(chatId, ConversationState.Categories.WAITING_FINAL_ACTION);
       throw new RuntimeException(Messages.ALREADY_HAD_SUCH_CATEGORY);
     }
   }
