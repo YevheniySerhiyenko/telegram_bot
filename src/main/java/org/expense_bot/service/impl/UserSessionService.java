@@ -58,6 +58,8 @@ public class UserSessionService {
         Optional.ofNullable(userSession.getIncomeAction()).ifPresent(session::setIncomeAction);
         Optional.ofNullable(userSession.getPeriod()).ifPresent(session::setPeriod);
         Optional.ofNullable(userSession.getStickerAction()).ifPresent(session::setStickerAction);
+        Optional.ofNullable(userSession.getExpenseList()).ifPresent(session::setExpenseList);
+        Optional.ofNullable(userSession.getIncomeList()).ifPresent(session::setIncomeList);
         saveSession(session);
     }
 
@@ -76,7 +78,7 @@ public class UserSessionService {
             final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
             if(Objects.isNull(keyboard)) {
                 final LocalDate date = Calendar.getDate(request);
-                telegramService.editMessage(request, String.format(Messages.DATE, date));
+                telegramService.editNextMessage(request, String.format(Messages.DATE, date));
                 updateSession(clazz, chatId, date);
                 throw new RuntimeException("Change day");
             }

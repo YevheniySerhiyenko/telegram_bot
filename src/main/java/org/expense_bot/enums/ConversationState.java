@@ -59,7 +59,8 @@ public interface ConversationState {
     //write
     WAITING_FOR_CATEGORY,
     WAITING_FOR_ANOTHER_EXPENSE_DATE,
-    WAITING_FOR_EXPENSE_SUM;
+    WAITING_FOR_EXPENSE_SUM,
+    WAITING_ADDITIONAL_ACTION;
 
     public static ConversationState getByOrdinal(Integer ordinal) {
       return Arrays.stream(Init.values())

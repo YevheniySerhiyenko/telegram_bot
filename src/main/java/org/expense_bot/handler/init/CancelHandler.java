@@ -8,7 +8,7 @@ import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import static org.expense_bot.constant.Constants.BUTTON_CANCEL;
 
@@ -27,7 +27,7 @@ public class CancelHandler extends UserRequestHandler {
 
     @Override
     public void handle(UserRequest request) {
-        final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildExpenseMenu();
+        final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
         telegramService.sendMessage(request.getChatId(), "Обирайте з меню нижче ⤵️", keyboard);
         userSessionService.updateState(request.getChatId(), ConversationState.Init.CONVERSATION_STARTED);
     }

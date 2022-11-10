@@ -13,6 +13,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.Calendar;
 import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.time.LocalDate;
@@ -47,6 +48,9 @@ public class EnterPeriodCheckIncomesHandler extends UserRequestHandler {
       final InlineKeyboardMarkup keyboard = Calendar.changeYear(request);
       drawAnotherYearCalendar(request, keyboard);
       final String date = getUpdateData(request);
+      final String id = request.getUpdate().getCallbackQuery().getId();
+      AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder().callbackQueryId(id).text("HELLO").showAlert(true).build();
+      telegramService.sendAnswer(answerCallbackQuery);
       final LocalDate monthValue = Calendar.parseMonthYear(date);
       sendIncomesByDate(request.getChatId(), monthValue, date);
       userSessionService.updateState(chatId, ConversationState.Incomes.WAITING_FOR_PERIOD);

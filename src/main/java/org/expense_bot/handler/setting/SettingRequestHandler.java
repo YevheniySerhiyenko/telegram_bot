@@ -9,6 +9,7 @@ import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 @Component
@@ -29,7 +30,7 @@ public class SettingRequestHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
 	final Long chatId = userRequest.getChatId();
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildSettingsMenu();
+	final ReplyKeyboard keyboard = keyboardBuilder.buildSettingsMenu();
 	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
 	userSessionService.updateState(chatId, ConversationState.Settings.WAITING_SETTINGS_ACTION);
   }

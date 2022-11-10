@@ -14,7 +14,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.math.BigDecimal;
 
@@ -39,7 +39,7 @@ public class SumEnteredHandler extends UserRequestHandler {
   public void handle(UserRequest request) {
 	userSessionService.checkEnteredDate(request, ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE, this.getClass());
 	backButtonHandler.handleExpensesBackButton(request);
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardBuilder.buildExpenseMenu();
+	final ReplyKeyboard replyKeyboardMarkup = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
 	  final BigDecimal sum = new BigDecimal(getUpdateData(request));
 	  final Long chatId = request.getChatId();

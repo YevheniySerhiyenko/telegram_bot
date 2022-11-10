@@ -4,10 +4,12 @@ import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.enums.StickerAction;
+import org.expense_bot.model.Expense;
 import org.expense_bot.model.UserSession;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class SessionUtil {
 
@@ -44,11 +46,12 @@ public class SessionUtil {
 	  .build();
   }
 
-  public static UserSession getSession(Long chatId, String category) {
+  public static UserSession getSession(Long chatId, List<Expense> expenses, String category) {
 	return UserSession.builder()
 	  .chatId(chatId)
+	  .expenseList(expenses)
 	  .category(category)
-	  .state(ConversationState.Init.WAITING_EXPENSE_ACTION)
+	  .state(ConversationState.Expenses.WAITING_ADDITIONAL_ACTION)
 	  .build();
   }
 

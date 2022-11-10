@@ -12,7 +12,7 @@ import org.expense_bot.enums.StickerAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,4 +34,6 @@ public class UserSession {
     private IncomeAction incomeAction;
     private String period;
     private StickerAction stickerAction;
+    private List<Expense> expenseList;
+    private List<Income> incomeList;
 }

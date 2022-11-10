@@ -14,7 +14,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.Calendar;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
   public void handle(UserRequest request) {
 	backButtonHandler.handleExpensesBackButton(request);
 	final Long chatId = request.getChatId();
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
 	final String period = getUpdateData(request);
 	checkPeriod(request, period);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
@@ -74,7 +74,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
 	}
 	if(session.getPeriodFrom() != null && session.getPeriodTo() != null) {
 	  session.setState(ConversationState.Expenses.WAITING_CHECK_CATEGORY);
-	  final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
+	  final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
 	}
 	userSessionService.update(session);

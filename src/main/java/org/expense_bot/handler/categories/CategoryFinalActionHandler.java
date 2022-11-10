@@ -16,7 +16,7 @@ import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +75,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
   private void sendListNotDeleted(Long chatId) {
 	final List<String> userCategories = getUserCategories(chatId);
 	checkAll(chatId, userCategories, Messages.ALL_CATEGORIES_DELETED);
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCustomCategoriesMenu(userCategories);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(userCategories);
 	telegramService.sendMessage(chatId, Messages.ASK_TO_DELETE, keyboard);
   }
 
@@ -87,8 +87,8 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 	  .collect(Collectors.toList());
 	defaultCategories.removeAll(userCategories);
 	checkAll(chatId, defaultCategories, Messages.ALL_CATEGORIES_ADDED);
-	final ReplyKeyboardMarkup replyKeyboardMarkup = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
-	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FROM_LIST, replyKeyboardMarkup);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
+	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
   }
 
   private void checkAll(Long chatId, List<String> categories, String message) {

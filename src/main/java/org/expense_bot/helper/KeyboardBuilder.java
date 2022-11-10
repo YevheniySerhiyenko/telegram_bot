@@ -27,8 +27,7 @@ public class KeyboardBuilder {
 
   private final UserCategoryService userCategoryService;
 
-  public ReplyKeyboardMarkup buildCategoriesMenu(Long userId) {
-
+  public ReplyKeyboard buildCategoriesMenu(Long userId) {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	final List<String> allCategories = getCategoryList(userId);
 
@@ -45,7 +44,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildMainMenu() {
+  public ReplyKeyboard buildMainMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.EXPENSES);
 	row.add(Messages.INCOMES);
@@ -57,7 +56,7 @@ public class KeyboardBuilder {
   }
 
 
-  public ReplyKeyboardMarkup buildExpenseMenu() {
+  public ReplyKeyboard buildExpenseMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.WRITE_EXPENSES);
 	row.add(Messages.CHECK_EXPENSES);
@@ -72,7 +71,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildIncomeMenu() {
+  public ReplyKeyboard buildIncomeMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.WRITE_INCOMES);
 	final KeyboardRow row1 = new KeyboardRow();
@@ -87,7 +86,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildCheckPeriodMenu() {
+  public ReplyKeyboard buildCheckPeriodMenu() {
 	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(Period.DAY.getValue());
 	final KeyboardRow row2 = new KeyboardRow();
@@ -104,7 +103,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildCheckCategoriesMenu(Long userId) {
+  public ReplyKeyboard buildCheckCategoriesMenu(Long userId) {
 	final List<String> categoryList = getCategoryList(userId);
 
 	final List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -112,7 +111,6 @@ public class KeyboardBuilder {
 	row.add(Messages.BY_ALL_CATEGORIES);
 	keyboardRows.add(row);
 	setButtons(keyboardRows, categoryList);
-
 
 	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(Constants.BUTTON_BACK);
@@ -122,7 +120,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildCategoryOptionsMenu() {
+  public ReplyKeyboard buildCategoryOptionsMenu() {
 	final KeyboardRow row1 = new KeyboardRow();
 	row1.add(CategoryAction.ADD_NEW_CATEGORY.getValue());
 	final KeyboardRow row2 = new KeyboardRow();
@@ -135,7 +133,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildCustomCategoriesMenu(List<String> allCategories) {
+  public ReplyKeyboard buildCustomCategoriesMenu(List<String> allCategories) {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
@@ -156,7 +154,7 @@ public class KeyboardBuilder {
 	}
   }
 
-  public ReplyKeyboardMarkup buildSetDateMenu() {
+  public ReplyKeyboard buildSetDateMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	final KeyboardRow row1 = new KeyboardRow();
 	row.add(Messages.ENTER_DATE);
@@ -167,7 +165,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildBackButtonMenu() {
+  public ReplyKeyboard buildBackButtonMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Constants.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
@@ -176,7 +174,7 @@ public class KeyboardBuilder {
 	  .build();
   }
 
-  public ReplyKeyboardMarkup buildSettingsMenu() {
+  public ReplyKeyboard buildSettingsMenu() {
 	final KeyboardRow row = new KeyboardRow();
 	row.add(Messages.MY_STICKERS);
 	return ReplyKeyboardMarkup.builder()
@@ -186,7 +184,7 @@ public class KeyboardBuilder {
   }
 
   public ReplyKeyboard buildStickerOptions(String action) {
-	final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+	final InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
 	final List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
 	final List<InlineKeyboardButton> buttons = new ArrayList<>();
 	final InlineKeyboardButton button = new InlineKeyboardButton();
@@ -198,11 +196,11 @@ public class KeyboardBuilder {
 	buttons.add(button);
 	buttons.add(button2);
 	keyboards.add(buttons);
-	inlineKeyboardMarkup.setKeyboard(keyboards);
-	return inlineKeyboardMarkup;
+	keyboard.setKeyboard(keyboards);
+	return keyboard;
   }
 
-  public ReplyKeyboardMarkup buildStickersActionMenu(List<Sticker> actualStickers) {
+  public ReplyKeyboard buildStickersActionMenu(List<Sticker> actualStickers) {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	final KeyboardRow cancelRow = new KeyboardRow();
 	cancelRow.add(Constants.BUTTON_BACK);
@@ -238,11 +236,22 @@ public class KeyboardBuilder {
 	final String delete = "Видалити";
 	final String info = "ℹ";
 	buttons.add(Utils.buildButton(change, change + " " + id));
-	buttons.add(Utils.buildButton(delete,delete + " " + id));
-	buttons.add(Utils.buildButton(info,info + " " + id));
+	buttons.add(Utils.buildButton(delete, delete + " " + id));
+	buttons.add(Utils.buildButton(info, info + " " + id));
 	keyboards.add(buttons);
 	inlineKeyboardMarkup.setKeyboard(keyboards);
 	return inlineKeyboardMarkup;
+  }
+
+  public ReplyKeyboard buildCreatePDFMenu() {
+	final KeyboardRow createPDFButton = new KeyboardRow();
+	createPDFButton.add(Messages.CREATE_PDF);
+	final KeyboardRow backButton = new KeyboardRow();
+	backButton.add(Constants.BUTTON_BACK);
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(List.of(createPDFButton, backButton))
+	  .resizeKeyboard(true)
+	  .build();
   }
 
 }

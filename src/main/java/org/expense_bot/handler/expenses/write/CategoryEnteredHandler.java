@@ -10,9 +10,8 @@ import org.expense_bot.model.UserRequest;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.SessionUtil;
-import org.expense_bot.util.Utils;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class CategoryEnteredHandler extends UserRequestHandler {
   public void handle(UserRequest request) {
 	backButtonHandler.handleExpensesBackButton(request);
 	final Long chatId = request.getChatId();
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildSetDateMenu();
+	final ReplyKeyboard keyboard = keyboardBuilder.buildSetDateMenu();
 	telegramService.sendMessage(chatId, Messages.ENTER_SUM, keyboard);
 	final String category = getUpdateData(request);
 	userSessionService.update(SessionUtil.buildSession(chatId, category));

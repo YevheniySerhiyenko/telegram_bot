@@ -15,7 +15,7 @@ import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,29 +38,28 @@ public class CheckCategoryHandler extends UserRequestHandler {
   @Override
   public void handle(UserRequest userRequest) {
 	backButtonHandler.handleExpensesBackButton(userRequest);
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildExpenseMenu();
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCreatePDFMenu();
 	final Long chatId = userRequest.getChatId();
 	final String category = getUpdateData(userRequest);
+	final List<Expense> expenses = getExpenses(chatId, category);
 	final String period = userSessionService.getSession(chatId).getPeriod();
-	userSessionService.update(SessionUtil.getSession(chatId, category));
-	sendExpenses(keyboard, chatId, period);
+	userSessionService.update(SessionUtil.getSession(chatId, expenses, category));
+	sendExpenses(expenses, keyboard, chatId, period);
   }
 
-  private void sendExpenses(ReplyKeyboardMarkup keyboard, Long chatId, String period) {
-	final List<Expense> expenses = getExpenses(chatId);
+  private void sendExpenses(List<Expense> expenses, ReplyKeyboard keyboard, Long chatId, String period) {
 	if(expenses == null || expenses.isEmpty()) {
 	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, keyboard);
 	} else {
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
-	  expenses.forEach(expense -> telegramService.sendMessage(chatId, ExpenseUtil.getMessage(expense),keyboardBuilder.buildExpenseOptions(expense.getId())));
+	  expenses.forEach(expense -> telegramService.sendMessage(chatId, ExpenseUtil.getMessage(expense), keyboardBuilder.buildExpenseOptions(expense.getId())));
 	  telegramService.sendMessage(chatId, ExpenseUtil.getSumMessage(expenses, period), keyboard);
 	}
   }
 
-  private List<Expense> getExpenses(Long chatId) {
+  private List<Expense> getExpenses(Long chatId, String category) {
 	final UserSession session = userSessionService.getSession(chatId);
 	final String period = session.getPeriod();
-	final String category = session.getCategory();
 	switch (period) {
 	  case Messages.DAY:
 		return expenseService.getByOneDay(chatId, category);

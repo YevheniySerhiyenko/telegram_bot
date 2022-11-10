@@ -15,7 +15,7 @@ import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.List;
 import java.util.Optional;
@@ -87,7 +87,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  telegramService.sendMessage(chatId, Messages.NOTHING_TO_DELETE, keyboardBuilder.buildBackButtonMenu());
 	  throw new RuntimeException(Messages.NOTHING_TO_DELETE);
 	}
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
 	telegramService.sendMessage(chatId, Messages.ASK_TO_DELETE, keyboard);
   }
 
@@ -97,7 +97,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 	  telegramService.sendMessage(chatId, Messages.ALL_CATEGORIES_ADDED);
 	  throw new RuntimeException(Messages.ALL_CATEGORIES_ADDED);
 	}
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
   }
 

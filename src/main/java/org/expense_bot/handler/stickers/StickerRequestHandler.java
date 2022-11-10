@@ -13,6 +13,7 @@ import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class StickerRequestHandler extends UserRequestHandler {
 	final Long chatId = request.getChatId();
 	final String action = getUpdateData(request);
 	final List<Sticker> actualStickers = getActualStickersAction(chatId);
-	final ReplyKeyboardMarkup keyboard = keyboardBuilder.buildStickersActionMenu(actualStickers);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildStickersActionMenu(actualStickers);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION_TO_SHOW_STICKER, keyboard);
 	userSessionService.update(SessionUtil.getStickerSession(chatId, action));
   }
