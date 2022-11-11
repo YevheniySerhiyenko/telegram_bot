@@ -86,10 +86,10 @@ public class TelegramService {
         sendSticker(chatId, text, null);
     }
 
-    public void sendDocument(ByteArrayInputStream path, UserRequest request) {
+    public void sendDocument(ByteArrayInputStream inputStream, UserRequest request) {
         SendDocument sendDocument = SendDocument.builder()
           .chatId(request.getChatId().toString())
-          .document(new InputFile(path,"file.pdf"))// create filename
+          .document(new InputFile(inputStream,"file.pdf"))// create filename
           .build();
         executeDocument(sendDocument);
     }
