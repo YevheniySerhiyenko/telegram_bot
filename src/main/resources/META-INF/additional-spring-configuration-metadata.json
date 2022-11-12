@@ -4,5 +4,10 @@
       "name": "bot.token",
       "type": "java.lang.String",
       "description": "Description for bot.token."
-  }
-] }
+    },
+    {
+      "name": "pdf.file.size",
+      "type": "java.lang.String",
+      "description": "Description for pdf.file.size."
+    }
+  ] }

@@ -5,13 +5,12 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
@@ -21,12 +20,12 @@ import org.expense_bot.model.UserSession;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.UserSessionService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PipedInputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -37,14 +36,33 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
-@RequiredArgsConstructor
 public class PDFCreator {
+
+  public static final String FONT = "src/fonts/arial.ttf";
+  @Value("${pdf.file.size}")
+  private Integer FILE_SIZE;
+
+
+  public PDFCreator(
+    TelegramService telegramService,
+    KeyboardBuilder keyboardBuilder,
+    UserSessionService userSessionService,
+    ExpenseService expenseService,
+    BackButtonHandler backButtonHandler
+  ) {
+    this.telegramService = telegramService;
+    this.keyboardBuilder = keyboardBuilder;
+    this.userSessionService = userSessionService;
+    this.expenseService = expenseService;
+    this.backButtonHandler = backButtonHandler;
+  }
 
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;
   private final UserSessionService userSessionService;
   private final ExpenseService expenseService;
   private final BackButtonHandler backButtonHandler;
+
 
   private static void addTableHeader(PdfPTable table, List<String> strings) {
     strings
@@ -57,10 +75,12 @@ public class PDFCreator {
       });
   }
 
+
   private static void addRows(PdfPTable table, List<String> column) {
     column.forEach(table::addCell);
   }
 
+  @SneakyThrows
   private static void addCustomRows(PdfPTable table)
     throws URISyntaxException, BadElementException, IOException {
 //    Path path = Paths.get(ClassLoader.getSystemResource("/home/yevheniy/Загрузки/153611-samsung_galaxy-samsung-samsung_galaxy_s9-galaxy_s9_po_umolchaniyu-smartfon-1920x1080.jpg").toURI());
@@ -71,7 +91,7 @@ public class PDFCreator {
 //    table.addCell(imageCell);
 
     PdfPCell horizontalAlignCell = new PdfPCell(new Phrase("row 2, col 2"));
-    horizontalAlignCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    horizontalAlignCell.setHorizontalAlignment(Element.ALIGN_TOP);
     table.addCell(horizontalAlignCell);
 
     PdfPCell verticalAlignCell = new PdfPCell(new Phrase("row 2, col 3"));
@@ -87,20 +107,21 @@ public class PDFCreator {
     Document document = new Document();
     document.setPageSize(PageSize.A4.rotate());
 
-    //4096 to properties
-    final ByteArrayOutputStream os = new ByteArrayOutputStream(4096);
+    final ByteArrayOutputStream os = new ByteArrayOutputStream(FILE_SIZE);
     PdfWriter.getInstance(document, os);
     final List<String> column = new ArrayList<>();
-
-    Font font = FontFactory.getFont(FontFactory.COURIER, 54, BaseColor.BLACK);
+    BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+    Font font = new Font(bf, 30, Font.NORMAL);
     final Month month = LocalDate.now().getMonth();
     final int length = month.length(true);
     IntStream.rangeClosed(1, length).forEach(i -> column.add(String.valueOf(i)));
 
-    final List<String> strings = expenses.stream().map(Expense::getCategory).collect(Collectors.toList());
+    final List<String> strings = expenses.stream()
+      .map(Expense::getCategory)
+      .collect(Collectors.toList());
     document.open();
     PdfPTable table = new PdfPTable(expenses.size());
-    addheader(table,strings);
+    addheader(table, strings);
 //    addTableHeader(table, column);
     addRows(table, column);
     addCustomRows(table);
@@ -118,7 +139,7 @@ public class PDFCreator {
     Stream.of("раз","два","row","row","row","row","row","row")
       .forEach(columnTitle -> {
         PdfPCell header = new PdfPCell();
-        header.setBackgroundColor(BaseColor.MAGENTA);
+        header.setBackgroundColor(BaseColor.CYAN);
         header.setBorderWidth(0.1f);
         header.setPhrase(new Phrase(columnTitle));
         table.addCell(header);
