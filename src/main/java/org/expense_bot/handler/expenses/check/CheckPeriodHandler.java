@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.Period;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
-import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
+import org.expense_bot.model.Request;
+import org.expense_bot.model.Session;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.util.Calendar;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
@@ -21,49 +21,49 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class CheckPeriodHandler extends UserRequestHandler {
+public class CheckPeriodHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;
-  private final UserSessionService userSessionService;
+  private final SessionService sessionService;
   private final BackButtonHandler backButtonHandler;
 
   @Override
-  public boolean isApplicable(UserRequest request) {
-	return isEqual(request,ConversationState.Expenses.WAITING_FOR_PERIOD);
+  public boolean isApplicable(Request request) {
+	return isStateEqual(request,ConversationState.Expenses.WAITING_FOR_PERIOD);
   }
 
   @Override
-  public void handle(UserRequest request) {
+  public void handle(Request request) {
 	backButtonHandler.handleExpensesBackButton(request);
-	final Long chatId = request.getChatId();
+	final Long chatId = request.getUserId();
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
 	final String period = getUpdateData(request);
 	checkPeriod(request, period);
 	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
-	userSessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_CHECK_CATEGORY));
+	sessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_CHECK_CATEGORY));
   }
 
 
-  private void checkPeriod(UserRequest request, String period) {
-	final Long chatId = request.getChatId();
+  private void checkPeriod(Request request, String period) {
+	final Long chatId = request.getUserId();
 	if(Objects.equals(period, Period.PERIOD.getValue())) {
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_PERIOD, Calendar.buildCalendar(LocalDate.now()));
-	  userSessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_FOR_PERIOD));
+	  sessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_FOR_PERIOD));
 	  throw new RuntimeException(Messages.CHOOSE_PERIOD);
 	}
 	if(hasCallBack(request)) {
 	  final LocalDate date = Calendar.getDate(request);
 	  telegramService.sendMessage(chatId, String.format(Messages.DATE, date));
 
-	  userSessionService.updateState(chatId, ConversationState.Expenses.WAITING_FOR_PERIOD);
+	  sessionService.updateState(chatId, ConversationState.Expenses.WAITING_FOR_PERIOD);
 	  setDates(date, request);
 	}
   }
 
-  private void setDates(LocalDate date, UserRequest request) {
-	final Long chatId = request.getChatId();
-	final UserSession session = request.getUserSession();
+  private void setDates(LocalDate date, Request request) {
+	final Long chatId = request.getUserId();
+	final Session session = request.getSession();
 	final LocalDate periodFrom = session.getPeriodFrom();
 	final LocalDate periodTo = session.getPeriodTo();
 	if(periodFrom == null) {
@@ -77,7 +77,7 @@ public class CheckPeriodHandler extends UserRequestHandler {
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
 	}
-	userSessionService.update(session);
+	sessionService.update(session);
 
 	throw new RuntimeException("Dates entered");
   }

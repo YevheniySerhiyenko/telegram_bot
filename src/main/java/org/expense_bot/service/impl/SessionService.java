@@ -3,10 +3,10 @@ package org.expense_bot.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.expenses.write.SumEnteredHandler;
-import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
+import org.expense_bot.model.Request;
+import org.expense_bot.model.Session;
 import org.expense_bot.util.Calendar;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
@@ -21,30 +21,30 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserSessionService {
+public class SessionService {
 
-    private final Map<Long, UserSession> userSessionMap = new HashMap<>();
+    private final Map<Long, Session> userSessionMap = new HashMap<>();
     private final TelegramService telegramService;
 
-    public UserSession getSession(Long chatId) {
-        return userSessionMap.getOrDefault(chatId, UserSession
+    public Session getSession(Long chatId) {
+        return userSessionMap.getOrDefault(chatId, Session
           .builder()
           .chatId(chatId)
           .build());
     }
 
-    private void saveSession(UserSession session) {
+    private void saveSession(Session session) {
         userSessionMap.put(session.getChatId(), session);
     }
 
     public void updateState(Long chatId, ConversationState state) {
-        final UserSession session = getSession(chatId);
+        final Session session = getSession(chatId);
         session.setState(state);
         saveSession(session);
     }
 
-    public void update(UserSession userSession) {
-        final UserSession session = getSession(userSession.getChatId());
+    public void update(Session userSession) {
+        final Session session = getSession(userSession.getChatId());
         Optional.ofNullable(userSession.getState()).ifPresent(session::setState);
         Optional.ofNullable(userSession.getCategoryAction()).ifPresent(session::setCategoryAction);
         Optional.ofNullable(userSession.getAction()).ifPresent(session::setAction);
@@ -63,18 +63,18 @@ public class UserSessionService {
         saveSession(session);
     }
 
-    public void checkEnteredDate(UserRequest request, ConversationState state, Object clazz) {
-        if(UserRequestHandler.hasMessage(request)) {
-            final String text = UserRequestHandler.getUpdateData(request);
+    public void checkEnteredDate(Request request, ConversationState state, Object clazz) {
+        if(RequestHandler.hasMessage(request)) {
+            final String text = RequestHandler.getUpdateData(request);
             if(Objects.equals(text, Messages.ENTER_DATE)) {
                 final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
-                telegramService.sendMessage(request.getChatId(), Messages.ENTER_DATE, calendar);
-                updateState(request.getChatId(), state);
+                telegramService.sendMessage(request.getUserId(), Messages.ENTER_DATE, calendar);
+                updateState(request.getUserId(), state);
                 throw new RuntimeException("Build calendar");
             }
         }
-        if(UserRequestHandler.hasCallBack(request)) {
-            final Long chatId = request.getChatId();
+        if(RequestHandler.hasCallBack(request)) {
+            final Long chatId = request.getUserId();
             final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
             if(Objects.isNull(keyboard)) {
                 final LocalDate date = Calendar.getDate(request);
@@ -87,9 +87,9 @@ public class UserSessionService {
     }
 
     private void updateSession(Object clazz, Long chatId, LocalDate date) {
-        if(clazz instanceof SumEnteredHandler){
+        if(clazz instanceof SumEnteredHandler) {
             update(SessionUtil.buildExpenseSession(chatId, date));
-        }else {
+        } else {
             update(SessionUtil.buildIncomeSession(chatId, date));
         }
     }

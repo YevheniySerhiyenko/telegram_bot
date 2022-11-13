@@ -1,16 +1,16 @@
 package org.expense_bot.handler;
 
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public abstract class UserRequestHandler {
+public abstract class RequestHandler {
 
-    public abstract boolean isApplicable(UserRequest request);
-    public abstract void handle(UserRequest dispatchRequest);
+    public abstract boolean isApplicable(Request request);
+    public abstract void handle(Request dispatchRequest);
     public abstract boolean isGlobal();
 
-    public static boolean hasCallBack(UserRequest request) {
+    public static boolean hasCallBack(Request request) {
         return request.getUpdate().hasCallbackQuery();
     }
 
@@ -22,11 +22,11 @@ public abstract class UserRequestHandler {
         return update.hasMessage() && update.getMessage().hasText() && update.getMessage().getText().equals(text);
     }
 
-    public static boolean hasMessage(UserRequest request) {
+    public static boolean hasMessage(Request request) {
         return request.getUpdate().hasMessage();
     }
 
-    public static String getUpdateData(UserRequest request) {
+    public static String getUpdateData(Request request) {
         String data = null;
         if(request.getUpdate().hasMessage()) {
             data = request.getUpdate().getMessage().getText();
@@ -37,8 +37,8 @@ public abstract class UserRequestHandler {
         return data;
     }
 
-    public static boolean isEqual(UserRequest request, ConversationState state) {
-        return request.getUserSession().getState().equals(state);
+    public static boolean isStateEqual(Request request, ConversationState state) {
+        return request.getSession().getState().equals(state);
     }
 
     public boolean isCommand(Update update, String command) {

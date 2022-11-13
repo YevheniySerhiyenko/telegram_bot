@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.UserCategory;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -23,25 +23,25 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CategoryActionHandler extends UserRequestHandler {
+public class CategoryActionHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final UserSessionService userSessionService;
+  private final SessionService sessionService;
   private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
   private final KeyboardBuilder keyboardBuilder;
 
   @Override
-  public boolean isApplicable(UserRequest request) {
-	return isEqual(request,ConversationState.Categories.WAITING_CATEGORY_ACTION);
+  public boolean isApplicable(Request request) {
+	return isStateEqual(request,ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-	final Long chatId = userRequest.getChatId();
-	final CategoryAction categoryAction = parseAction(getUpdateData(userRequest));
+  public void handle(Request userRequest) {
+	final Long chatId = userRequest.getUserId();
+	final CategoryAction categoryAction = CategoryAction.valueOf(getUpdateData(userRequest));
 
-	Optional.ofNullable(categoryAction)
+	Optional.of(categoryAction)
 	  .ifPresent(action -> {
 		switch (action) {
 		  case ADD_NEW_CATEGORY:
@@ -56,7 +56,7 @@ public class CategoryActionHandler extends UserRequestHandler {
 		}
 	  });
 
-	userSessionService.update(SessionUtil.getSession(chatId, categoryAction));
+	sessionService.update(SessionUtil.getSession(chatId, categoryAction));
   }
 
   private CategoryAction parseAction(String text) {
@@ -78,13 +78,13 @@ public class CategoryActionHandler extends UserRequestHandler {
   }
 
   private void handleAddNew(Long chatId) {
-	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME, keyboardBuilder.buildBackButtonMenu());
+	telegramService.sendMessage(chatId, Messages.ENTER_CATEGORY_NAME, keyboardBuilder.buildBackButton());
   }
 
   private void handleDelete(Long chatId) {
 	final List<String> defaultCategories = getCategories(chatId);
 	if(defaultCategories.isEmpty()) {
-	  telegramService.sendMessage(chatId, Messages.NOTHING_TO_DELETE, keyboardBuilder.buildBackButtonMenu());
+	  telegramService.sendMessage(chatId, Messages.NOTHING_TO_DELETE, keyboardBuilder.buildBackButton());
 	  throw new RuntimeException(Messages.NOTHING_TO_DELETE);
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);

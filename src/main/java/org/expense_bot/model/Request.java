@@ -2,13 +2,12 @@ package org.expense_bot.model;
 
 import lombok.Builder;
 import lombok.Data;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Data
 @Builder
-public class UserRequest {
+public class Request {
     private Update update;
-    private Long chatId;
-    private UserSession userSession;
+    private Long userId;
+    private Session session;
 }

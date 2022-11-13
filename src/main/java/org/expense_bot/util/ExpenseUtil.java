@@ -1,9 +1,9 @@
 package org.expense_bot.util;
 
 import org.expense_bot.constant.Messages;
+import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.model.Expense;
-import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
+import org.expense_bot.model.Session;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ public class ExpenseUtil {
 
   private static final LocalDateTime NOW = LocalDateTime.now();
 
-  public static Expense getExpense(UserSession session) {
+  public static Expense getExpense(Session session) {
 	return Expense.builder()
 	  .category(session.getCategory())
 	  .sum(session.getExpenseSum())
@@ -23,8 +23,8 @@ public class ExpenseUtil {
 	  .build();
   }
 
-  public static String getMessage(Expense expense) {
-	return expense.getCategory() + " : " + expense.getSum();
+  public static String getMessage(ExpenseGroup expenseGroup) {
+	return expenseGroup.getCategory() + " : " + expenseGroup.getSum();
   }
 
   public static String getSumMessage(List<Expense> expenses, String period) {
@@ -38,5 +38,11 @@ public class ExpenseUtil {
 	  .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
+
+  public static String getMessage(Expense expense) {
+	return expense.getCategory()
+	  + "  " + expense.getSum()
+	  + "грн  " + DateUtil.getDateTime(expense.getDateTime());
+  }
 
 }

@@ -1,15 +1,12 @@
 package org.expense_bot.service.impl;
 
-import com.itextpdf.text.Document;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.realm.AuthenticatedUserRealm;
-import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.handler.RequestHandler;
+import org.expense_bot.model.Request;
 import org.expense_bot.sender.ExpenseBotSender;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
@@ -22,8 +19,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.file.Path;
 
 @Slf4j
 @Component
@@ -32,12 +27,12 @@ public class TelegramService {
 
     private final ExpenseBotSender botSender;
 
-    public void editKeyboardMarkup(UserRequest request, InlineKeyboardMarkup replyKeyboard){
-        final Long chatId = request.getChatId();
-        if(UserRequestHandler.hasCallBack(request)) {
+    public void editKeyboardMarkup(Request request, InlineKeyboardMarkup replyKeyboard){
+        final Long userId = request.getUserId();
+        if(RequestHandler.hasCallBack(request)) {
             final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
 
-            execute(getReplyMarkup(replyKeyboard, chatId, messageId));
+            execute(getReplyMarkup(replyKeyboard, userId, messageId));
         }
     }
 
@@ -53,9 +48,12 @@ public class TelegramService {
         sendMessage(chatId, text, null);
     }
 
-    public void editNextMessage(UserRequest request, String text) {
-        final Long chatId = request.getChatId();
-        if(UserRequestHandler.hasCallBack(request)){
+    public void editMessage(Long chatId, String message) {
+    }
+
+    public void editNextMessage(Request request, String text) {
+        final Long chatId = request.getUserId();
+        if(RequestHandler.hasCallBack(request)){
             final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
             EditMessageText replyMarkup = EditMessageText.builder()
               .chatId(String.valueOf(chatId))
@@ -66,17 +64,17 @@ public class TelegramService {
             execute(replyMarkup);
         }
     }
-
     public void sendAnswer(AnswerCallbackQuery query){
         execute(query);
     }
+
     public void sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard) {
         SendMessage sendMessage = SendMessage
           .builder()
           .text(text)
           .chatId(chatId.toString())
           //Other possible parse modes: MARKDOWNV2, MARKDOWN, which allows to make text bold, and all other things
-          .parseMode(ParseMode.HTML)
+          .parseMode(ParseMode.MARKDOWNV2)
           .replyMarkup(replyKeyboard)
           .build();
         execute(sendMessage);
@@ -86,9 +84,9 @@ public class TelegramService {
         sendSticker(chatId, text, null);
     }
 
-    public void sendDocument(ByteArrayInputStream inputStream, UserRequest request) {
+    public void sendDocument(ByteArrayInputStream inputStream, Request request) {
         SendDocument sendDocument = SendDocument.builder()
-          .chatId(request.getChatId().toString())
+          .chatId(request.getUserId().toString())
           .document(new InputFile(inputStream,"file.pdf"))// create filename
           .build();
         executeDocument(sendDocument);
@@ -125,5 +123,6 @@ public class TelegramService {
             log.error("Exception: ", e);
         }
     }
+
 
 }

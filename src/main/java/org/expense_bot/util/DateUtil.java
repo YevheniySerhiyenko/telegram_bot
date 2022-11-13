@@ -3,11 +3,14 @@ package org.expense_bot.util;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
 
   private static final LocalDate NOW = LocalDate.now();
   private static final int ONE_DAY_VALUE = 1;
+  private static final String DATE_PATTERN = "dd.MM.yyyy";
+  private static final String DATE_TIME_PATTERN = "dd.MM.yyyy hh:mm:SS";
 
   public static LocalDateTime getBeginOfMonth() {
 	return LocalDate.of(NOW.getYear(), NOW.getMonth(), ONE_DAY_VALUE).atStartOfDay();
@@ -54,4 +57,11 @@ public class DateUtil {
 	return LocalDate.of(NOW.getYear(), NOW.getMonth(), ONE_DAY_VALUE).atStartOfDay();
   }
 
+  public static String getDate(LocalDateTime localDate) {
+	return localDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
+  }
+
+  public static String getDateTime(LocalDateTime localDate) {
+	return localDate.format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
+  }
 }

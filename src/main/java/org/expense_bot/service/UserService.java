@@ -1,9 +1,9 @@
 package org.expense_bot.service;
 
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 
 public interface UserService {
 
-  void checkUser(UserRequest userRequest);
+  void checkUser(Request userRequest);
 
 }

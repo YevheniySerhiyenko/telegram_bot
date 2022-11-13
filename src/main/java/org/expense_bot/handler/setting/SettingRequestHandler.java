@@ -1,38 +1,36 @@
 package org.expense_bot.handler.setting;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Commands;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.helper.KeyboardBuilder;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.service.impl.SessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 @Component
 @RequiredArgsConstructor
-public class SettingRequestHandler extends UserRequestHandler {
-
-  private static final String COMMAND = "/settings";
+public class SettingRequestHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final UserSessionService userSessionService;
+  private final SessionService sessionService;
   private final KeyboardBuilder keyboardBuilder;
 
   @Override
-  public boolean isApplicable(UserRequest request) {
-	return isTextMessage(request.getUpdate(), COMMAND);
+  public boolean isApplicable(Request request) {
+	return isTextMessage(request.getUpdate(), Commands.SETTINGS);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-	final Long chatId = userRequest.getChatId();
+  public void handle(Request userRequest) {
+	final Long chatId = userRequest.getUserId();
 	final ReplyKeyboard keyboard = keyboardBuilder.buildSettingsMenu();
 	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	userSessionService.updateState(chatId, ConversationState.Settings.WAITING_SETTINGS_ACTION);
+	sessionService.updateState(chatId, ConversationState.Settings.WAITING_SETTINGS_ACTION);
   }
 
   @Override

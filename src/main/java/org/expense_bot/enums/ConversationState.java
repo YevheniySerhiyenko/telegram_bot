@@ -55,12 +55,12 @@ public interface ConversationState {
     WAITING_EXPENSE_ACTION,
     WAITING_FOR_PERIOD,
     WAITING_CHECK_CATEGORY,
+    WAITING_ADDITIONAL_ACTION,
 
-    //write
+    //write,
     WAITING_FOR_CATEGORY,
     WAITING_FOR_ANOTHER_EXPENSE_DATE,
-    WAITING_FOR_EXPENSE_SUM,
-    WAITING_ADDITIONAL_ACTION;
+    WAITING_FOR_EXPENSE_SUM;
 
     public static ConversationState getByOrdinal(Integer ordinal) {
       return Arrays.stream(Init.values())

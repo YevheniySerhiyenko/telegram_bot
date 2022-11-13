@@ -1,6 +1,6 @@
 package org.expense_bot.util;
 
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.expense_bot.handler.UserRequestHandler.getUpdateData;
-import static org.expense_bot.handler.UserRequestHandler.hasCallBack;
+import static org.expense_bot.handler.RequestHandler.getUpdateData;
+import static org.expense_bot.handler.RequestHandler.hasCallBack;
 
 public class Calendar {
 
@@ -66,7 +66,7 @@ public class Calendar {
 	return value.length() == 1 ? "0" + value : value;
   }
 
-  public static InlineKeyboardMarkup changeMonth(UserRequest request) {
+  public static InlineKeyboardMarkup changeMonth(Request request) {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
 	  if(data.startsWith("back") || data.startsWith("forward")) {
@@ -86,7 +86,7 @@ public class Calendar {
 	return null;
   }
 
-  public static InlineKeyboardMarkup changeYear(UserRequest request) {
+  public static InlineKeyboardMarkup changeYear(Request request) {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
 	  if(data.startsWith("back") || data.startsWith("forward")) {
@@ -117,7 +117,7 @@ public class Calendar {
 	return LocalDate.of(LocalDate.now().getYear(), month, 1);
   }
 
-  public static LocalDate getDate(UserRequest request) {
+  public static LocalDate getDate(Request request) {
 	if(hasCallBack(request)) {
 	  return LocalDate.parse(getUpdateData(request), DateTimeFormatter.ofPattern(PATTERN));
 	}

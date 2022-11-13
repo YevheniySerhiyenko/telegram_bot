@@ -20,8 +20,8 @@ public class IncomeServiceImpl implements IncomeService {
   private final IncomeRepository incomeRepository;
 
   @Override
-  public Income save(Long userId, BigDecimal sum, LocalDateTime incomeDate) {
-	return incomeRepository.save(IncomeUtil.buildIncome(userId, sum, incomeDate));
+  public Income save(Income income) {
+	return incomeRepository.save(income);
   }
 
   @Override

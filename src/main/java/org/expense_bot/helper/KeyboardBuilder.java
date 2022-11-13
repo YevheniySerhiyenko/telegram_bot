@@ -1,8 +1,9 @@
 package org.expense_bot.helper;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Constants;
+import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
+import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
 import org.expense_bot.model.Sticker;
@@ -33,7 +34,7 @@ public class KeyboardBuilder {
 
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Constants.BUTTON_BACK);
+	cancelRow.add(Buttons.BUTTON_BACK);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
@@ -61,7 +62,7 @@ public class KeyboardBuilder {
 	row.add(Messages.WRITE_EXPENSES);
 	row.add(Messages.CHECK_EXPENSES);
 	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Constants.BUTTON_BACK);
+	row1.add(Buttons.BUTTON_BACK);
 
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row, row1))
@@ -79,7 +80,7 @@ public class KeyboardBuilder {
 	final KeyboardRow row2 = new KeyboardRow();
 	row2.add(Messages.CHECK_BALANCE);
 	final KeyboardRow row3 = new KeyboardRow();
-	row3.add(Constants.BUTTON_BACK);
+	row3.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row,row1, row2, row3))
 	  .resizeKeyboard(true)
@@ -96,7 +97,7 @@ public class KeyboardBuilder {
 	final KeyboardRow row4 = new KeyboardRow();
 	row4.add(Period.PERIOD.getValue());
 	final KeyboardRow row5 = new KeyboardRow();
-	row5.add(Constants.BUTTON_BACK);
+	row5.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row1, row2, row3, row4, row5))
 	  .resizeKeyboard(true)
@@ -113,7 +114,7 @@ public class KeyboardBuilder {
 	setButtons(keyboardRows, categoryList);
 
 	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Constants.BUTTON_BACK);
+	row1.add(Buttons.BUTTON_BACK);
 	keyboardRows.add(row1);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(keyboardRows)
@@ -137,7 +138,7 @@ public class KeyboardBuilder {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	setButtons(buttonsList, allCategories);
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Constants.BUTTON_BACK);
+	cancelRow.add(Buttons.BUTTON_BACK);
 	buttonsList.add(cancelRow);
 
 	return ReplyKeyboardMarkup.builder()
@@ -158,16 +159,16 @@ public class KeyboardBuilder {
 	final KeyboardRow row = new KeyboardRow();
 	final KeyboardRow row1 = new KeyboardRow();
 	row.add(Messages.ENTER_DATE);
-	row1.add(Constants.BUTTON_BACK);
+	row1.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row, row1))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
-  public ReplyKeyboard buildBackButtonMenu() {
+  public ReplyKeyboard buildBackButton() {
 	final KeyboardRow row = new KeyboardRow();
-	row.add(Constants.BUTTON_BACK);
+	row.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(row))
 	  .resizeKeyboard(true)
@@ -203,7 +204,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildStickersActionMenu(List<Sticker> actualStickers) {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Constants.BUTTON_BACK);
+	cancelRow.add(Buttons.BUTTON_BACK);
 	setStickerActionButtons(buttonsList, actualStickers);
 	buttonsList.add(cancelRow);
 	return ReplyKeyboardMarkup.builder()
@@ -216,7 +217,7 @@ public class KeyboardBuilder {
 	for (Sticker sticker : stickers) {
 	  final KeyboardRow row = new KeyboardRow();
 	  row.add(sticker.getAction());
-	  row.add(Constants.BUTTON_ON);
+	  row.add(Buttons.BUTTON_ON);
 	  buttonsList.add(row);
 	}
   }
@@ -228,16 +229,11 @@ public class KeyboardBuilder {
 	  .collect(Collectors.toList());
   }
 
-  public ReplyKeyboard buildExpenseOptions(Long id) {
+  public ReplyKeyboard buildExpenseOptions(ExpenseGroup group) {
 	final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 	final List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
 	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	final String change = "Змінити";
-	final String delete = "Видалити";
-	final String info = "ℹ";
-	buttons.add(Utils.buildButton(change, change + " " + id));
-	buttons.add(Utils.buildButton(delete, delete + " " + id));
-	buttons.add(Utils.buildButton(info, info + " " + id));
+	buttons.add(Utils.buildButton(Buttons.BUTTON_INFO, "Деталі ℹ" + " " + group.getCategory()));
 	keyboards.add(buttons);
 	inlineKeyboardMarkup.setKeyboard(keyboards);
 	return inlineKeyboardMarkup;
@@ -247,7 +243,7 @@ public class KeyboardBuilder {
 	final KeyboardRow createPDFButton = new KeyboardRow();
 	createPDFButton.add(Messages.CREATE_PDF);
 	final KeyboardRow backButton = new KeyboardRow();
-	backButton.add(Constants.BUTTON_BACK);
+	backButton.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(createPDFButton, backButton))
 	  .resizeKeyboard(true)

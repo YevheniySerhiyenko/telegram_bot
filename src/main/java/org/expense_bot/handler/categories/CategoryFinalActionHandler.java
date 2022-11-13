@@ -4,16 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Category;
 import org.expense_bot.model.UserCategory;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -24,26 +24,26 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CategoryFinalActionHandler extends UserRequestHandler {
+public class CategoryFinalActionHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final UserSessionService userSessionService;
+  private final SessionService sessionService;
   private final UserCategoryService userCategoryService;
   private final CategoryService categoryService;
   private final KeyboardBuilder keyboardBuilder;
   private final BackButtonHandler backButtonHandler;
 
   @Override
-  public boolean isApplicable(UserRequest request) {
-	return isEqual(request, ConversationState.Categories.WAITING_FINAL_ACTION);
+  public boolean isApplicable(Request request) {
+	return isStateEqual(request, ConversationState.Categories.WAITING_FINAL_ACTION);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-	backButtonHandler.handleCategoriesBackButton(userRequest);
-	final Long chatId = userRequest.getChatId();
-	final String param = getUpdateData(userRequest);
-	final CategoryAction categoryAction = userSessionService.getSession(chatId).getCategoryAction();
+  public void handle(Request request) {
+	backButtonHandler.handleCategoriesBackButton(request);
+	final Long chatId = request.getUserId();
+	final String param = getUpdateData(request);
+	final CategoryAction categoryAction = sessionService.getSession(chatId).getCategoryAction();
 
 	Optional.ofNullable(categoryAction)
 	  .ifPresent(action -> {
@@ -62,14 +62,14 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 		}
 	  });
 
-	userSessionService.update(SessionUtil.getSession(chatId, categoryAction));
+	sessionService.update(SessionUtil.getSession(chatId, categoryAction));
   }
 
   private void addCategory(Long chatId, String param) {
 	userCategoryService.add(chatId, param);
 	telegramService.sendMessage(chatId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardBuilder.buildCategoryOptionsMenu());
-	userSessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
-	throw new RuntimeException(Messages.CATEGORY_ADDED_TO_YOUR_LIST);
+	sessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
+//	throw new RuntimeException(Messages.CATEGORY_ADDED_TO_YOUR_LIST);
   }
 
   private void sendListNotDeleted(Long chatId) {
@@ -93,7 +93,7 @@ public class CategoryFinalActionHandler extends UserRequestHandler {
 
   private void checkAll(Long chatId, List<String> categories, String message) {
 	if(categories.isEmpty()) {
-	  telegramService.sendMessage(chatId, message, keyboardBuilder.buildBackButtonMenu());
+	  telegramService.sendMessage(chatId, message, keyboardBuilder.buildBackButton());
 	  throw new RuntimeException(message);
 	}
   }

@@ -2,16 +2,18 @@ package org.expense_bot.handler.expenses.check;
 
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
+import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
+import org.expense_bot.mapper.ExpenseMapper;
 import org.expense_bot.model.Expense;
-import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
+import org.expense_bot.model.Request;
+import org.expense_bot.model.Session;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
@@ -22,28 +24,28 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class CheckCategoryHandler extends UserRequestHandler {
+public class CheckCategoryHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;
-  private final UserSessionService userSessionService;
+  private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final BackButtonHandler backButtonHandler;
 
   @Override
-  public boolean isApplicable(UserRequest request) {
-	return isEqual(request, ConversationState.Expenses.WAITING_CHECK_CATEGORY);
+  public boolean isApplicable(Request request) {
+	return isStateEqual(request, ConversationState.Expenses.WAITING_CHECK_CATEGORY);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
+  public void handle(Request userRequest) {
 	backButtonHandler.handleExpensesBackButton(userRequest);
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCreatePDFMenu();
-	final Long chatId = userRequest.getChatId();
+	final Long chatId = userRequest.getUserId();
 	final String category = getUpdateData(userRequest);
 	final List<Expense> expenses = getExpenses(chatId, category);
-	final String period = userSessionService.getSession(chatId).getPeriod();
-	userSessionService.update(SessionUtil.getSession(chatId, expenses, category));
+	final String period = sessionService.getSession(chatId).getPeriod();
+	sessionService.update(SessionUtil.getSession(chatId, expenses, category));
 	sendExpenses(expenses, keyboard, chatId, period);
   }
 
@@ -52,13 +54,14 @@ public class CheckCategoryHandler extends UserRequestHandler {
 	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, keyboard);
 	} else {
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
-	  expenses.forEach(expense -> telegramService.sendMessage(chatId, ExpenseUtil.getMessage(expense), keyboardBuilder.buildExpenseOptions(expense.getId())));
+	  final List<ExpenseGroup> groupList = ExpenseMapper.toGroup(expenses);
+	  groupList.forEach(expenseGroup -> telegramService.sendMessage(chatId, ExpenseUtil.getMessage(expenseGroup), keyboardBuilder.buildExpenseOptions(expenseGroup)));
 	  telegramService.sendMessage(chatId, ExpenseUtil.getSumMessage(expenses, period), keyboard);
 	}
   }
 
   private List<Expense> getExpenses(Long chatId, String category) {
-	final UserSession session = userSessionService.getSession(chatId);
+	final Session session = sessionService.getSession(chatId);
 	final String period = session.getPeriod();
 	switch (period) {
 	  case Messages.DAY:

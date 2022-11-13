@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
-import org.expense_bot.handler.UserRequestHandler;
+import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.model.Request;
 import org.expense_bot.service.IncomeService;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.service.impl.SessionService;
+import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -19,10 +20,10 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-public class IncomeActionHandler extends UserRequestHandler {
+public class IncomeActionHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final UserSessionService userSessionService;
+  private final SessionService sessionService;
   private final IncomeService incomeService;
   private final KeyboardBuilder keyboardBuilder;
   private final BackButtonHandler backButtonHandler;
@@ -30,27 +31,27 @@ public class IncomeActionHandler extends UserRequestHandler {
   private static final LocalDateTime NOW = LocalDateTime.now();
 
   @Override
-  public boolean isApplicable(UserRequest request) {
-	return isEqual(request, ConversationState.Incomes.WAITING_FOR_INCOME_SUM);
+  public boolean isApplicable(Request request) {
+	return isStateEqual(request, ConversationState.Incomes.WAITING_FOR_INCOME_SUM);
   }
 
   @Override
-  public void handle(UserRequest userRequest) {
-	userSessionService.checkEnteredDate(userRequest, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE, this.getClass());
+  public void handle(Request userRequest) {
+	sessionService.checkEnteredDate(userRequest, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE, this.getClass());
 	backButtonHandler.handleIncomeBackButton(userRequest);
-	final Long chatId = userRequest.getChatId();
-	final IncomeAction incomeAction = userRequest.getUserSession().getIncomeAction();
+	final Long chatId = userRequest.getUserId();
+	final IncomeAction action = userRequest.getSession().getIncomeAction();
 
-	switch (incomeAction) {
+	switch (action) {
 	  case WRITE:
 		final BigDecimal sum = new BigDecimal(getUpdateData(userRequest));
-		final LocalDate incomeDate = userRequest.getUserSession().getIncomeDate();
-		incomeService.save(chatId, sum, incomeDate == null ? NOW : incomeDate.atStartOfDay());
+		final LocalDate incomeDate = userRequest.getSession().getIncomeDate();
+		incomeService.save(IncomeUtil.buildIncome(chatId,sum,incomeDate));
 		telegramService.sendMessage(chatId, Messages.SUCCESS);
 		telegramService.sendMessage(chatId, Messages.SUCCESS_INCOME, keyboardBuilder.buildIncomeMenu());
 		break;
 	}
-	userSessionService.updateState(chatId, ConversationState.Init.WAITING_INCOME_ACTION);
+	sessionService.updateState(chatId, ConversationState.Init.WAITING_INCOME_ACTION);
   }
 
   @Override

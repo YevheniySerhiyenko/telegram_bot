@@ -1,9 +1,9 @@
 package org.expense_bot;
 
 import lombok.extern.slf4j.Slf4j;
-import org.expense_bot.model.UserRequest;
-import org.expense_bot.model.UserSession;
-import org.expense_bot.service.impl.UserSessionService;
+import org.expense_bot.model.Request;
+import org.expense_bot.model.Session;
+import org.expense_bot.service.impl.SessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -20,11 +20,11 @@ public class ExpenseBot extends TelegramLongPollingBot {
     private String botUsername;
 
     private final Dispatcher dispatcher;
-    private final UserSessionService userSessionService;
+    private final SessionService sessionService;
 
-    public ExpenseBot(Dispatcher dispatcher, UserSessionService userSessionService) {
+    public ExpenseBot(Dispatcher dispatcher, SessionService sessionService) {
         this.dispatcher = dispatcher;
-        this.userSessionService = userSessionService;
+        this.sessionService = sessionService;
     }
 
     /**
@@ -39,12 +39,12 @@ public class ExpenseBot extends TelegramLongPollingBot {
 
       log.info("[{}, {}] : {}", chatId, userFirstName, textFromUser);
 
-      UserSession session = userSessionService.getSession(chatId);
-      UserRequest userRequest = UserRequest
+      Session session = sessionService.getSession(chatId);
+      Request userRequest = Request
         .builder()
         .update(update)
-        .userSession(session)
-        .chatId(chatId)
+        .session(session)
+        .userId(chatId)
         .build();
 
       boolean dispatched = dispatcher.dispatch(userRequest);

@@ -1,7 +1,7 @@
 package org.expense_bot;
 
-import org.expense_bot.handler.UserRequestHandler;
-import org.expense_bot.model.UserRequest;
+import org.expense_bot.handler.RequestHandler;
+import org.expense_bot.model.Request;
 import org.expense_bot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class Dispatcher {
 
-    private final List<UserRequestHandler> handlers;
+    private final List<RequestHandler> handlers;
 
     @Autowired
     private UserService userService;
@@ -24,21 +24,21 @@ public class Dispatcher {
      * like command /start which can interrupt any conversation flow.
      * These global handlers should go first in the list
      */
-    public Dispatcher(List<UserRequestHandler> handlers) {
+    public Dispatcher(List<RequestHandler> handlers) {
         this.handlers = handlers
           .stream()
           .sorted(Comparator
-            .comparing(UserRequestHandler::isGlobal)
+            .comparing(RequestHandler::isGlobal)
             .reversed())
           .collect(Collectors.toList());
     }
 
-    public boolean dispatch(UserRequest userRequest) {
-        userService.checkUser(userRequest);
+    public boolean dispatch(Request request) {
+        userService.checkUser(request);
 
-        for (UserRequestHandler userRequestHandler : handlers) {
-            if(userRequestHandler.isApplicable(userRequest)){
-                userRequestHandler.handle(userRequest);
+        for (RequestHandler requestHandler : handlers) {
+            if(requestHandler.isApplicable(request)){
+                requestHandler.handle(request);
                 return true;
             }
         }

@@ -1,7 +1,7 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Constants;
+import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.model.UserCategory;
@@ -19,26 +19,26 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
   private final UserCategoryRepository repository;
   private final TelegramService telegramService;
-  private final UserSessionService sessionService;
+  private final SessionService sessionService;
   private final StickerSender stickerSender;
 
   @Override
-  public UserCategory add(Long chatId, String categoryName) {
-    existByUser(chatId, categoryName);
-    telegramService.sendMessage(chatId, Messages.SUCCESS);
+  public UserCategory add(Long userId, String categoryName) {
+    existByUser(userId, categoryName);
+    telegramService.sendMessage(userId, Messages.SUCCESS);
     final UserCategory userCategory = UserCategory.builder()
-      .userId(chatId)
+      .userId(userId)
       .category(categoryName)
       .build();
     return repository.save(userCategory);
   }
 
   @Override
-  public void delete(Long chatId, String categoryName) {
-    repository.getByUserIdAndCategory(chatId, categoryName)
+  public void delete(Long userId, String categoryName) {
+    repository.getByUserIdAndCategory(userId, categoryName)
       .ifPresent(repository::delete);
     final String message = String.format(Messages.CATEGORY_DELETED, categoryName);
-    telegramService.sendMessage(chatId, message + Constants.BUTTON_TRASH);
+    telegramService.sendMessage(userId, message + Buttons.BUTTON_TRASH);
   }
 
   @Override
@@ -46,19 +46,19 @@ public class UserCategoryServiceImpl implements UserCategoryService {
     return repository.getByUserId(userId);
   }
 
-  private void existByUser(Long chatId, String category) {
-    final Optional<UserCategory> userCategory = repository.getByUserIdAndCategory(chatId, category);
+  private void existByUser(Long userId, String category) {
+    final Optional<UserCategory> userCategory = repository.getByUserIdAndCategory(userId, category);
 
     if(userCategory.isPresent()) {
-      telegramService.sendSticker(chatId, getSticker(chatId));
-      telegramService.sendMessage(chatId, Messages.ALREADY_HAD_SUCH_CATEGORY);
-      sessionService.updateState(chatId, ConversationState.Categories.WAITING_FINAL_ACTION);
+      telegramService.sendSticker(userId, getSticker(userId));
+      telegramService.sendMessage(userId, Messages.ALREADY_HAD_SUCH_CATEGORY);
+      sessionService.updateState(userId, ConversationState.Categories.WAITING_FINAL_ACTION);
       throw new RuntimeException(Messages.ALREADY_HAD_SUCH_CATEGORY);
     }
   }
 
-  public String getSticker(Long chatId) {
-    return stickerSender.getSticker(chatId, Messages.ERROR_STICKER_MESSAGE);
+  public String getSticker(Long userId) {
+    return stickerSender.getSticker(userId, Messages.ERROR_STICKER_MESSAGE);
   }
 
 }
