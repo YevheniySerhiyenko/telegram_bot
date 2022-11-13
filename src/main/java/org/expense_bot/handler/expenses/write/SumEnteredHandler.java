@@ -42,12 +42,12 @@ public class SumEnteredHandler extends RequestHandler {
 	final ReplyKeyboard replyKeyboardMarkup = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
 	  final BigDecimal sum = new BigDecimal(getUpdateData(request));
-	  final Long chatId = request.getUserId();
-	  sessionService.update(SessionUtil.getSession(sum, chatId));
-	  expenseService.save(ExpenseUtil.getExpense(sessionService.getSession(chatId)));
-	  telegramService.sendMessage(chatId, Messages.SUCCESS);
-	  getSticker(chatId);
-	  telegramService.sendMessage(chatId, Messages.SUCCESS_SENT_SUM, replyKeyboardMarkup);
+	  final Long userId = request.getUserId();
+	  sessionService.update(SessionUtil.getSession(sum, userId));
+	  expenseService.save(ExpenseUtil.getExpense(sessionService.getSession(userId)));
+	  telegramService.sendMessage(userId, Messages.SUCCESS);
+	  getSticker(userId);
+	  telegramService.sendMessage(userId, Messages.SUCCESS_SENT_SUM, replyKeyboardMarkup);
 	}
   }
 

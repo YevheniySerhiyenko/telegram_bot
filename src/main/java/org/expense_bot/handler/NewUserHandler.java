@@ -8,6 +8,7 @@ import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.UserStickerService;
 import org.expense_bot.service.impl.TelegramService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 
 @Component
 @RequiredArgsConstructor

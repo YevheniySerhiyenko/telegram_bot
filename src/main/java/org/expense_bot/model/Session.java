@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Session {
-    private Long chatId;
+    private Long userId;
     private ConversationState state;
     private CategoryAction categoryAction;
     private String action;

@@ -18,7 +18,7 @@ public class ExpenseUtil {
 	return Expense.builder()
 	  .category(session.getCategory())
 	  .sum(session.getExpenseSum())
-	  .chatId(session.getChatId())
+	  .chatId(session.getUserId())
 	  .dateTime(session.getExpenseDate() != null ? session.getExpenseDate().atStartOfDay() : NOW)
 	  .build();
   }

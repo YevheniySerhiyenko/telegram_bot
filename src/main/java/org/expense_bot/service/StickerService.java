@@ -11,6 +11,6 @@ public interface StickerService {
 
   void setEnable(Boolean enable, String action, Long userId);
 
-  List<Sticker> getAll(Long chatId);
+  List<Sticker> getAll(Long userId);
 
 }

@@ -51,12 +51,13 @@ public class CheckCategoryHandler extends RequestHandler {
 
   private void sendExpenses(List<Expense> expenses, ReplyKeyboard keyboard, Long chatId, String period) {
 	if(expenses == null || expenses.isEmpty()) {
-	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, keyboard);
+	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, keyboardBuilder.buildExpenseMenu());
+	  sessionService.updateState(chatId,ConversationState.Init.WAITING_EXPENSE_ACTION);
 	} else {
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
 	  final List<ExpenseGroup> groupList = ExpenseMapper.toGroup(expenses);
 	  groupList.forEach(expenseGroup -> telegramService.sendMessage(chatId, ExpenseUtil.getMessage(expenseGroup), keyboardBuilder.buildExpenseOptions(expenseGroup)));
-	  telegramService.sendMessage(chatId, ExpenseUtil.getSumMessage(expenses, period), keyboard);
+	  telegramService.sendMessage(chatId, ExpenseUtil.getSumMessage(expenses, period), keyboardBuilder.buildCreatePDFMenu());
 	}
   }
 

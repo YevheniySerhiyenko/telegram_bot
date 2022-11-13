@@ -26,8 +26,8 @@ public class StickerServiceImpl implements StickerService {
   }
 
   @Override
-  public List<Sticker> getAll(Long chatId) {
-	return stickerRepository.getAllByUserId(chatId);
+  public List<Sticker> getAll(Long userId) {
+	return stickerRepository.getAllByUserId(userId);
   }
 
 }

@@ -15,7 +15,7 @@ public class SessionUtil {
 
   public static Session getSession(Long chatId, CategoryAction categoryAction) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .categoryAction(categoryAction)
 	  .state(ConversationState.Categories.WAITING_FINAL_ACTION)
 	  .build();
@@ -23,7 +23,7 @@ public class SessionUtil {
 
   public static Session getSession(Long chatId, String period, ConversationState state) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .period(period)
 	  .state(state)
 	  .build();
@@ -31,7 +31,7 @@ public class SessionUtil {
 
   public static Session getSession(BigDecimal sum, Long chatId) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .expenseSum(sum)
 	  .state(ConversationState.Init.WAITING_EXPENSE_ACTION)
 	  .build();
@@ -39,7 +39,7 @@ public class SessionUtil {
 
   public static Session buildExpenseSession(Long chatId, LocalDate date) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
 	  .expenseDate(date)
 	  .build();
@@ -47,7 +47,7 @@ public class SessionUtil {
 
   public static Session getSession(Long chatId, List<Expense> expenses, String category) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .expenseList(expenses)
 	  .category(category)
 	  .state(ConversationState.Expenses.WAITING_ADDITIONAL_ACTION)
@@ -56,7 +56,7 @@ public class SessionUtil {
 
   public static Session buildSession(Long chatId, LocalDate localDate) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .expenseDate(localDate)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
 	  .build();
@@ -64,7 +64,7 @@ public class SessionUtil {
 
   public static Session buildSession(Long chatId, String category) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .category(category)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
 	  .build();
@@ -72,7 +72,7 @@ public class SessionUtil {
 
   public static Session getSession(Long chatId) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .incomeAction(IncomeAction.WRITE)
 	  .state(ConversationState.Incomes.WAITING_FOR_INCOME_SUM)
 	  .build();
@@ -80,14 +80,14 @@ public class SessionUtil {
 
   public static Session getSession(Long chatId, IncomeAction action) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .incomeAction(action)
 	  .build();
   }
 
   public static Session buildIncomeSession(Long chatId, LocalDate localDate) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .incomeDate(localDate)
 	  .state(ConversationState.Incomes.WAITING_FOR_INCOME_SUM)
 	  .build();
@@ -95,7 +95,7 @@ public class SessionUtil {
 
   public static Session getSession(Long chatId, StickerAction action) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .stickerAction(action)
 	  .state(ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION)
 	  .build();
@@ -103,9 +103,18 @@ public class SessionUtil {
 
   public static Session getStickerSession(Long chatId, String action) {
 	return Session.builder()
-	  .chatId(chatId)
+	  .userId(chatId)
 	  .action(action)
 	  .state(ConversationState.Settings.WAITING_STICKERS_ACTION)
+	  .build();
+  }
+
+  public static Session finalUpdate(Long chatId) {
+	return Session.builder()
+	  .userId(chatId)
+	  .periodFrom(null)
+	  .periodTo(null)
+	  .state(ConversationState.Expenses.WAITING_ADDITIONAL_ACTION)
 	  .build();
   }
 

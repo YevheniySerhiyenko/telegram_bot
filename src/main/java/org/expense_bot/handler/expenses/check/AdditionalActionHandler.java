@@ -4,21 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.enums.Period;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
+import org.expense_bot.mapper.ExpenseMapper;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.Session;
 import org.expense_bot.service.ExpenseService;
-import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.SessionService;
+import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.util.PDFCreator;
+import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,7 @@ public class AdditionalActionHandler extends RequestHandler {
 //		  throw new IllegalStateException("Unexpected value: " + action);
 //	  }
 //	}
+    sessionService.update(SessionUtil.finalUpdate(request.getUserId()));
   }
 
   private void createPDF(Request request) {
@@ -64,20 +67,20 @@ public class AdditionalActionHandler extends RequestHandler {
     }
   }
 
-  private String getPeriod(Session session) {
-    return Period.valueOf(session.getPeriod()).getValue();
-  }
-
   private void handleInfo(Request request) {
     if(hasCallBack(request) && getUpdateData(request).startsWith(Buttons.BUTTON_INFO)) {
-      final Long chatId = request.getUserId();
+      final Long userId = request.getUserId();
       final String category = getUpdateData(request).split(" ")[2];
-      final Session session = sessionService.getSession(chatId);
+      final Session session = sessionService.getSession(userId);
       final List<Expense> expenseList = session.getExpenseList();
       final List<Expense> collect = expenseList
         .stream()
-        .filter(expense -> StringUtils.startsWithIgnoreCase(expense.getCategory(), category)).collect(Collectors.toList());
-//    telegramService.editMessage(request, "");
+        .filter(expense -> StringUtils.startsWithIgnoreCase(expense.getCategory(), category))
+        .collect(Collectors.toList());
+      final String text = request.getUpdate().getCallbackQuery().getMessage().getText();
+      final List<String> list = new ArrayList<>(List.of(text));
+      list.addAll(ExpenseMapper.toDetailExpense(collect));
+      telegramService.buildDetailMessage(request, list);
 
     }
   }

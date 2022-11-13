@@ -26,7 +26,7 @@ public class IncomeServiceImpl implements IncomeService {
 
   @Override
   public List<Income> getAllCurrentMonth(Long userId) {
-	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, DateUtil.getBeginOfMonth());
+	return incomeRepository.getAllByUserIdAndIncomeDateIsAfter(userId, DateUtil.getStartOfMonth());
   }
 
 

@@ -12,8 +12,8 @@ import org.expense_bot.model.Income;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.IncomeService;
-import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.SessionService;
+import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.IncomeUtil;
 import org.expense_bot.util.SessionUtil;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -43,36 +42,33 @@ public class IncomeRequestHandler extends RequestHandler {
   public void handle(Request request) {
     backButtonHandler.handleMainMenuBackButton(request);
     final Long chatId = request.getUserId();
-    final IncomeAction incomeAction = IncomeAction.valueOf(getUpdateData(request));
+    final String incomeAction = getUpdateData(request);
     final List<Income> incomes = incomeService.getAllCurrentMonth(chatId);
-
-    Optional.of(incomeAction).ifPresent(action -> {
-      switch (action) {
-        case WRITE:
-          write(chatId);
-          break;
-        case CHECK:
-          check(chatId, incomes);
-          break;
-        case CHECK_BALANCE:
-          checkBalance(chatId, incomes);
-          break;
-      }
-    });
+    switch (incomeAction) {
+      case Messages.WRITE_INCOMES:
+        handleWriteIncomes(chatId);
+        break;
+      case Messages.CHECK_INCOMES:
+        checkIncomes(chatId, incomes);
+        break;
+      case Messages.CHECK_BALANCE:
+        handleCheckBalance(chatId, incomes);
+        break;
+    }
   }
 
-  private void check(Long chatId, List<Income> incomes) {
+  private void checkIncomes(Long chatId, List<Income> incomes) {
     incomes.forEach(income -> telegramService.sendMessage(chatId, IncomeUtil.getIncome(income)));
     telegramService.sendMessage(chatId, Messages.CHOOSE_ANOTHER_PERIOD, keyboardBuilder.buildSetDateMenu());
     sessionService.updateState(chatId, ConversationState.Incomes.WAITING_FOR_PERIOD);
   }
 
-  private void write(Long chatId) {
+  private void handleWriteIncomes(Long chatId) {
     telegramService.sendMessage(chatId, Messages.ENTER_INCOME_SUM, keyboardBuilder.buildSetDateMenu());
     sessionService.update(SessionUtil.getSession(chatId));
   }
 
-  private void checkBalance(Long chatId, List<Income> incomes) {
+  private void handleCheckBalance(Long chatId, List<Income> incomes) {
     final List<Expense> expenses = expenseService.getByOneMonth(chatId, Messages.BY_ALL_CATEGORIES);
     final BigDecimal allExpensesSum = ExpenseUtil.getSum(expenses);
     final BigDecimal allIncomesSum = IncomeUtil.getSum(incomes);

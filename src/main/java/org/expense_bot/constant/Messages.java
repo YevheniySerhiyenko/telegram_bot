@@ -27,7 +27,7 @@ public class Messages {
 
   public static final String CHOOSE_CATEGORY = "Оберіть категорію!";
 
-  public static final String HELLO_MESSAGE = "\uD83D\uDC4BПривіт! За допомогою цього чат-бота ви зможете записати та перевірити ваші витрати\\!";
+  public static final String HELLO_MESSAGE = "\uD83D\uDC4BПривіт! За допомогою цього чат-бота ви зможете записати та перевірити ваші витрати!";
 
   public static final String CHOOSE_YOUR_ACTION = "Обирайте що хочете зробити ⤵️";
 

@@ -29,12 +29,12 @@ public class SessionService {
     public Session getSession(Long chatId) {
         return userSessionMap.getOrDefault(chatId, Session
           .builder()
-          .chatId(chatId)
+          .userId(chatId)
           .build());
     }
 
     private void saveSession(Session session) {
-        userSessionMap.put(session.getChatId(), session);
+        userSessionMap.put(session.getUserId(), session);
     }
 
     public void updateState(Long chatId, ConversationState state) {
@@ -44,14 +44,12 @@ public class SessionService {
     }
 
     public void update(Session userSession) {
-        final Session session = getSession(userSession.getChatId());
+        final Session session = getSession(userSession.getUserId());
         Optional.ofNullable(userSession.getState()).ifPresent(session::setState);
         Optional.ofNullable(userSession.getCategoryAction()).ifPresent(session::setCategoryAction);
         Optional.ofNullable(userSession.getAction()).ifPresent(session::setAction);
         Optional.ofNullable(userSession.getCategory()).ifPresent(session::setCategory);
         Optional.ofNullable(userSession.getExpenseSum()).ifPresent(session::setExpenseSum);
-        Optional.ofNullable(userSession.getPeriodFrom()).ifPresent(session::setPeriodFrom);
-        Optional.ofNullable(userSession.getPeriodTo()).ifPresent(session::setPeriodTo);
         Optional.ofNullable(userSession.getIncomeSum()).ifPresent(session::setIncomeSum);
         Optional.ofNullable(userSession.getExpenseDate()).ifPresent(session::setExpenseDate);
         Optional.ofNullable(userSession.getIncomeDate()).ifPresent(session::setIncomeDate);
@@ -60,6 +58,8 @@ public class SessionService {
         Optional.ofNullable(userSession.getStickerAction()).ifPresent(session::setStickerAction);
         Optional.ofNullable(userSession.getExpenseList()).ifPresent(session::setExpenseList);
         Optional.ofNullable(userSession.getIncomeList()).ifPresent(session::setIncomeList);
+        session.setPeriodFrom(userSession.getPeriodFrom());
+        session.setPeriodTo(userSession.getPeriodTo());
         saveSession(session);
     }
 

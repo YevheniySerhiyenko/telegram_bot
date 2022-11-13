@@ -41,28 +41,28 @@ public class CategoryFinalActionHandler extends RequestHandler {
   @Override
   public void handle(Request request) {
 	backButtonHandler.handleCategoriesBackButton(request);
-	final Long chatId = request.getUserId();
+	final Long userId = request.getUserId();
 	final String param = getUpdateData(request);
-	final CategoryAction categoryAction = sessionService.getSession(chatId).getCategoryAction();
+	final CategoryAction categoryAction = sessionService.getSession(userId).getCategoryAction();
 
 	Optional.ofNullable(categoryAction)
 	  .ifPresent(action -> {
 		switch (action) {
 		  case ADD_NEW_CATEGORY:
-			addCategory(chatId, param);
+			addCategory(userId, param);
 			break;
 		  case ADD_FROM_DEFAULT:
-			userCategoryService.add(chatId, param);
-			sendListNotSelected(chatId);
+			userCategoryService.add(userId, param);
+			sendListNotSelected(userId);
 			break;
 		  case DELETE_MY_CATEGORIES:
-			userCategoryService.delete(chatId, param);
-			sendListNotDeleted(chatId);
+			userCategoryService.delete(userId, param);
+			sendListNotDeleted(userId);
 			break;
 		}
 	  });
 
-	sessionService.update(SessionUtil.getSession(chatId, categoryAction));
+	sessionService.update(SessionUtil.getSession(userId, categoryAction));
   }
 
   private void addCategory(Long chatId, String param) {

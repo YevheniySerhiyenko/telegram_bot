@@ -12,10 +12,6 @@ public class DateUtil {
   private static final String DATE_PATTERN = "dd.MM.yyyy";
   private static final String DATE_TIME_PATTERN = "dd.MM.yyyy hh:mm:SS";
 
-  public static LocalDateTime getBeginOfMonth() {
-	return LocalDate.of(NOW.getYear(), NOW.getMonth(), ONE_DAY_VALUE).atStartOfDay();
-  }
-
   public static LocalDateTime getTodayMidnight() {
 	return LocalDateTime.from(NOW.atStartOfDay());
   }

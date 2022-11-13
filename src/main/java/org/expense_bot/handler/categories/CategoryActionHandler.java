@@ -7,12 +7,12 @@ import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Category;
-import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.Request;
+import org.expense_bot.model.UserCategory;
 import org.expense_bot.service.CategoryService;
 import org.expense_bot.service.UserCategoryService;
-import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.SessionService;
+import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -39,9 +39,9 @@ public class CategoryActionHandler extends RequestHandler {
   @Override
   public void handle(Request userRequest) {
 	final Long chatId = userRequest.getUserId();
-	final CategoryAction categoryAction = CategoryAction.valueOf(getUpdateData(userRequest));
+	final CategoryAction categoryAction = CategoryAction.parseAction(getUpdateData(userRequest));
 
-	Optional.of(categoryAction)
+	Optional.ofNullable(categoryAction)
 	  .ifPresent(action -> {
 		switch (action) {
 		  case ADD_NEW_CATEGORY:
@@ -57,19 +57,6 @@ public class CategoryActionHandler extends RequestHandler {
 	  });
 
 	sessionService.update(SessionUtil.getSession(chatId, categoryAction));
-  }
-
-  private CategoryAction parseAction(String text) {
-	switch (text) {
-	  case Messages.ADD_CATEGORY:
-		return CategoryAction.ADD_NEW_CATEGORY;
-	  case Messages.DELETE_MY_CATEGORIES:
-		return CategoryAction.DELETE_MY_CATEGORIES;
-	  case Messages.ADD_FROM_DEFAULT:
-		return CategoryAction.ADD_FROM_DEFAULT;
-	  default:
-		return null;
-	}
   }
 
   @Override

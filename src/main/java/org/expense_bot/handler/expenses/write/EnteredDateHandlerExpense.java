@@ -33,11 +33,11 @@ public class EnteredDateHandlerExpense extends RequestHandler {
   public void handle(Request request) {
 	backButtonHandler.handleExpensesBackButton(request);
 	final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
-	final Long chatId = request.getUserId();
+	final Long userId = request.getUserId();
 	drawAnotherMonthCalendar(request, keyboard);
 	final LocalDate localDate = Calendar.getDate(request);
-	sessionService.update(SessionUtil.buildSession(chatId, localDate));
-	telegramService.sendMessage(chatId, String.format(Messages.DATE, localDate));
+	sessionService.update(SessionUtil.buildSession(userId, localDate));
+	telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
   }
 
   private void drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {

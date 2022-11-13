@@ -11,10 +11,25 @@ public enum Period {
   private final String value;
 
   Period(String value) {
-	this.value = value;
+    this.value = value;
+  }
+
+  public static Period parsePeriod(String period) {
+    switch (period) {
+      case Messages.DAY:
+        return Period.DAY;
+      case Messages.WEEK:
+        return Period.WEEK;
+      case Messages.MONTH:
+        return Period.MONTH;
+      case Messages.PERIOD:
+        return Period.PERIOD;
+      default:
+        return null;
+    }
   }
 
   public String getValue() {
-	return value;
+    return value;
   }
 }

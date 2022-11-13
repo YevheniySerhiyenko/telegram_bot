@@ -17,4 +17,17 @@ public enum CategoryAction {
   public String getValue() {
 	return value;
   }
+
+  public static CategoryAction parseAction(String text) {
+	switch (text) {
+	  case Messages.ADD_CATEGORY:
+		return CategoryAction.ADD_NEW_CATEGORY;
+	  case Messages.DELETE_MY_CATEGORIES:
+		return CategoryAction.DELETE_MY_CATEGORIES;
+	  case Messages.ADD_FROM_DEFAULT:
+		return CategoryAction.ADD_FROM_DEFAULT;
+	  default:
+		return null;
+	}
+  }
 }
