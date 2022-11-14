@@ -44,8 +44,8 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public List<Expense> getByPeriod(Long chatId, LocalDate from, LocalDate to, String category) {
-	return getExpenses(chatId, category, from.atStartOfDay(), DateUtil.getTomorrowMidnight(to));
+  public List<Expense> getByPeriod(Long chatId, LocalDateTime from, LocalDateTime to, String category) {
+	return getExpenses(chatId, category, from, DateUtil.getTomorrowMidnight(to.toLocalDate()));
   }
 
   @Override

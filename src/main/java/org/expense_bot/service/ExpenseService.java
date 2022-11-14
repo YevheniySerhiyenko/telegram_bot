@@ -3,6 +3,7 @@ package org.expense_bot.service;
 import org.expense_bot.model.Expense;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExpenseService {
@@ -15,7 +16,7 @@ public interface ExpenseService {
 
   List<Expense> getByOneMonth(Long chatId, String category);
 
-  List<Expense> getByPeriod(Long chatId, LocalDate from, LocalDate to, String category);
+  List<Expense> getByPeriod(Long chatId, LocalDateTime from, LocalDateTime to, String category);
 
   Expense update(Long chatId, Expense expense);
 

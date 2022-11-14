@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.enums.ConversationState;
+import org.expense_bot.enums.Period;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
@@ -20,7 +21,10 @@ import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
+import javax.swing.text.html.parser.Parser;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 @Component
@@ -64,25 +68,25 @@ public class CheckCategoryHandler extends RequestHandler {
 
   private List<Expense> getExpenses(Long chatId, String category) {
 	final Session session = sessionService.getSession(chatId);
-	final String period = session.getPeriod();
-	final LocalDate periodFrom;
-	final LocalDate periodTo;
-	switch (period) {
-	  case Messages.DAY:
-		return expenseService.getByOneDay(chatId, category);
-	  case Messages.WEEK:
-		return expenseService.getByOneWeek(chatId, category);
-	  case Messages.MONTH:
-		periodFrom = DateUtil.getStartOfMonth().toLocalDate();
-		periodTo = DateUtil.getTomorrowMidnight().toLocalDate();
-		break;
-	  case Messages.PERIOD:
-		periodFrom = session.getPeriodFrom();
-		periodTo = session.getPeriodTo();
-		break;
-	  default:
-		throw new IllegalArgumentException("");
-	}
+	final Period period = Period.parsePeriod(session.getPeriod());
+	final LocalDateTime periodFrom = period.getPeriodFrom();
+	final LocalDateTime periodTo = period.getPeriodTo();
+//	switch (period) {
+//	  case DAY:
+//		return expenseService.getByOneDay(chatId, category);
+//	  case WEEK:
+//		return expenseService.getByOneWeek(chatId, category);
+//	  case MONTH:
+//		periodFrom = Period.MONTH;
+//		periodTo = DateUtil.getTomorrowMidnight().toLocalDate();
+//		break;
+//	  case PERIOD:
+//		periodFrom = session.getPeriodFrom();
+//		periodTo = session.getPeriodTo();
+//		break;
+//	  default:
+//		throw new IllegalArgumentException("");
+
 	return expenseService.getByPeriod(chatId, periodFrom, periodTo, category);
   }
 

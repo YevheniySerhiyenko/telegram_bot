@@ -4,23 +4,55 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.util.DateUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public enum Period {
   DAY(Messages.DAY) {
     @Override
-    public LocalDate getPeriodStart() {
-      return DateUtil.getTodayMidnight().toLocalDate();
+    public LocalDateTime getPeriodFrom() {
+      return DateUtil.getTodayMidnight();
+    }
+
+    @Override
+    public LocalDateTime getPeriodTo() {
+      return DateUtil.getTomorrowMidnight();
     }
   },
   WEEK(Messages.WEEK){
     @Override
-    public LocalDate getPeriodStart() {
+    public LocalDateTime getPeriodFrom() {
+      return DateUtil.getStartOfWeek();
+    }
+
+    @Override
+    public LocalDateTime getPeriodTo() {
+      return DateUtil.getTomorrowMidnight(LocalDate.now());
+    }
+  },
+  MONTH(Messages.MONTH){
+    @Override
+    public LocalDateTime getPeriodFrom() {
+      return DateUtil.getStartOfMonth();
+    }
+
+    @Override
+    public LocalDateTime getPeriodTo() {
+      return DateUtil.getTomorrowMidnight(LocalDate.now());
+    }
+  },
+
+  PERIOD(Messages.PERIOD){
+    @Override
+    public LocalDateTime getPeriodFrom() {
       return null;
     }
-  }
-  MONTH(Messages.MONTH),
-  PERIOD(Messages.PERIOD);
+
+    @Override
+    public LocalDateTime getPeriodTo() {
+      return null;
+    }
+  };
 
   private final String value;
 
@@ -39,5 +71,7 @@ public enum Period {
     return value;
   }
 
-  public abstract LocalDate getPeriodStart();
+  public abstract LocalDateTime getPeriodFrom();
+
+  public abstract LocalDateTime getPeriodTo();
 }
