@@ -1,10 +1,24 @@
 package org.expense_bot.enums;
 
 import org.expense_bot.constant.Messages;
+import org.expense_bot.util.DateUtil;
+
+import java.time.LocalDate;
+import java.util.Arrays;
 
 public enum Period {
-  DAY(Messages.DAY),
-  WEEK(Messages.WEEK),
+  DAY(Messages.DAY) {
+    @Override
+    public LocalDate getPeriodStart() {
+      return DateUtil.getTodayMidnight().toLocalDate();
+    }
+  },
+  WEEK(Messages.WEEK){
+    @Override
+    public LocalDate getPeriodStart() {
+      return null;
+    }
+  }
   MONTH(Messages.MONTH),
   PERIOD(Messages.PERIOD);
 
@@ -15,21 +29,15 @@ public enum Period {
   }
 
   public static Period parsePeriod(String period) {
-    switch (period) {
-      case Messages.DAY:
-        return Period.DAY;
-      case Messages.WEEK:
-        return Period.WEEK;
-      case Messages.MONTH:
-        return Period.MONTH;
-      case Messages.PERIOD:
-        return Period.PERIOD;
-      default:
-        return null;
-    }
+    return Arrays.stream(values())
+      .filter(enm -> enm.getValue().equals(period))
+      .findFirst()
+      .orElse(null);
   }
 
   public String getValue() {
     return value;
   }
+
+  public abstract LocalDate getPeriodStart();
 }

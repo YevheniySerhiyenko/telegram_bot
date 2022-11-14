@@ -12,8 +12,9 @@ import org.expense_bot.model.Expense;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.Session;
 import org.expense_bot.service.ExpenseService;
-import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.SessionService;
+import org.expense_bot.service.impl.TelegramService;
+import org.expense_bot.util.DateUtil;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
@@ -64,20 +65,25 @@ public class CheckCategoryHandler extends RequestHandler {
   private List<Expense> getExpenses(Long chatId, String category) {
 	final Session session = sessionService.getSession(chatId);
 	final String period = session.getPeriod();
+	final LocalDate periodFrom;
+	final LocalDate periodTo;
 	switch (period) {
 	  case Messages.DAY:
 		return expenseService.getByOneDay(chatId, category);
 	  case Messages.WEEK:
 		return expenseService.getByOneWeek(chatId, category);
 	  case Messages.MONTH:
-		return expenseService.getByOneMonth(chatId, category);
+		periodFrom = DateUtil.getStartOfMonth().toLocalDate();
+		periodTo = DateUtil.getTomorrowMidnight().toLocalDate();
+		break;
 	  case Messages.PERIOD:
-		final LocalDate periodFrom = session.getPeriodFrom();
-		final LocalDate periodTo = session.getPeriodTo();
-		return expenseService.getByPeriod(chatId, periodFrom, periodTo, category);
+		periodFrom = session.getPeriodFrom();
+		periodTo = session.getPeriodTo();
+		break;
 	  default:
-		return null;
+		throw new IllegalArgumentException("");
 	}
+	return expenseService.getByPeriod(chatId, periodFrom, periodTo, category);
   }
 
   @Override
