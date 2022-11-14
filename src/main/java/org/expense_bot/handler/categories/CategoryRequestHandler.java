@@ -3,15 +3,16 @@ package org.expense_bot.handler.categories;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Commands;
 import org.expense_bot.constant.Messages;
-import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
-import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.SessionService;
+import org.expense_bot.service.impl.TelegramService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+
+import static org.expense_bot.enums.ConversationState.Categories.WAITING_CATEGORY_ACTION;
 
 @Component
 @RequiredArgsConstructor
@@ -32,8 +33,7 @@ public class CategoryRequestHandler extends RequestHandler {
 	backButtonHandler.handleCategoriesBackButton(request);
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
 	telegramService.sendMessage(request.getUserId(), Messages.CHOOSE_ACTION, keyboard);
-	final Long chatId = request.getUserId();
-	sessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
+	sessionService.updateState(request.getUserId(), WAITING_CATEGORY_ACTION);
   }
 
   @Override

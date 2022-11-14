@@ -15,16 +15,12 @@ import org.expense_bot.model.Session;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.util.DateUtil;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
-import javax.swing.text.html.parser.Parser;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 @Component
@@ -43,51 +39,34 @@ public class CheckCategoryHandler extends RequestHandler {
   }
 
   @Override
-  public void handle(Request userRequest) {
-	backButtonHandler.handleExpensesBackButton(userRequest);
-	final ReplyKeyboard keyboard = keyboardBuilder.buildCreatePDFMenu();
-	final Long chatId = userRequest.getUserId();
-	final String category = getUpdateData(userRequest);
-	final List<Expense> expenses = getExpenses(chatId, category);
+  public void handle(Request request) {
+	backButtonHandler.handleExpensesBackButton(request);
+	final Long chatId = request.getUserId();
+	final String category = getUpdateData(request);
 	final String period = sessionService.getSession(chatId).getPeriod();
+	final List<Expense> expenses = getExpenses(chatId, category,period);
 	sessionService.update(SessionUtil.getSession(chatId, expenses, category));
-	sendExpenses(expenses, keyboard, chatId, period);
+	sendExpenses(expenses, chatId, period);
   }
 
-  private void sendExpenses(List<Expense> expenses, ReplyKeyboard keyboard, Long chatId, String period) {
+  private List<Expense> getExpenses(Long chatId, String periodParam, String category) {
+	final Period period = Period.parsePeriod(periodParam);
+	final LocalDateTime from = period.getPeriodFrom();
+	final LocalDateTime to = period.getPeriodTo();
+	return expenseService.getByPeriod(chatId, from, to, category);
+  }
+
+  private void sendExpenses(List<Expense> expenses, Long chatId, String period) {
 	if(expenses == null || expenses.isEmpty()) {
 	  telegramService.sendMessage(chatId, Messages.NO_EXPENSES_FOR_PERIOD, keyboardBuilder.buildExpenseMenu());
 	  sessionService.updateState(chatId,ConversationState.Init.WAITING_EXPENSE_ACTION);
 	} else {
 	  telegramService.sendMessage(chatId, Messages.SUCCESS);
 	  final List<ExpenseGroup> groupList = ExpenseMapper.toGroup(expenses);
-	  groupList.forEach(expenseGroup -> telegramService.sendMessage(chatId, ExpenseUtil.getMessage(expenseGroup), keyboardBuilder.buildExpenseOptions(expenseGroup)));
+	  groupList.forEach(group ->
+		telegramService.sendMessage(chatId, ExpenseUtil.getMessage(group), keyboardBuilder.buildExpenseOptions(group)));
 	  telegramService.sendMessage(chatId, ExpenseUtil.getSumMessage(expenses, period), keyboardBuilder.buildCreatePDFMenu());
 	}
-  }
-
-  private List<Expense> getExpenses(Long chatId, String category) {
-	final Session session = sessionService.getSession(chatId);
-	final Period period = Period.parsePeriod(session.getPeriod());
-	final LocalDateTime periodFrom = period.getPeriodFrom();
-	final LocalDateTime periodTo = period.getPeriodTo();
-//	switch (period) {
-//	  case DAY:
-//		return expenseService.getByOneDay(chatId, category);
-//	  case WEEK:
-//		return expenseService.getByOneWeek(chatId, category);
-//	  case MONTH:
-//		periodFrom = Period.MONTH;
-//		periodTo = DateUtil.getTomorrowMidnight().toLocalDate();
-//		break;
-//	  case PERIOD:
-//		periodFrom = session.getPeriodFrom();
-//		periodTo = session.getPeriodTo();
-//		break;
-//	  default:
-//		throw new IllegalArgumentException("");
-
-	return expenseService.getByPeriod(chatId, periodFrom, periodTo, category);
   }
 
   @Override

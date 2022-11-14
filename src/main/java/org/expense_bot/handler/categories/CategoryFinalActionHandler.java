@@ -69,7 +69,7 @@ public class CategoryFinalActionHandler extends RequestHandler {
 	userCategoryService.add(chatId, param);
 	telegramService.sendMessage(chatId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardBuilder.buildCategoryOptionsMenu());
 	sessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
-//	throw new RuntimeException(Messages.CATEGORY_ADDED_TO_YOUR_LIST);
+	throw new RuntimeException(Messages.CATEGORY_ADDED_TO_YOUR_LIST);
   }
 
   private void sendListNotDeleted(Long chatId) {

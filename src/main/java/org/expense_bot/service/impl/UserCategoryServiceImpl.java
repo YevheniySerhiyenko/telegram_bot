@@ -26,11 +26,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   public UserCategory add(Long userId, String categoryName) {
     existByUser(userId, categoryName);
     telegramService.sendMessage(userId, Messages.SUCCESS);
-    final UserCategory userCategory = UserCategory.builder()
-      .userId(userId)
-      .category(categoryName)
-      .build();
-    return repository.save(userCategory);
+    return repository.save(getCategory(userId, categoryName));
   }
 
   @Override
@@ -47,18 +43,23 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   }
 
   private void existByUser(Long userId, String category) {
-    final Optional<UserCategory> userCategory = repository.getByUserIdAndCategory(userId, category);
-
-    if(userCategory.isPresent()) {
+    repository.getByUserIdAndCategory(userId, category).ifPresent(value -> {
       telegramService.sendSticker(userId, getSticker(userId));
       telegramService.sendMessage(userId, Messages.ALREADY_HAD_SUCH_CATEGORY);
       sessionService.updateState(userId, ConversationState.Categories.WAITING_FINAL_ACTION);
       throw new RuntimeException(Messages.ALREADY_HAD_SUCH_CATEGORY);
-    }
+    });
   }
 
   public String getSticker(Long userId) {
     return stickerSender.getSticker(userId, Messages.ERROR_STICKER_MESSAGE);
+  }
+
+  private UserCategory getCategory(Long userId, String categoryName) {
+    return UserCategory.builder()
+      .userId(userId)
+      .category(categoryName)
+      .build();
   }
 
 }
