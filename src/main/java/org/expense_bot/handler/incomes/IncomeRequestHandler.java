@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
+import org.expense_bot.enums.Period;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
@@ -20,6 +21,7 @@ import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -69,7 +71,10 @@ public class IncomeRequestHandler extends RequestHandler {
   }
 
   private void handleCheckBalance(Long chatId, List<Income> incomes) {
-    final List<Expense> expenses = expenseService.getByOneMonth(chatId, Messages.BY_ALL_CATEGORIES);
+    final LocalDateTime from = Period.MONTH.getDateFrom();
+    final LocalDateTime to = Period.MONTH.getDateTo();
+
+    final List<Expense> expenses = expenseService.getByPeriod(chatId, from, to, Messages.BY_ALL_CATEGORIES);
     final BigDecimal allExpensesSum = ExpenseUtil.getSum(expenses);
     final BigDecimal allIncomesSum = IncomeUtil.getSum(incomes);
 
@@ -78,7 +83,7 @@ public class IncomeRequestHandler extends RequestHandler {
     telegramService.sendMessage(chatId, Messages.ALL_EXPENSES_SUM + allExpensesSum);
     telegramService.sendMessage(chatId, Messages.ALL_INCOMES_SUM + allIncomesSum);
     telegramService.sendMessage(chatId, Messages.ACTUAL_BALANCE + actualBalance);
-    sessionService.update(SessionUtil.getSession(chatId,IncomeAction.WRITE));
+    sessionService.update(SessionUtil.getSession(chatId, IncomeAction.WRITE));
   }
 
 

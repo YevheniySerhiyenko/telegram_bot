@@ -9,5 +9,10 @@
       "name": "pdf.file.size",
       "type": "java.lang.String",
       "description": "Description for pdf.file.size."
+    },
+    {
+      "name": "spring.main.allow-bean-definition-overriding=true",
+      "type": "java.lang.String",
+      "description": "Description for spring.main.allow-bean-definition-overriding=true."
     }
   ] }

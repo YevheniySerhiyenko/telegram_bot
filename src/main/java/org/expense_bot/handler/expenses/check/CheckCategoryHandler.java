@@ -11,14 +11,12 @@ import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.mapper.ExpenseMapper;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Request;
-import org.expense_bot.model.Session;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,8 +49,8 @@ public class CheckCategoryHandler extends RequestHandler {
 
   private List<Expense> getExpenses(Long chatId, String periodParam, String category) {
 	final Period period = Period.parsePeriod(periodParam);
-	final LocalDateTime from = period.getPeriodFrom();
-	final LocalDateTime to = period.getPeriodTo();
+	final LocalDateTime from = period.getDateFrom();
+	final LocalDateTime to = period.getDateTo();
 	return expenseService.getByPeriod(chatId, from, to, category);
   }
 

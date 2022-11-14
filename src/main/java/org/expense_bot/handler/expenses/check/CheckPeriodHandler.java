@@ -20,6 +20,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import static org.expense_bot.constant.Messages.*;
+
 @Component
 @RequiredArgsConstructor
 public class CheckPeriodHandler extends RequestHandler {
@@ -39,8 +41,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	backButtonHandler.handleExpensesBackButton(request);
 	final Long userId = request.getUserId();
 	final String period = getUpdateData(request);
-	final InlineKeyboardMarkup calendar = Calendar.changeMonth(request);
-	drawAnotherMonthCalendar(request, calendar);
+	drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
 	checkPeriod(request, period);
 
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(userId);
@@ -56,17 +57,16 @@ public class CheckPeriodHandler extends RequestHandler {
 	}
   }
 
-
   private void checkPeriod(Request request, String period) {
 	final Long chatId = request.getUserId();
 	if(Objects.equals(period, Period.PERIOD.getValue())) {
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_PERIOD, Calendar.buildCalendar(LocalDate.now()));
+	  telegramService.sendMessage(chatId, CHOOSE_PERIOD, Calendar.buildCalendar(LocalDate.now()));
 	  sessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_FOR_PERIOD));
-	  throw new RuntimeException(Messages.CHOOSE_PERIOD);
+	  throw new RuntimeException(CHOOSE_PERIOD);
 	}
 	if(hasCallBack(request)) {
 	  final LocalDate date = Calendar.getDate(request);
-	  telegramService.sendMessage(chatId, String.format(Messages.DATE, date));
+	  telegramService.sendMessage(chatId, String.format(DATE, date));
 	  sessionService.updateState(chatId, ConversationState.Expenses.WAITING_FOR_PERIOD);
 	  setDates(date, request);
 	}
@@ -87,7 +87,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	if(session.getPeriodFrom() != null && session.getPeriodTo() != null) {
 	  session.setState(ConversationState.Expenses.WAITING_CHECK_CATEGORY);
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
-	  telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY, keyboard);
+	  telegramService.sendMessage(chatId, CHOOSE_CATEGORY, keyboard);
 	  sessionService.update(session);
 	  throw new RuntimeException("Dates entered");
 	}

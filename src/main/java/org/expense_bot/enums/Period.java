@@ -10,46 +10,46 @@ import java.util.Arrays;
 public enum Period {
   DAY(Messages.DAY) {
     @Override
-    public LocalDateTime getPeriodFrom() {
+    public LocalDateTime getDateFrom() {
       return DateUtil.getTodayMidnight();
     }
 
     @Override
-    public LocalDateTime getPeriodTo() {
+    public LocalDateTime getDateTo() {
       return DateUtil.getTomorrowMidnight();
     }
   },
   WEEK(Messages.WEEK){
     @Override
-    public LocalDateTime getPeriodFrom() {
+    public LocalDateTime getDateFrom() {
       return DateUtil.getStartOfWeek();
     }
 
     @Override
-    public LocalDateTime getPeriodTo() {
+    public LocalDateTime getDateTo() {
       return DateUtil.getTomorrowMidnight(LocalDate.now());
     }
   },
   MONTH(Messages.MONTH){
     @Override
-    public LocalDateTime getPeriodFrom() {
+    public LocalDateTime getDateFrom() {
       return DateUtil.getStartOfMonth();
     }
 
     @Override
-    public LocalDateTime getPeriodTo() {
+    public LocalDateTime getDateTo() {
       return DateUtil.getTomorrowMidnight(LocalDate.now());
     }
   },
 
   PERIOD(Messages.PERIOD){
     @Override
-    public LocalDateTime getPeriodFrom() {
+    public LocalDateTime getDateFrom() {
       return null;
     }
 
     @Override
-    public LocalDateTime getPeriodTo() {
+    public LocalDateTime getDateTo() {
       return null;
     }
   };
@@ -71,7 +71,7 @@ public enum Period {
     return value;
   }
 
-  public abstract LocalDateTime getPeriodFrom();
+  public abstract LocalDateTime getDateFrom();
 
-  public abstract LocalDateTime getPeriodTo();
+  public abstract LocalDateTime getDateTo();
 }

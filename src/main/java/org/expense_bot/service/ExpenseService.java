@@ -10,12 +10,6 @@ public interface ExpenseService {
 
   Expense save(Expense spent);
 
-  List<Expense> getByOneDay(Long chatId, String category);
-
-  List<Expense> getByOneWeek(Long chatId, String category);
-
-  List<Expense> getByOneMonth(Long chatId, String category);
-
   List<Expense> getByPeriod(Long chatId, LocalDateTime from, LocalDateTime to, String category);
 
   Expense update(Long chatId, Expense expense);

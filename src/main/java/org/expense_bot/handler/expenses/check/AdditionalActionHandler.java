@@ -81,7 +81,6 @@ public class AdditionalActionHandler extends RequestHandler {
       final List<String> list = new ArrayList<>(List.of(text));
       list.addAll(ExpenseMapper.toDetailExpense(collect));
       telegramService.buildDetailMessage(request, list);
-
     }
   }
 

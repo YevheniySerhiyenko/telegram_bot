@@ -32,9 +32,8 @@ public class EnteredDateHandlerExpense extends RequestHandler {
   @Override
   public void handle(Request request) {
 	backButtonHandler.handleExpensesBackButton(request);
-	final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
 	final Long userId = request.getUserId();
-	drawAnotherMonthCalendar(request, keyboard);
+	drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
 	final LocalDate localDate = Calendar.getDate(request);
 	sessionService.update(SessionUtil.buildSession(userId, localDate));
 	telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
