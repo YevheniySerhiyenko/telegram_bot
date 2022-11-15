@@ -23,16 +23,16 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public List<Expense> getByPeriod(Long chatId, LocalDateTime from, LocalDateTime to, String category) {
+  public List<Expense> getByPeriod(Long userId, LocalDateTime from, LocalDateTime to, String category) {
 	final LocalDateTime tomorrowMidnight = DateUtil.getTomorrowMidnight(to.toLocalDate());
 	if(category.equals(Messages.BY_ALL_CATEGORIES)) {
-	  return expenseRepository.getAllByChatIdAndDateTimeBetween(chatId, from, tomorrowMidnight);
+	  return expenseRepository.getAllByUserIdAndDateTimeBetween(userId, from, tomorrowMidnight);
 	}
-	return expenseRepository.getAllByChatIdAndDateTimeBetweenAndCategory(chatId, from, tomorrowMidnight, category);
+	return expenseRepository.getAllByUserIdAndDateTimeBetweenAndCategory(userId, from, tomorrowMidnight, category);
   }
 
   @Override
-  public Expense update(Long chatId, Expense expense) {
+  public Expense update(Long userId, Expense expense) {
 	return expenseRepository.save(expense);
   }
 

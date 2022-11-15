@@ -17,18 +17,18 @@ public class FirstEnterHandler {
   private final SessionService sessionService;
 
   public void firstEnterHandle(Request userRequest) {
-	final Long chatId = userRequest.getUserId();
+	final Long userId = userRequest.getUserId();
 //	stickerService.
 	//todo
 	String token = "CAACAgIAAxkBAAEGRjFjYPXCrp0yRZdeOjiCZ1o5rvO9QAACGQAD6dgTKFdhEtpsYKrLKgQ";
-	telegramService.sendMessage(chatId, Messages.HELLO);
-	telegramService.sendSticker(chatId,token);
+	telegramService.sendMessage(userId, Messages.HELLO);
+	telegramService.sendSticker(userId,token);
 
   }
 
   public void sendCategoriesInfo(Request userRequest){
     // send info about default categories
-    //set Conversation Started
+    //set ConversationState Started
   }
 
   public void sendStickersInfo(Request userRequest){

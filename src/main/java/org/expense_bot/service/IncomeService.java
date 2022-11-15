@@ -11,6 +11,6 @@ public interface IncomeService {
 
   List<Income> getAllCurrentMonth(Long userId);
 
-  List<Income> getAll(Long chatId, LocalDate date);
+  List<Income> getAll(Long userId, LocalDate date);
 
 }

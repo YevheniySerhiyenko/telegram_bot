@@ -37,17 +37,17 @@ public class ExpenseBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
       final String textFromUser = getText(update);
-      final Long chatId = getChatId(update);
+      final Long userId = getUserId(update);
       String userFirstName = getFirstName(update);
 
-      log.info("[{}, {}] : {}", chatId, userFirstName, textFromUser);
+      log.info("[{}, {}] : {}", userId, userFirstName, textFromUser);
 
-      Session session = sessionService.getSession(chatId);
+      Session session = sessionService.getSession(userId);
       Request userRequest = Request
         .builder()
         .update(update)
         .session(session)
-        .userId(chatId)
+        .userId(userId)
         .build();
 
       boolean dispatched = dispatcher.dispatch(userRequest);
@@ -71,7 +71,7 @@ public class ExpenseBot extends TelegramLongPollingBot {
     return update.getCallbackQuery().getFrom().getFirstName();
   }
 
-  private Long getChatId(Update update) {
+  private Long getUserId(Update update) {
     if(update.hasMessage()) {
       return update.getMessage().getChatId();
     }

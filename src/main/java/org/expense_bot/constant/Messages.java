@@ -37,9 +37,9 @@ public class Messages {
 
   public static final String ALREADY_HAD_SUCH_CATEGORY = "Ви вже маєте дану категорію!";
 
-  public static final String ADD_CATEGORY = "Додати свою категорію";
+  public static final String ADD_CATEGORY = "➕ Додати свою категорію";
 
-  public static final String DELETE_MY_CATEGORIES = "Видалити мої категорії";
+  public static final String DELETE_MY_CATEGORIES = "➖ Видалити мої категорії";
 
   public static final String ADD_FROM_DEFAULT = "Додати існуючу категорію";
 
@@ -65,7 +65,7 @@ public class Messages {
 
   public static final String CHOOSE_ACTION_TO_SHOW_STICKER = "Виберіть дію щоб подивитись стікер";
 
-  public static final String CHECK_INCOMES = "Перевірити доходи";
+  public static final String CHECK_INCOMES = "\uD83D\uDCCA Перевірити доходи";
 
   public static final String WRITE_INCOMES = "\uD83D\uDCDD Записати доходи";
 

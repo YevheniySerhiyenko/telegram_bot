@@ -30,11 +30,11 @@ public class CategoryEnteredHandler extends RequestHandler {
   @Override
   public void handle(Request request) {
 	backButtonHandler.handleExpensesBackButton(request);
-	final Long chatId = request.getUserId();
+	final Long userId = request.getUserId();
 	final ReplyKeyboard keyboard = keyboardBuilder.buildSetDateMenu();
-	telegramService.sendMessage(chatId, Messages.ENTER_SUM, keyboard);
+	telegramService.sendMessage(userId, Messages.ENTER_SUM, keyboard);
 	final String category = getUpdateData(request);
-	sessionService.update(SessionUtil.buildSession(chatId, category));
+	sessionService.update(SessionUtil.buildSession(userId, category));
   }
 
   @Override

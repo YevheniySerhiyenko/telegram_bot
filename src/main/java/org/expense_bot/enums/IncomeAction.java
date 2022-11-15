@@ -27,7 +27,7 @@ public enum IncomeAction {
     return Arrays.stream(values())
       .filter(action -> action.getValue().equals(text))
       .findFirst()
-      .orElseThrow(() -> new RuntimeException("Unable to parse income action"));
+      .orElseThrow(() -> new IllegalArgumentException("Unable to parse income action"));
 
   }
 }

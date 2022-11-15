@@ -18,17 +18,17 @@ public class ExpenseUtil {
 	return Expense.builder()
 	  .category(session.getCategory())
 	  .sum(session.getExpenseSum())
-	  .chatId(session.getUserId())
+	  .userId(session.getUserId())
 	  .dateTime(session.getExpenseDate() != null ? session.getExpenseDate().atStartOfDay() : NOW)
 	  .build();
   }
 
   public static String getMessage(ExpenseGroup expenseGroup) {
-	return expenseGroup.getCategory() + " : " + expenseGroup.getSum();
+	return expenseGroup.getCategory() + " : " + expenseGroup.getSum() + "💰";
   }
 
   public static String getSumMessage(List<Expense> expenses, String period) {
-	final BigDecimal sum = expenses.stream().map(Expense::getSum).reduce(BigDecimal::add).orElse(null);
+	final BigDecimal sum = expenses.stream().map(Expense::getSum).reduce(BigDecimal.ZERO,BigDecimal::add);
 	return String.format(Messages.RESPONSE_MESSAGE, period.toLowerCase(Locale.ROOT)) + sum;
   }
 
@@ -36,13 +36,6 @@ public class ExpenseUtil {
 	return expenses.stream()
 	  .map(Expense::getSum)
 	  .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
-
-
-  public static String getMessage(Expense expense) {
-	return expense.getCategory()
-	  + "  " + expense.getSum()
-	  + "грн  " + DateUtil.getDateTime(expense.getDateTime());
   }
 
 }

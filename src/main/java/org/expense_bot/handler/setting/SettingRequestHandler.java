@@ -26,11 +26,11 @@ public class SettingRequestHandler extends RequestHandler {
   }
 
   @Override
-  public void handle(Request userRequest) {
-	final Long chatId = userRequest.getUserId();
+  public void handle(Request request) {
+	final Long userId = request.getUserId();
 	final ReplyKeyboard keyboard = keyboardBuilder.buildSettingsMenu();
-	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	sessionService.updateState(chatId, ConversationState.Settings.WAITING_SETTINGS_ACTION);
+	telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboard);
+	sessionService.updateState(userId, ConversationState.Settings.WAITING_SETTINGS_ACTION);
   }
 
   @Override

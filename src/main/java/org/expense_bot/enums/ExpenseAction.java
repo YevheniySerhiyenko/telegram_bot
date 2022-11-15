@@ -23,7 +23,7 @@ public enum ExpenseAction {
     return Arrays.stream(values())
       .filter(action -> action.getValue().equals(text))
       .findFirst()
-      .orElseThrow(() -> new RuntimeException("Unable to parse init action"));
+      .orElseThrow(() -> new IllegalArgumentException("Unable to parse init action"));
 
   }
 }

@@ -31,7 +31,7 @@ public class StartCommandHandler extends RequestHandler {
         final Long userId = request.getUserId();
         telegramService.sendMessage(userId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
         telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION);
-        sessionService.updateState(userId,ConversationState.Init.WAITING_INIT_ACTION);
+        sessionService.updateState(userId, ConversationState.Init.WAITING_INIT_ACTION);
     }
 
     @Override

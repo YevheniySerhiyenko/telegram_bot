@@ -11,7 +11,6 @@ import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
-import org.expense_bot.service.impl.SessionService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

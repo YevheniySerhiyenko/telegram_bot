@@ -42,9 +42,9 @@ public class TelegramService {
         }
     }
 
-    private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup replyKeyboard, Long chatId, Integer messageId) {
+    private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup replyKeyboard, Long userId, Integer messageId) {
         return EditMessageReplyMarkup.builder()
-          .chatId(String.valueOf(chatId))
+          .chatId(String.valueOf(userId))
           .replyMarkup(replyKeyboard)
           .messageId(messageId)
           .build();

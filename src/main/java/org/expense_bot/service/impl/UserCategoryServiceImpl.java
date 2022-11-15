@@ -11,7 +11,6 @@ import org.expense_bot.service.UserCategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +32,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   public void delete(Long userId, String categoryName) {
     repository.getByUserIdAndCategory(userId, categoryName)
       .ifPresent(repository::delete);
-    final String message = String.format(Messages.CATEGORY_DELETED, categoryName);
-    telegramService.sendMessage(userId, message + Buttons.BUTTON_TRASH);
+    telegramService.sendMessage(userId, Buttons.BUTTON_TRASH);
   }
 
   @Override

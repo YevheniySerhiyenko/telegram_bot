@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserCategoryRepository extends JpaRepository<UserCategory, Long> {
 
-  Optional<UserCategory> getByUserIdAndCategory(Long chatId, String categoryName);
+  Optional<UserCategory> getByUserIdAndCategory(Long userId, String categoryName);
 
   List<UserCategory> getByUserId(Long userId);
 

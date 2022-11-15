@@ -233,7 +233,7 @@ public class KeyboardBuilder {
 	final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 	final List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
 	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	buttons.add(Utils.buildButton(Buttons.BUTTON_INFO, "Деталі ℹ" + " " + group.getCategory()));
+	buttons.add(Utils.buildButton(Buttons.BUTTON_INFO, group.getCategory()));
 	keyboards.add(buttons);
 	inlineKeyboardMarkup.setKeyboard(keyboards);
 	return inlineKeyboardMarkup;

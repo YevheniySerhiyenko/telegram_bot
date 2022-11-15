@@ -13,105 +13,105 @@ import java.util.List;
 
 public class SessionUtil {
 
-  public static Session getSession(Long chatId, CategoryAction categoryAction) {
+  public static Session getSession(Long userId, CategoryAction categoryAction) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .categoryAction(categoryAction)
 	  .state(ConversationState.Categories.WAITING_FINAL_ACTION)
 	  .build();
   }
 
-  public static Session getSession(Long chatId, String period, ConversationState state) {
+  public static Session getSession(Long userId, String period, ConversationState state) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .period(period)
 	  .state(state)
 	  .build();
   }
 
-  public static Session getSession(BigDecimal sum, Long chatId) {
+  public static Session getSession(BigDecimal sum, Long userId) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .expenseSum(sum)
 	  .state(ConversationState.Init.WAITING_EXPENSE_ACTION)
 	  .build();
   }
 
-  public static Session buildExpenseSession(Long chatId, LocalDate date) {
+  public static Session buildExpenseSession(Long userId, LocalDate date) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
 	  .expenseDate(date)
 	  .build();
   }
 
-  public static Session getSession(Long chatId, List<Expense> expenses, String category) {
+  public static Session getSession(Long userId, List<Expense> expenses, String category) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .expenseList(expenses)
 	  .category(category)
 	  .state(ConversationState.Expenses.WAITING_ADDITIONAL_ACTION)
 	  .build();
   }
 
-  public static Session buildSession(Long chatId, LocalDate localDate) {
+  public static Session buildSession(Long userId, LocalDate localDate) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .expenseDate(localDate)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
 	  .build();
   }
 
-  public static Session buildSession(Long chatId, String category) {
+  public static Session buildSession(Long userId, String category) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .category(category)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
 	  .build();
   }
 
-  public static Session getSession(Long chatId) {
+  public static Session getSession(Long userId) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .incomeAction(IncomeAction.WRITE)
 	  .state(ConversationState.Incomes.WAITING_FOR_INCOME_SUM)
 	  .build();
   }
 
-  public static Session getSession(Long chatId, IncomeAction action) {
+  public static Session getSession(Long userId, IncomeAction action) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .incomeAction(action)
 	  .build();
   }
 
-  public static Session buildIncomeSession(Long chatId, LocalDate localDate) {
+  public static Session buildIncomeSession(Long userId, LocalDate localDate) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .incomeDate(localDate)
 	  .state(ConversationState.Incomes.WAITING_FOR_INCOME_SUM)
 	  .build();
   }
 
-  public static Session getSession(Long chatId, StickerAction action) {
+  public static Session getSession(Long userId, StickerAction action) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .stickerAction(action)
 	  .state(ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION)
 	  .build();
   }
 
-  public static Session getStickerSession(Long chatId, String action) {
+  public static Session getStickerSession(Long userId, String action) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .action(action)
 	  .state(ConversationState.Settings.WAITING_STICKERS_ACTION)
 	  .build();
   }
 
-  public static Session finalUpdate(Long chatId) {
+  public static Session finalUpdate(Long userId) {
 	return Session.builder()
-	  .userId(chatId)
+	  .userId(userId)
 	  .periodFrom(null)
 	  .periodTo(null)
 	  .state(ConversationState.Expenses.WAITING_ADDITIONAL_ACTION)

@@ -1,7 +1,6 @@
 package org.expense_bot.handler.expenses.check;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
@@ -50,17 +49,17 @@ public class AdditionalActionHandler extends RequestHandler {
 
   private void createPDF(Request request) {
     if(hasMessage(request) && getUpdateData(request).equals(Messages.CREATE_PDF)) {
-      final Long chatId = request.getUserId();
-      final Session session = sessionService.getSession(chatId);
+      final Long userId = request.getUserId();
+      final Session session = sessionService.getSession(userId);
       final ByteArrayInputStream document = pdfCreator.generatePdf(request, session.getExpenseList());
       telegramService.sendDocument(document, request);
     }
   }
 
   private void handleInfo(Request request) {
-    if(hasCallBack(request) && getUpdateData(request).startsWith(Buttons.BUTTON_INFO)) {
+    if(hasCallBack(request)) {
       final Long userId = request.getUserId();
-      final String category = getUpdateData(request).split(" ")[2];
+      final String category = getUpdateData(request);
       final Session session = sessionService.getSession(userId);
       final List<Expense> expenseList = session.getExpenseList();
       final List<Expense> collect = expenseList

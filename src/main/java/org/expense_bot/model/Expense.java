@@ -31,7 +31,7 @@ public class Expense {
   private Long id;
 
   @Column(name = "user_id")
-  private Long chatId;
+  private Long userId;
 
   @Column(name = "category",nullable = false)
   private String category;

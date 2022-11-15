@@ -31,8 +31,8 @@ public class IncomeServiceImpl implements IncomeService {
 
 
   @Override
-  public List<Income> getAll(Long chatId, LocalDate date) {
-	return incomeRepository.getAllBy(chatId, date.getMonthValue(), date.getYear());
+  public List<Income> getAll(Long userId, LocalDate date) {
+	return incomeRepository.getAllBy(userId, date.getMonthValue(), date.getYear());
   }
 
 

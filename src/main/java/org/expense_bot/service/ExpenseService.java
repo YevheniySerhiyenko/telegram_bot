@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface ExpenseService {
 
-  Expense save(Expense spent);
+  Expense save(Expense expense);
 
-  List<Expense> getByPeriod(Long chatId, LocalDateTime from, LocalDateTime to, String category);
+  List<Expense> getByPeriod(Long userId, LocalDateTime from, LocalDateTime to, String category);
 
-  Expense update(Long chatId, Expense expense);
+  Expense update(Long userId, Expense expense);
 
 }

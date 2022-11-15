@@ -33,7 +33,12 @@ public class ExpenseMapper {
   public static List<String> toDetailExpense(List<Expense> expenses) {
 	return expenses.stream()
 	  .sorted(Comparator.comparing(Expense::getDateTime))
-	  .map(expense -> "\n\uD83D\uDD34\t\t" + expense.getSum() + " грн  \t\t\uD83D\uDCC5\t" + DateUtil.getDateTime(expense.getDateTime()))
+	  .map(expense ->
+		"\n\uD83D\uDD34\t\t" + expense.getSum()
+		  + " грн  \t\t\uD83D\uDCC5\t"
+		  + DateUtil.getDateTime(expense.getDateTime())
+		  + "\n🕢"
+		  + DateUtil.getTime(expense.getDateTime()))
 	  .collect(Collectors.toList());
   }
 

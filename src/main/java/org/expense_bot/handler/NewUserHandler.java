@@ -19,19 +19,19 @@ public class NewUserHandler {
   private final UserStickerService userStickerService;
   private final StickerSender stickerSender;
 
-  public void handle(Request userRequest)  {
+  public void handle(Request request)  {
 
-	final Long chatId = userRequest.getUserId();
+	final Long userId = request.getUserId();
 	//todo
 	String token = "CAACAgIAAxkBAAEGRjFjYPXCrp0yRZdeOjiCZ1o5rvO9QAACGQAD6dgTKFdhEtpsYKrLKgQ";
-	telegramService.sendMessage(chatId, Messages.HELLO);
+	telegramService.sendMessage(userId, Messages.HELLO);
 	try {
 	  Thread.sleep(5000);
 	} catch (InterruptedException e) {
 	  e.printStackTrace();
 	}
-	telegramService.sendSticker(chatId, token);
-	telegramService.sendMessage(chatId, "/categories");
+	telegramService.sendSticker(userId, token);
+	telegramService.sendMessage(userId, "/categories");
 
   }
 

@@ -1,5 +1,6 @@
 package org.expense_bot.enums;
 
+import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.util.DateUtil;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+@RequiredArgsConstructor
 public enum Period {
   DAY(Messages.DAY) {
     @Override
@@ -56,15 +58,11 @@ public enum Period {
 
   private final String value;
 
-  Period(String value) {
-    this.value = value;
-  }
-
   public static Period parsePeriod(String period) {
     return Arrays.stream(values())
       .filter(enm -> enm.getValue().equals(period))
       .findFirst()
-      .orElse(null);
+      .orElseThrow(() -> new IllegalArgumentException("Unable to parse period"));
   }
 
   public String getValue() {

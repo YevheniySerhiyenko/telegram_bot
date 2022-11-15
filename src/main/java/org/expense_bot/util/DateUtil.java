@@ -10,7 +10,8 @@ public class DateUtil {
   private static final LocalDate NOW = LocalDate.now();
   private static final int ONE_DAY_VALUE = 1;
   private static final String DATE_PATTERN = "dd.MM.yyyy";
-  private static final String DATE_TIME_PATTERN = "dd.MM.yyyy hh:mm:SS";
+  private static final String TIME_PATTERN =  "hh:mm";
+  private static final String DATE_TIME_PATTERN = "dd.MM.yyyy";
 
   public static LocalDateTime getTodayMidnight() {
 	return LocalDateTime.from(NOW.atStartOfDay());
@@ -57,5 +58,9 @@ public class DateUtil {
 
   public static String getDateTime(LocalDateTime localDate) {
 	return localDate.format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
+  }
+
+  public static String getTime(LocalDateTime localDate) {
+	return localDate.format(DateTimeFormatter.ofPattern(TIME_PATTERN));
   }
 }

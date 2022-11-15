@@ -25,7 +25,7 @@ public enum CategoryAction {
    return Arrays.stream(values())
 	 .filter(action -> action.getValue().equals(text))
 	 .findFirst()
-	 .orElseThrow(() -> new RuntimeException("Unable to parse category action"));
+	 .orElseThrow(() -> new IllegalArgumentException("Unable to parse category action"));
 
   }
 }

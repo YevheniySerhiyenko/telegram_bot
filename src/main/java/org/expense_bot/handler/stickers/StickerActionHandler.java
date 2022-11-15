@@ -29,17 +29,17 @@ public class StickerActionHandler extends RequestHandler {
 
   @Override
   public boolean isApplicable(Request request) {
-    return isStateEqual(request,ConversationState.Settings.WAITING_STICKERS_ACTION);
+    return isStateEqual(request, ConversationState.Settings.WAITING_STICKERS_ACTION);
   }
 
   @Override
   public void handle(Request request) {
-    final Long chatId = request.getUserId();
+    final Long userId = request.getUserId();
     final StickerAction action = StickerAction.valueOf(getUpdateData(request));
-    final String token = getSticker(chatId, action);
-    telegramService.sendSticker(chatId,token);
-    telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboardBuilder.buildStickerOptions(action.name()));
-    sessionService.update(SessionUtil.getSession(chatId, action));
+    final String token = getSticker(userId, action);
+    telegramService.sendSticker(userId,token);
+    telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboardBuilder.buildStickerOptions(action.name()));
+    sessionService.update(SessionUtil.getSession(userId, action));
     handleCallBack(request);
   }
 
@@ -49,8 +49,8 @@ public class StickerActionHandler extends RequestHandler {
     final String text = callbackQuery.getMessage().getText();
   }
 
-  private String getSticker(Long chatId, StickerAction action) {
-    return userStickerService.getOne(action.name(), chatId)
+  private String getSticker(Long userId, StickerAction action) {
+    return userStickerService.getOne(action.name(), userId)
       .map(UserSticker::getToken)
       .orElse(stickerService.getOne(action.name())
         .map(Sticker::getToken)

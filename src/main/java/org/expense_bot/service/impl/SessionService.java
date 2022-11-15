@@ -26,10 +26,10 @@ public class SessionService {
     private final Map<Long, Session> userSessionMap = new HashMap<>();
     private final TelegramService telegramService;
 
-    public Session getSession(Long chatId) {
-        return userSessionMap.getOrDefault(chatId, Session
+    public Session getSession(Long userId) {
+        return userSessionMap.getOrDefault(userId, Session
           .builder()
-          .userId(chatId)
+          .userId(userId)
           .build());
     }
 
@@ -37,8 +37,8 @@ public class SessionService {
         userSessionMap.put(session.getUserId(), session);
     }
 
-    public void updateState(Long chatId, ConversationState state) {
-        final Session session = getSession(chatId);
+    public void updateState(Long userId, ConversationState state) {
+        final Session session = getSession(userId);
         session.setState(state);
         saveSession(session);
     }
@@ -74,23 +74,23 @@ public class SessionService {
             }
         }
         if(RequestHandler.hasCallBack(request)) {
-            final Long chatId = request.getUserId();
+            final Long userId = request.getUserId();
             final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
             if(Objects.isNull(keyboard)) {
                 final LocalDate date = Calendar.getDate(request);
                 telegramService.editNextMessage(request, String.format(Messages.DATE, date));
-                updateSession(clazz, chatId, date);
+                updateSession(clazz, userId, date);
                 throw new RuntimeException("Change day");
             }
             telegramService.editKeyboardMarkup(request, keyboard);
         }
     }
 
-    private void updateSession(Object clazz, Long chatId, LocalDate date) {
+    private void updateSession(Object clazz, Long userId, LocalDate date) {
         if(clazz instanceof SumEnteredHandler) {
-            update(SessionUtil.buildExpenseSession(chatId, date));
+            update(SessionUtil.buildExpenseSession(userId, date));
         } else {
-            update(SessionUtil.buildIncomeSession(chatId, date));
+            update(SessionUtil.buildIncomeSession(userId, date));
         }
     }
 

@@ -51,10 +51,10 @@ public class SumEnteredHandler extends RequestHandler {
 	}
   }
 
-  private void getSticker(Long chatId) {
-	final String token = stickerSender.getSticker(chatId, Messages.SUCCESS_SENT_SUM);
+  private void getSticker(Long userId) {
+	final String token = stickerSender.getSticker(userId, Messages.SUCCESS_SENT_SUM);
 	if(token != null && !token.isEmpty()){
-	  telegramService.sendSticker(chatId,token);
+	  telegramService.sendSticker(userId,token);
 	}
   }
 

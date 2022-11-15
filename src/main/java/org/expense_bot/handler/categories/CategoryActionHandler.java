@@ -19,7 +19,7 @@ public class CategoryActionHandler extends RequestHandler {
 
   @Override
   public boolean isApplicable(Request request) {
-	return isStateEqual(request,ConversationState.Categories.WAITING_CATEGORY_ACTION);
+	return isStateEqual(request, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 
   @Override

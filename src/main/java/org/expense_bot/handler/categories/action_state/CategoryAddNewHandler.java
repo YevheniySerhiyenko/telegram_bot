@@ -25,10 +25,10 @@ public class CategoryAddNewHandler implements CategoryActionState {
   }
 
   @Override
-  public void handleFinal(Long chatId, String param) {
-    userCategoryService.add(chatId, param);
-    telegramService.sendMessage(chatId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardBuilder.buildCategoryOptionsMenu());
-    sessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
+  public void handleFinal(Long userId, String categoryParam) {
+    userCategoryService.add(userId, categoryParam);
+    telegramService.sendMessage(userId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardBuilder.buildCategoryOptionsMenu());
+    sessionService.updateState(userId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 
 }

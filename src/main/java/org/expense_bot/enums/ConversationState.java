@@ -54,6 +54,7 @@ public interface ConversationState {
     //check
     WAITING_EXPENSE_ACTION,
     WAITING_FOR_PERIOD,
+    WAITING_FOR_TWO_DATES,
     WAITING_CHECK_CATEGORY,
     WAITING_ADDITIONAL_ACTION,
 

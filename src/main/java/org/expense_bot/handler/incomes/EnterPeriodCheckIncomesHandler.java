@@ -36,35 +36,39 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
   @Override
   public void handle(Request request) {
     backButtonHandler.handleIncomeBackButton(request);
-    final Long chatId = request.getUserId();
+    final Long userId = request.getUserId();
     if(hasMessage(request) && Objects.equals(getUpdateData(request), Messages.ENTER_DATE)) {
-      telegramService.sendMessage(chatId, Messages.ENTER_DATE, Calendar.buildMonthCalendar(LocalDate.now()));
+      telegramService.sendMessage(userId, Messages.ENTER_DATE, Calendar.buildMonthCalendar(LocalDate.now()));
     }
     if(hasCallBack(request)) {
       final InlineKeyboardMarkup keyboard = Calendar.changeYear(request);
-      drawAnotherYearCalendar(request, keyboard);
+      final boolean anotherYear = drawAnotherYearCalendar(request, keyboard);
+      if(anotherYear){
+        return;
+      }
       final String date = getUpdateData(request);
       final LocalDate monthValue = Calendar.parseMonthYear(date);
       sendIncomesByDate(request.getUserId(), monthValue, date);
-      sessionService.updateState(chatId, ConversationState.Incomes.WAITING_FOR_PERIOD);
+      sessionService.updateState(userId, ConversationState.Incomes.WAITING_FOR_PERIOD);
     }
   }
 
-  private void sendIncomesByDate(Long chatId, LocalDate date, String monthYear) {
-    final List<Income> incomes = incomeService.getAll(chatId, date);
+  private void sendIncomesByDate(Long userId, LocalDate date, String monthYear) {
+    final List<Income> incomes = incomeService.getAll(userId, date);
     if(Objects.isNull(incomes) || incomes.isEmpty()) {
-      telegramService.sendMessage(chatId, Messages.NO_INCOMES_FOR_PERIOD + monthYear);
-      throw new RuntimeException(Messages.NO_INCOMES_FOR_PERIOD);
+      telegramService.sendMessage(userId, Messages.NO_INCOMES_FOR_PERIOD + monthYear);
+      return;
     }
-    incomes.forEach(income -> telegramService.sendMessage(chatId, IncomeUtil.getIncome(income)));
+    incomes.forEach(income -> telegramService.sendMessage(userId, IncomeUtil.getIncome(income)));
   }
 
-  private void drawAnotherYearCalendar(Request userRequest, InlineKeyboardMarkup keyboard) {
-    if(Objects.nonNull(keyboard)) {
-      telegramService.editKeyboardMarkup(userRequest, keyboard);
-      sessionService.updateState(userRequest.getUserId(), ConversationState.Incomes.WAITING_FOR_PERIOD);
-      throw new RuntimeException("Waiting another year");
+  private boolean drawAnotherYearCalendar(Request userRequest, InlineKeyboardMarkup keyboard) {
+    if(Objects.isNull(keyboard)) {
+      return false;
     }
+    telegramService.editKeyboardMarkup(userRequest, keyboard);
+    sessionService.updateState(userRequest.getUserId(), ConversationState.Incomes.WAITING_FOR_PERIOD);
+    return true;
   }
 
   @Override

@@ -4,12 +4,10 @@ import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -34,20 +32,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.expense_bot.util.PDFCreator.FONT;
 
 @Component
 public class PDFCreator {
@@ -115,72 +109,27 @@ public class PDFCreator {
 
   @SneakyThrows
   public ByteArrayInputStream generatePdf(Request request, List<Expense> expenses) {
-    final Long chatId = request.getUserId();
-    final Session session = sessionService.getSession(chatId);
+    final Long userId = request.getUserId();
+    final Session session = sessionService.getSession(userId);
     final List<String> strings = expenses.stream()
       .map(Expense::getCategory)
       .collect(Collectors.toList());
-//
+
     Document document = new Document();
     final ByteArrayOutputStream os = new ByteArrayOutputStream(FILE_SIZE);
     PdfWriter.getInstance(document, os);
     document.setPageSize(PageSize.A4.rotate());
     document.open();
-    FirstPdf.addMetaData(document,session);
-    FirstPdf.addTitlePage(document,session);
-    FirstPdf.addContent(document,strings);
+    addMetaData(document,session);
+    addTitlePage(document,session);
+    addContent(document,strings);
     document.close();
     return new ByteArrayInputStream(os.toByteArray());
   }
 
-//    Document document = new Document();
-//    document.setPageSize(PageSize.A4.rotate());
-//
-//    final ByteArrayOutputStream os = new ByteArrayOutputStream(FILE_SIZE);
-//    PdfWriter.getInstance(document, os);
-//
-//    final Month month = LocalDate.now().getMonth();
-//    final int length = month.length(true);
-//
-//    final List<String> strings = expenses.stream()
-//      .map(Expense::getCategory)
-//      .collect(Collectors.toList());
-//
-//    document.open();
-//    PdfPTable table = new PdfPTable(7);
-//    table.setHorizontalAlignment(Element.ALIGN_CENTER);
-//    table.setHeaderRows(34);
-////    final Chunk chunk = prepareDocument(session);
-//    final Paragraph paragraph = new Paragraph();
-//    paragraph.setAlignment(Element.ALIGN_CENTER);
-//    paragraph.setSpacingAfter(30);
-//    document.add(paragraph);
-////
-//    document.addTitle(prepareDocument(session));
-//
-//    document.setMargins(25,65,2,23);
-//    Paragraph tabl = new Paragraph();
-//    paragraph.add(table);
-//    paragraph.setIndentationLeft(Element.ALIGN_CENTER);
-//    paragraph.setAlignment(Element.ALIGN_CENTER);
-//    paragraph.setIndentationRight(Element.ALIGN_CENTER);
-//    document.add(tabl);
-//    addheader(table, session.getPeriod());
-////    addTableHeader(table, column);
-//    addRows(table, strings);
-//    addCustomRows(table);
-//
-//    document.add(table);
-//
-//    Chunk chunk = new Chunk("Hello World");
-//chunk.setBackground(BaseColor.GREEN);
-//    document.add(chunk);
-//    document.close();
 
+  public static String makePeriodHeader(Session session) throws DocumentException, IOException {
 
-  public static String prepareDocument(Session session) throws DocumentException, IOException {
-    final BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-    Font font = new Font(bf, 40, Font.BOLD);
 
     final Period period = Period.parsePeriod(session.getPeriod());
     switch (Objects.requireNonNull(period)) {
@@ -222,9 +171,7 @@ public class PDFCreator {
       table.addCell(header);
     });
   }
-}
 
-   class FirstPdf {
     private static String FILE = "c:/temp/FirstPdf.pdf";
 
     private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 40,
@@ -236,15 +183,13 @@ public class PDFCreator {
     private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
       Font.BOLD);
 
-     FirstPdf() throws DocumentException, IOException {
-     }
 
 
      // iText allows to add metadata to the PDF which can be viewed in your Adobe
     // Reader
     // under File -> Properties
     static void addMetaData(Document document, Session session) throws DocumentException, IOException {
-      document.addTitle(PDFCreator.prepareDocument(session));
+      document.addTitle(PDFCreator.makePeriodHeader(session));
       document.addSubject("Using iText");
       document.addKeywords("Java, PDF, iText");
       document.addAuthor("Lars Vogel");
@@ -259,7 +204,7 @@ public class PDFCreator {
       // Lets write a big header
        BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
        Font font = new Font(bf, 40, Font.BOLD);
-      preface.add(new Paragraph(PDFCreator.prepareDocument(session), font));
+      preface.add(new Paragraph(PDFCreator.makePeriodHeader(session), font));
 
       addEmptyLine(preface, 1);
       // Will create: Report generated by: _name, _date

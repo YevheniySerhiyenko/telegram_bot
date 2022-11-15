@@ -18,6 +18,6 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
       + "  where user_id = ?1"
       + "    and extract(MONTH from income_date) = ?2"
       + "    and extract(YEAR from income_date) = ?3")
-  List<Income> getAllBy(Long chatId, Integer month, Integer year);
+  List<Income> getAllBy(Long userId, Integer month, Integer year);
 
 }

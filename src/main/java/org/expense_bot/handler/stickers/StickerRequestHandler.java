@@ -35,12 +35,12 @@ public class StickerRequestHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	final Long chatId = request.getUserId();
+	final Long userId = request.getUserId();
 	final String action = getUpdateData(request);
-	final List<Sticker> actualStickers = getActualStickersAction(chatId);
+	final List<Sticker> actualStickers = getActualStickersAction(userId);
 	final ReplyKeyboard keyboard = keyboardBuilder.buildStickersActionMenu(actualStickers);
-	telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION_TO_SHOW_STICKER, keyboard);
-	sessionService.update(SessionUtil.getStickerSession(chatId, action));
+	telegramService.sendMessage(userId, Messages.CHOOSE_ACTION_TO_SHOW_STICKER, keyboard);
+	sessionService.update(SessionUtil.getStickerSession(userId, action));
   }
 
 
@@ -49,8 +49,8 @@ public class StickerRequestHandler extends RequestHandler {
 	return false;
   }
 
-  public List<Sticker> getActualStickersAction(Long chatId) {
-	return stickerService.getAll(chatId)
+  public List<Sticker> getActualStickersAction(Long userId) {
+	return stickerService.getAll(userId)
 	  .stream()
 	  .distinct()
 	  .collect(Collectors.toList());

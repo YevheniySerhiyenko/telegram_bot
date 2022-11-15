@@ -35,23 +35,23 @@ public class CategoryDefaultHandler implements CategoryActionState {
   }
 
   @Override
-  public void handleFinal(Long userId, String param) {
-	userCategoryService.add(userId, param);
+  public void handleFinal(Long userId, String categoryParam) {
+	userCategoryService.add(userId, categoryParam);
 	sendListNotSelected(userId);
   }
 
-  private void sendListNotSelected(Long chatId) {
-	final List<String> userCategories = getUserCategories(chatId);
+  private void sendListNotSelected(Long userId) {
+	final List<String> userCategories = getUserCategories(userId);
 	final List<String> defaultCategories = categoryService.getDefault()
 	  .stream()
 	  .map(Category::getName)
 	  .collect(Collectors.toList());
 	defaultCategories.removeAll(userCategories);
-	if(checkAll(chatId, defaultCategories)){
+	if(checkAll(userId, defaultCategories)){
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
-	telegramService.sendMessage(chatId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
+	telegramService.sendMessage(userId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
   }
 
   public List<String> subtractCategories(Long userId) {
@@ -71,15 +71,15 @@ public class CategoryDefaultHandler implements CategoryActionState {
 	  .collect(Collectors.toList());
   }
 
-  private boolean checkAll(Long chatId, List<String> categories) {
+  private boolean checkAll(Long userId, List<String> categories) {
 	if(categories.isEmpty()) {
-	  telegramService.sendMessage(chatId, Messages.ALL_CATEGORIES_ADDED, keyboardBuilder.buildBackButton());
+	  telegramService.sendMessage(userId, Messages.ALL_CATEGORIES_ADDED, keyboardBuilder.buildBackButton());
 	}
 	return categories.isEmpty();
   }
 
-  private List<String> getUserCategories(Long chatId) {
-	return userCategoryService.getByUserId(chatId)
+  private List<String> getUserCategories(Long userId) {
+	return userCategoryService.getByUserId(userId)
 	  .stream()
 	  .map(UserCategory::getCategory)
 	  .collect(Collectors.toList());
