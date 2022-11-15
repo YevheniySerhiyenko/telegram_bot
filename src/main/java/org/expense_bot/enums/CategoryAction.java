@@ -1,51 +1,25 @@
 package org.expense_bot.enums;
 
-import org.expense_bot.Configuration;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.handler.categories.action_state.CategoryActionState;
 import org.expense_bot.handler.categories.action_state.CategoryAddNewHandler;
 import org.expense_bot.handler.categories.action_state.CategoryDefaultHandler;
 import org.expense_bot.handler.categories.action_state.CategoryDeleteHandler;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.boot.ApplicationContextFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
-import java.beans.beancontext.BeanContext;
+import java.util.Arrays;
 
+@Getter
+@RequiredArgsConstructor
 public enum CategoryAction {
 
-  ADD_NEW_CATEGORY(Messages.ADD_CATEGORY){
-	@Override
-	public CategoryActionState handle() {
-	  return new CategoryAddNewHandler();
-	}
-  },
-  DELETE_MY_CATEGORIES(Messages.DELETE_MY_CATEGORIES){
-	@Override
-	public CategoryActionState handle() {
-	  return new CategoryDeleteHandler();
-	}
-  },
-  ADD_FROM_DEFAULT(Messages.ADD_FROM_DEFAULT){
-	@Override
-	public CategoryActionState handle() {
-	  return new CategoryDefaultHandler();
-	}
-  };
+  ADD_NEW_CATEGORY(Messages.ADD_CATEGORY, CategoryAddNewHandler.class),
+  DELETE_MY_CATEGORIES(Messages.DELETE_MY_CATEGORIES, CategoryDeleteHandler.class),
+  ADD_FROM_DEFAULT(Messages.ADD_FROM_DEFAULT, CategoryDefaultHandler.class);
 
   private final String value;
-
-  public abstract CategoryActionState handle();
-
-
-  CategoryAction(String value) {
-	this.value = value;
-  }
-
-  public String getValue() {
-	return value;
-  }
+  private final Class<? extends CategoryActionState> handler;
 
   public static CategoryAction parseAction(String text) {
 	switch (text) {

@@ -15,6 +15,7 @@ import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.util.SessionUtil;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
@@ -32,6 +33,7 @@ public class CategoryActionHandler extends RequestHandler {
   private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
   private final KeyboardBuilder keyboardBuilder;
+  private final ApplicationContext context;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -42,8 +44,7 @@ public class CategoryActionHandler extends RequestHandler {
   public void handle(Request request) {
 	final Long userId = request.getUserId();
 	final CategoryAction categoryAction = CategoryAction.parseAction(getUpdateData(request));
-	final CategoryActionState actionState = Objects.requireNonNull(categoryAction).handle();
-	actionState.handle(userId);
+	context.getBean(categoryAction.getHandler()).handle(userId);
 	sessionService.update(SessionUtil.getSession(userId, categoryAction));
   }
 
