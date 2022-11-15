@@ -23,24 +23,27 @@ public class BackButtonHandler {
   private final KeyboardBuilder keyboardBuilder;
   private final TelegramService telegramService;
 
-  public void handleCategoriesBackButton(Request request) {
-	if(isBack(request)) {
+  public boolean handleCategoriesBackButton(Request request) {
+	final boolean back = isBack(request);
+	if(back) {
 	  final Long chatId = request.getUserId();
 	  sessionService.updateState(chatId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	  throw new RuntimeException("Handle back button in categoris");
+
 	}
+	return back;
   }
 
-  public void handleExpensesBackButton(Request request) {
-	if(isBack(request)) {
+  public boolean handleExpensesBackButton(Request request) {
+	final boolean back = isBack(request);
+	if(back) {
 	  final Long chatId = request.getUserId();
 	  sessionService.updateState(chatId, ConversationState.Init.WAITING_EXPENSE_ACTION);
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
 	  telegramService.sendMessage(chatId, Messages.CHOOSE_ACTION, keyboard);
-	  throw new RuntimeException("Handle expenses back button");
 	}
+	return back;
   }
 
   public void handleMainMenuBackButton(Request request) {

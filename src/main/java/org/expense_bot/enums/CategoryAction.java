@@ -22,15 +22,10 @@ public enum CategoryAction {
   private final Class<? extends CategoryActionState> handler;
 
   public static CategoryAction parseAction(String text) {
-	switch (text) {
-	  case Messages.ADD_CATEGORY:
-		return CategoryAction.ADD_NEW_CATEGORY;
-	  case Messages.DELETE_MY_CATEGORIES:
-		return CategoryAction.DELETE_MY_CATEGORIES;
-	  case Messages.ADD_FROM_DEFAULT:
-		return CategoryAction.ADD_FROM_DEFAULT;
-	  default:
-		return null;
-	}
+   return Arrays.stream(values())
+	 .filter(action -> action.getValue().equals(text))
+	 .findFirst()
+	 .orElseThrow(() -> new RuntimeException("Unable to parse category action"));
+
   }
 }

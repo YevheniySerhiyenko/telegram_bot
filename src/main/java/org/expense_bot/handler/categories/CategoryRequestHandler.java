@@ -30,7 +30,6 @@ public class CategoryRequestHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleCategoriesBackButton(request);
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
 	telegramService.sendMessage(request.getUserId(), Messages.CHOOSE_ACTION, keyboard);
 	sessionService.updateState(request.getUserId(), WAITING_CATEGORY_ACTION);

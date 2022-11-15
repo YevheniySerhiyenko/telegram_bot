@@ -23,22 +23,20 @@ public class DateUtil {
 
   private static Integer getCurrentMondayNumber(Integer dayOfMonth) {
 	final DayOfWeek dayOfWeek = NOW.getDayOfWeek();
-	switch (dayOfWeek) {
-	  case SUNDAY:
-		return dayOfMonth - 6;
-	  case SATURDAY:
-		return dayOfMonth - 5;
-	  case FRIDAY:
-		return dayOfMonth - 4;
-	  case THURSDAY:
-		return dayOfMonth - 3;
-	  case WEDNESDAY:
-		return dayOfMonth - 2;
-	  case TUESDAY:
-		return dayOfMonth - 1;
-	  default:
-		return dayOfMonth;
+	if(dayOfWeek == DayOfWeek.SUNDAY) {
+	  return dayOfMonth - 6;
+	} else if(dayOfWeek == DayOfWeek.SATURDAY) {
+	  return dayOfMonth - 5;
+	} else if(dayOfWeek == DayOfWeek.FRIDAY) {
+	  return dayOfMonth - 4;
+	} else if(dayOfWeek == DayOfWeek.THURSDAY) {
+	  return dayOfMonth - 3;
+	} else if(dayOfWeek == DayOfWeek.WEDNESDAY) {
+	  return dayOfMonth - 2;
+	} else if(dayOfWeek == DayOfWeek.TUESDAY) {
+	  return dayOfMonth - 1;
 	}
+	return dayOfMonth;
   }
 
   public static LocalDateTime getTomorrowMidnight(LocalDate localDate) {

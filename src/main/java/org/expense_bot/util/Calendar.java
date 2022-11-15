@@ -73,13 +73,10 @@ public class Calendar {
 		final String[] text = data.split(" ");
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousMonth(text);
-		switch (command) {
-		  case "back":
-			return Calendar.buildCalendar(of.minusMonths(1));
-		  case "forward":
-			return Calendar.buildCalendar(of.plusMonths(1));
-		  default:
-			return null;
+		if("back".equals(command)) {
+		  return Calendar.buildCalendar(of.minusMonths(1));
+		} else if("forward".equals(command)) {
+		  return Calendar.buildCalendar(of.plusMonths(1));
 		}
 	  }
 	}
@@ -93,13 +90,10 @@ public class Calendar {
 		final String[] text = data.split(" ");
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousYear(text);
-		switch (command) {
-		  case "back":
-			return Calendar.buildMonthCalendar(of.minusYears(1));
-		  case "forward":
-			return Calendar.buildMonthCalendar(of.plusYears(1));
-		  default:
-			return null;
+		if("back".equals(command)) {
+		  return Calendar.buildMonthCalendar(of.minusYears(1));
+		} else if("forward".equals(command)) {
+		  return Calendar.buildMonthCalendar(of.plusYears(1));
 		}
 	  }
 	}

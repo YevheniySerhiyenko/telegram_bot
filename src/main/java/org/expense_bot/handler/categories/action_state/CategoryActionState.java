@@ -4,4 +4,6 @@ public interface CategoryActionState {
 
   void handle(Long userId);
 
+  void handleFinal(Long chatId, String param);
+
 }

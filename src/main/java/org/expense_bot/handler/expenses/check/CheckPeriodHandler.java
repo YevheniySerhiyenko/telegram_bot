@@ -41,7 +41,10 @@ public class CheckPeriodHandler extends RequestHandler {
 	backButtonHandler.handleExpensesBackButton(request);
 	final Long userId = request.getUserId();
 	final String period = getUpdateData(request);
-	drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
+	final boolean anotherMonth = drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
+	if(anotherMonth){
+	  return;
+	}
 	checkPeriod(request, period);
 
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(userId);
@@ -49,12 +52,13 @@ public class CheckPeriodHandler extends RequestHandler {
 	sessionService.update(SessionUtil.getSession(userId, period, ConversationState.Expenses.WAITING_CHECK_CATEGORY));
   }
 
-  private void drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {
+  private boolean drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {
 	if(Objects.nonNull(keyboard)) {
 	  telegramService.editKeyboardMarkup(request, keyboard);
 	  sessionService.updateState(request.getUserId(), ConversationState.Expenses.WAITING_FOR_PERIOD);
-	  throw new RuntimeException("Waiting another date");
+	  return true;
 	}
+	return false;
   }
 
   private void checkPeriod(Request request, String period) {
@@ -62,7 +66,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	if(Objects.equals(period, Period.PERIOD.getValue())) {
 	  telegramService.sendMessage(chatId, CHOOSE_PERIOD, Calendar.buildCalendar(LocalDate.now()));
 	  sessionService.update(SessionUtil.getSession(chatId, period, ConversationState.Expenses.WAITING_FOR_PERIOD));
-	  throw new RuntimeException(CHOOSE_PERIOD);
+	  return;
 	}
 	if(hasCallBack(request)) {
 	  final LocalDate date = Calendar.getDate(request);
@@ -79,7 +83,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	final LocalDate periodTo = session.getPeriodTo();
 	if(periodFrom == null) {
 	  session.setPeriodFrom(date);
-	  throw new RuntimeException("Date from entered");
+	  return;
 	}
 	if(periodTo == null) {
 	  session.setPeriodTo(date);
@@ -89,7 +93,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(chatId);
 	  telegramService.sendMessage(chatId, CHOOSE_CATEGORY, keyboard);
 	  sessionService.update(session);
-	  throw new RuntimeException("Dates entered");
+	  return;
 	}
 	sessionService.update(session);
 

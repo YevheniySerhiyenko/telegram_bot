@@ -45,16 +45,6 @@ public class AdditionalActionHandler extends RequestHandler {
     backButtonHandler.handleExpensesBackButton(request);
     createPDF(request);
     handleInfo(request);
-//	if(!hasCallBack(request)) {
-//	  final String action = getUpdateData(request);
-//	  switch (action){
-//		case ExpenseAction.EDIT.name():
-//		  handleEdit();
-//		  break;
-//		default:
-//		  throw new IllegalStateException("Unexpected value: " + action);
-//	  }
-//	}
     sessionService.update(SessionUtil.finalUpdate(request.getUserId()));
   }
 

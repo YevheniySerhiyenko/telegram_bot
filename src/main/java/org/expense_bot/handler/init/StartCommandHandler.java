@@ -22,16 +22,16 @@ public class StartCommandHandler extends RequestHandler {
     private final SessionService sessionService;
 
     @Override
-    public boolean isApplicable(Request userRequest) {
-        return isCommand(userRequest.getUpdate(), Commands.START);
+    public boolean isApplicable(Request request) {
+        return isCommand(request.getUpdate(), Commands.START);
     }
 
     @Override
     public void handle(Request request) {
-        final Long chatId = request.getUserId();
-        telegramService.sendMessage(chatId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
-        telegramService.sendMessage(chatId, Messages.CHOOSE_YOUR_ACTION);
-        sessionService.updateState(chatId,ConversationState.Init.WAITING_INIT_ACTION);
+        final Long userId = request.getUserId();
+        telegramService.sendMessage(userId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
+        telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION);
+        sessionService.updateState(userId,ConversationState.Init.WAITING_INIT_ACTION);
     }
 
     @Override
