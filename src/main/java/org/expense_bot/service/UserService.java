@@ -4,6 +4,6 @@ import org.expense_bot.model.Request;
 
 public interface UserService {
 
-  void checkUser(Request userRequest);
+  void checkUser(Request request);
 
 }

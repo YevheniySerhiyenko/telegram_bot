@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -22,6 +23,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,6 @@ public class TelegramService {
         sendTyping(userId);
         if(RequestHandler.hasCallBack(request)) {
             final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
-
             execute(getReplyMarkup(replyKeyboard, userId, messageId));
         }
     }

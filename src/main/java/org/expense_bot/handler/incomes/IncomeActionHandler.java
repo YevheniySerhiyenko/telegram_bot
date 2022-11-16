@@ -24,11 +24,11 @@ public class IncomeActionHandler extends RequestHandler {
   }
 
   @Override
-  public void handle(Request userRequest) {
-	sessionService.checkEnteredDate(userRequest, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE, this.getClass());
-	backButtonHandler.handleIncomeBackButton(userRequest);
-	final Long userId = userRequest.getUserId();
-	final IncomeAction action = userRequest.getSession().getIncomeAction();
+  public void handle(Request request) {
+	sessionService.checkEnteredDate(request, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE, this.getClass());
+	backButtonHandler.handleIncomeBackButton(request);
+	final Long userId = request.getUserId();
+	final IncomeAction action = request.getSession().getIncomeAction();
 	context.getBean(action.getHandler()).handle(userId);
   }
 

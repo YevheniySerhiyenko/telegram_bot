@@ -47,7 +47,8 @@ public class CategoryDefaultHandler implements CategoryActionState {
 	  .map(Category::getName)
 	  .collect(Collectors.toList());
 	defaultCategories.removeAll(userCategories);
-	if(checkAll(userId, defaultCategories)){
+	final boolean allAdded = checkAll(userId, defaultCategories);
+	if(allAdded){
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);

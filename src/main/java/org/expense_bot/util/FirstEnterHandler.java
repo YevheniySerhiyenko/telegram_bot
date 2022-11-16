@@ -16,8 +16,8 @@ public class FirstEnterHandler {
   private final StickerService stickerService;
   private final SessionService sessionService;
 
-  public void firstEnterHandle(Request userRequest) {
-	final Long userId = userRequest.getUserId();
+  public void firstEnterHandle(Request request) {
+	final Long userId = request.getUserId();
 //	stickerService.
 	//todo
 	String token = "CAACAgIAAxkBAAEGRjFjYPXCrp0yRZdeOjiCZ1o5rvO9QAACGQAD6dgTKFdhEtpsYKrLKgQ";
@@ -26,12 +26,12 @@ public class FirstEnterHandler {
 
   }
 
-  public void sendCategoriesInfo(Request userRequest){
+  public void sendCategoriesInfo(Request request){
     // send info about default categories
     //set ConversationState Started
   }
 
-  public void sendStickersInfo(Request userRequest){
+  public void sendStickersInfo(Request request){
     //send info about Sticker Actions
 	//send info about edit
 	// send info about Settings

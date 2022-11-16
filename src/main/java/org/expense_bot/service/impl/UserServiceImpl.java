@@ -18,13 +18,13 @@ public class UserServiceImpl implements UserService {
   private final NewUserHandler firstEnteredHandler;
 
   @Override
-  public void checkUser(Request userRequest) {
-	final String firstName = getFirstName(userRequest);
-	final Optional<User> user = getByUserId(userRequest.getUserId());
+  public void checkUser(Request request) {
+	final String firstName = getFirstName(request);
+	final Optional<User> user = getByUserId(request.getUserId());
 	if(!user.isPresent()){
-	  firstEnteredHandler.handle(userRequest);
+	  firstEnteredHandler.handle(request);
 	}
-	 userRepository.save(getUser(userRequest, firstName));
+	 userRepository.save(getUser(request, firstName));
   }
 
   private String getFirstName(Request request) {

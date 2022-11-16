@@ -40,7 +40,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	backButtonHandler.handleExpensesBackButton(request);
 	final Long userId = request.getUserId();
 	final String period = getUpdateData(request);
-	final boolean showCalendar = checkPeriod(userId, period);
+	final boolean showCalendar = checkRequest(userId, period);
 	if(showCalendar){
 	  return;
 	}
@@ -50,7 +50,7 @@ public class CheckPeriodHandler extends RequestHandler {
   }
 
 
-  private boolean checkPeriod(Long userId, String period) {
+  private boolean checkRequest(Long userId, String period) {
 	if(!Objects.equals(period, Period.PERIOD.getValue())) {
 	  return false;
 	}

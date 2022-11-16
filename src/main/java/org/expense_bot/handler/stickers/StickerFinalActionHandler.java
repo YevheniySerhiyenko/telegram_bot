@@ -28,8 +28,8 @@ public class StickerFinalActionHandler extends RequestHandler {
   }
 
   @Override
-  public void handle(Request userRequest) {
-    final CallbackQuery callbackQuery = userRequest.getUpdate().getCallbackQuery();
+  public void handle(Request request) {
+    final CallbackQuery callbackQuery = request.getUpdate().getCallbackQuery();
     callbackQuery.getMessage().getText();
 
   }

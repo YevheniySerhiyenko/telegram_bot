@@ -43,14 +43,14 @@ public class ExpenseBot extends TelegramLongPollingBot {
       log.info("[{}, {}] : {}", userId, userFirstName, textFromUser);
 
       Session session = sessionService.getSession(userId);
-      Request userRequest = Request
+      Request request = Request
         .builder()
         .update(update)
         .session(session)
         .userId(userId)
         .build();
 
-      boolean dispatched = dispatcher.dispatch(userRequest);
+      boolean dispatched = dispatcher.dispatch(request);
 
       if(!dispatched) {
         log.warn("Unexpected update from user");

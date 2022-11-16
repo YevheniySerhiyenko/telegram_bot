@@ -48,7 +48,7 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
       }
       final String date = getUpdateData(request);
       final LocalDate monthValue = Calendar.parseMonthYear(date);
-      sendIncomesByDate(request.getUserId(), monthValue, date);
+      sendIncomesByDate(userId, monthValue, date);
       sessionService.updateState(userId, ConversationState.Incomes.WAITING_FOR_PERIOD);
     }
   }
@@ -62,12 +62,12 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
     incomes.forEach(income -> telegramService.sendMessage(userId, IncomeUtil.getIncome(income)));
   }
 
-  private boolean drawAnotherYearCalendar(Request userRequest, InlineKeyboardMarkup keyboard) {
+  private boolean drawAnotherYearCalendar(Request request, InlineKeyboardMarkup keyboard) {
     if(Objects.isNull(keyboard)) {
       return false;
     }
-    telegramService.editKeyboardMarkup(userRequest, keyboard);
-    sessionService.updateState(userRequest.getUserId(), ConversationState.Incomes.WAITING_FOR_PERIOD);
+    telegramService.editKeyboardMarkup(request, keyboard);
+    sessionService.updateState(request.getUserId(), ConversationState.Incomes.WAITING_FOR_PERIOD);
     return true;
   }
 
