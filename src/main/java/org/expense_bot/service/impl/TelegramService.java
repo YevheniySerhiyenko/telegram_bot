@@ -34,19 +34,19 @@ public class TelegramService {
 
     private final ExpenseBotSender botSender;
 
-    public void editKeyboardMarkup(Request request, InlineKeyboardMarkup replyKeyboard){
+    public void editKeyboardMarkup(Request request, InlineKeyboardMarkup keyboard){
         final Long userId = request.getUserId();
         sendTyping(userId);
         if(RequestHandler.hasCallBack(request)) {
             final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
-            execute(getReplyMarkup(replyKeyboard, userId, messageId));
+            execute(getReplyMarkup(keyboard, userId, messageId));
         }
     }
 
-    private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup replyKeyboard, Long userId, Integer messageId) {
+    private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup keyboard, Long userId, Integer messageId) {
         return EditMessageReplyMarkup.builder()
           .chatId(String.valueOf(userId))
-          .replyMarkup(replyKeyboard)
+          .replyMarkup(keyboard)
           .messageId(messageId)
           .build();
     }
@@ -91,7 +91,7 @@ public class TelegramService {
         execute(chatAction);
     }
 
-    public void sendMessage(Long userId, String text, ReplyKeyboard replyKeyboard) {
+    public void sendMessage(Long userId, String text, ReplyKeyboard keyboard) {
         sendTyping(userId);
         SendMessage sendMessage = SendMessage
           .builder()
@@ -99,7 +99,7 @@ public class TelegramService {
           .chatId(userId.toString())
           //Other possible parse modes: MARKDOWNV2, MARKDOWN, which allows to make text bold, and all other things
           .parseMode(ParseMode.HTML)
-          .replyMarkup(replyKeyboard)
+          .replyMarkup(keyboard)
           .build();
         execute(sendMessage);
     }
@@ -126,7 +126,7 @@ public class TelegramService {
         execute(chatAction);
     }
 
-    public void sendSticker(Long userId, String text, ReplyKeyboard replyKeyboard) {
+    public void sendSticker(Long userId, String text, ReplyKeyboard keyboard) {
         sendTyping(userId);
         SendSticker sendMessage = SendSticker.builder()
           .chatId(userId.toString())

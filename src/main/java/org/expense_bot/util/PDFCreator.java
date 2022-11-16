@@ -1,7 +1,6 @@
 package org.expense_bot.util;
 
 import com.itextpdf.text.Anchor;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
@@ -33,11 +32,9 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -49,7 +46,6 @@ public class PDFCreator {
   public static final String FONT = "src/fonts/arial.ttf";
   @Value("${pdf.file.size}")
   private Integer FILE_SIZE;
-
 
   private final TelegramService telegramService;
 
@@ -72,63 +68,7 @@ public class PDFCreator {
     this.backButtonHandler = backButtonHandler;
   }
 
-  private static void addTableHeader(PdfPTable table, List<String> strings) {
-    strings
-      .forEach(columnTitle -> {
-        PdfPCell header = new PdfPCell();
-        header.setBackgroundColor(BaseColor.MAGENTA);
-        header.setBorderWidth(0.1f);
-        header.setPhrase(new Phrase(columnTitle));
-        table.addCell(header);
-      });
-  }
-
-
-  private static void addRows(PdfPTable table, List<String> column) {
-    column.forEach(table::addCell);
-  }
-
-  @SneakyThrows
-  private static void addCustomRows(PdfPTable table)
-    throws URISyntaxException, BadElementException, IOException {
-//    Path path = Paths.get(ClassLoader.getSystemResource("/home/yevheniy/Загрузки/153611-samsung_galaxy-samsung-samsung_galaxy_s9-galaxy_s9_po_umolchaniyu-smartfon-1920x1080.jpg").toURI());
-//    Image img = Image.getInstance(path.toAbsolutePath().toString());
-//    img.scalePercent(10);
-//
-//    PdfPCell imageCell = new PdfPCell(img);
-//    table.addCell(imageCell);
-
-    PdfPCell horizontalAlignCell = new PdfPCell(new Phrase("лосвлствост 2, col 2"));
-    horizontalAlignCell.setHorizontalAlignment(Element.ALIGN_TOP);
-    table.addCell(horizontalAlignCell);
-
-    PdfPCell verticalAlignCell = new PdfPCell(new Phrase("лосвлствост 2, col 3"));
-    verticalAlignCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
-    table.addCell(verticalAlignCell);
-  }
-
-  @SneakyThrows
-  public ByteArrayInputStream generatePdf(Request request, List<Expense> expenses) {
-    final Long userId = request.getUserId();
-    final Session session = sessionService.getSession(userId);
-    final List<String> strings = expenses.stream()
-      .map(Expense::getCategory)
-      .collect(Collectors.toList());
-
-    Document document = new Document();
-    final ByteArrayOutputStream os = new ByteArrayOutputStream(FILE_SIZE);
-    PdfWriter.getInstance(document, os);
-    document.setPageSize(PageSize.A4.rotate());
-    document.open();
-    addMetaData(document,session);
-    addTitlePage(document,session);
-    addContent(document,strings);
-    document.close();
-    return new ByteArrayInputStream(os.toByteArray());
-  }
-
-
-  public static String makePeriodHeader(Session session) throws DocumentException, IOException {
+  public static String makePeriodHeader(Session session) {
 
 
     final Period period = Period.parsePeriod(session.getPeriod());
@@ -149,30 +89,85 @@ public class PDFCreator {
     }
   }
 
-  private void addheader(PdfPTable table, String period) throws DocumentException, IOException {
-    final Period period1 = Period.parsePeriod(period);
-    List<String> strings = new ArrayList<>();
-    switch (Objects.requireNonNull(period1)) {
-      case WEEK:
-        final int dayOfMonth = DateUtil.getStartOfWeek().getDayOfMonth();
-        final int dayOfMonth1 = LocalDate.now().getDayOfMonth();
+  @SneakyThrows
+  public ByteArrayInputStream generatePdf(Request request, List<Expense> expenses) {
+    final Long userId = request.getUserId();
+    final Session session = sessionService.getSession(userId);
+    final List<String> strings = expenses.stream()
+      .map(Expense::getCategory)
+      .collect(Collectors.toList());
 
-        IntStream.rangeClosed(dayOfMonth, dayOfMonth1).forEach(i -> strings.add(String.valueOf(i)));
-    }
-    final BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-    strings.forEach(columnTitle -> {
-      Font font = new Font(bf, 14, Font.NORMAL);
-      PdfPCell header = new PdfPCell();
-      header.setBackgroundColor(BaseColor.CYAN);
-      header.setBorderWidth(0.1f);
-      header.setVerticalAlignment(Element.ALIGN_CENTER);
-      header.setHorizontalAlignment(Element.ALIGN_CENTER);
-      header.setPhrase(new Phrase(columnTitle, font));
-      table.addCell(header);
-    });
+    Document document = new Document();
+    final ByteArrayOutputStream os = new ByteArrayOutputStream(FILE_SIZE);
+    PdfWriter.getInstance(document, os);
+    document.setPageSize(PageSize.A4.rotate());
+    document.open();
+    addMetaData(document, session);
+    addContent(document, session,strings);
+    document.close();
+    return new ByteArrayInputStream(os.toByteArray());
   }
+//
+//  private static void addTableHeader(PdfPTable table, List<String> strings) {
+//    strings
+//      .forEach(columnTitle -> {
+//        PdfPCell header = new PdfPCell();
+//        header.setBackgroundColor(BaseColor.MAGENTA);
+//        header.setBorderWidth(0.1f);
+//        header.setPhrase(new Phrase(columnTitle));
+//        table.addCell(header);
+//      });
+//  }
+//
+//
+//  private static void addRows(PdfPTable table, List<String> column) {
+//    column.forEach(table::addCell);
+//  }
+//
+//  @SneakyThrows
+//  private static void addCustomRows(PdfPTable table)
+//    throws URISyntaxException, BadElementException, IOException {
+////    Path path = Paths.get(ClassLoader.getSystemResource("/home/yevheniy/Загрузки/153611-samsung_galaxy-samsung-samsung_galaxy_s9-galaxy_s9_po_umolchaniyu-smartfon-1920x1080.jpg").toURI());
+////    Image img = Image.getInstance(path.toAbsolutePath().toString());
+////    img.scalePercent(10);
+////
+////    PdfPCell imageCell = new PdfPCell(img);
+////    table.addCell(imageCell);
+//
+//    PdfPCell horizontalAlignCell = new PdfPCell(new Phrase("лосвлствост 2, col 2"));
+//    horizontalAlignCell.setHorizontalAlignment(Element.ALIGN_TOP);
+//    table.addCell(horizontalAlignCell);
+//
+//    PdfPCell verticalAlignCell = new PdfPCell(new Phrase("лосвлствост 2, col 3"));
+//    verticalAlignCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
 
-    private static String FILE = "c:/temp/FirstPdf.pdf";
+//    table.addCell(verticalAlignCell);
+
+//  }
+//
+//  private void addheader(PdfPTable table, String period) throws DocumentException, IOException {
+//    final Period period1 = Period.parsePeriod(period);
+//    List<String> strings = new ArrayList<>();
+//    switch (Objects.requireNonNull(period1)) {
+//      case WEEK:
+//        final int dayOfMonth = DateUtil.getStartOfWeek().getDayOfMonth();
+//        final int dayOfMonth1 = LocalDate.now().getDayOfMonth();
+//
+//        IntStream.rangeClosed(dayOfMonth, dayOfMonth1).forEach(i -> strings.add(String.valueOf(i)));
+//    }
+//    final BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+//    strings.forEach(columnTitle -> {
+//      Font font = new Font(bf, 14, Font.NORMAL);
+//      PdfPCell header = new PdfPCell();
+//      header.setBackgroundColor(BaseColor.CYAN);
+//      header.setBorderWidth(0.1f);
+//      header.setVerticalAlignment(Element.ALIGN_CENTER);
+//      header.setHorizontalAlignment(Element.ALIGN_CENTER);
+//      header.setPhrase(new Phrase(columnTitle, font));
+//      table.addCell(header);
+//    });
+//  }
+
 
     private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 40,
       Font.BOLD);
@@ -196,83 +191,69 @@ public class PDFCreator {
       document.addCreator("Lars Vogel");
     }
 
-    static void addTitlePage(Document document, Session session)
-      throws DocumentException, IOException {
+    static void addContent(Document document, Session session, List<String> expenses) throws DocumentException, IOException {
       Paragraph preface = new Paragraph();
       // We add one empty line
 //      addEmptyLine(preface, 1);
       // Lets write a big header
-       BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-       Font font = new Font(bf, 40, Font.BOLD);
-      preface.add(new Paragraph(PDFCreator.makePeriodHeader(session), font));
+      BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+      Font font = new Font(bf, 40, Font.BOLD);
+      final String string = PDFCreator.makePeriodHeader(session);
+      final Paragraph o = new Paragraph(string, font);
+      o.setAlignment(Element.ALIGN_CENTER);
+      preface.add(o);
+      preface.setAlignment(Element.ALIGN_CENTER);
+//      preface.setAlignment(Element.ALIGN_MIDDLE);
 
-      addEmptyLine(preface, 1);
-      // Will create: Report generated by: _name, _date
-      preface.add(new Paragraph(
-        "Report generated by: " + System.getProperty("user.name") + ", " + new Date(), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        smallBold));
-      addEmptyLine(preface, 3);
-      preface.add(new Paragraph(
-        "This document describes something which is very important ",
-        smallBold));
-
-      addEmptyLine(preface, 8);
-
-      preface.add(new Paragraph(
-        "This document is a preliminary version and not subject to your license agreement or any other agreement with vogella.com ;-).",
-        redFont));
 
       document.add(preface);
-      // Start a new page
-      document.newPage();
-    }
-
-    static void addContent(Document document, List<String> expenses) throws DocumentException, IOException {
-      Anchor anchor = new Anchor("First Chapter", catFont);
-      anchor.setName("First Chapter");
+//      Anchor anchor = new Anchor("First Chapter", catFont);
+//      anchor.setName("First Chapter");
 
       // Second parameter is the number of the chapter
-      Chapter catPart = new Chapter(new Paragraph(anchor), 1);
+//      Chapter catPart = new Chapter(new Paragraph(anchor), 1);
 
-      Paragraph subPara = new Paragraph("Subcategory 1", subFont);
-      Section subCatPart = catPart.addSection(subPara);
-      subCatPart.add(new Paragraph("Hello"));
+//      Paragraph subPara = new Paragraph("Subcategory 1", subFont);
+//      Section subCatPart = catPart.addSection(subPara);
+//      subCatPart.add(new Paragraph("Hello"));
 
-      subPara = new Paragraph("Subcategory 2", subFont);
-      subCatPart = catPart.addSection(subPara);
-      subCatPart.add(new Paragraph("Paragraph 1"));
-      subCatPart.add(new Paragraph("Paragraph 2"));
-      subCatPart.add(new Paragraph("Paragraph 3"));
+//      subPara = new Paragraph("Subcategory 2", subFont);
+//      subCatPart = catPart.addSection(subPara);
+//      subCatPart.add(new Paragraph("Paragraph 1"));
+//      subCatPart.add(new Paragraph("Paragraph 2"));
+//      subCatPart.add(new Paragraph("Paragraph 3"));
 
       // add a list
 //      createList(subCatPart);
-      Paragraph paragraph = new Paragraph();
-      addEmptyLine(paragraph, 5);
-      subCatPart.add(paragraph);
+//      Paragraph paragraph = new Paragraph();
+//      addEmptyLine(paragraph, 5);
+//      subCatPart.add(paragraph);
 
       // add a table
-      createTable(subCatPart, expenses);
+      Paragraph paragraph = new Paragraph();
+      addEmptyLine(paragraph,10);
+      createTable(document,session, expenses);
 
       // now add all this to the document
-      document.add(catPart);
+//      document.add(catPart);
 
       // Next section
-      anchor = new Anchor("Second Chapter", catFont);
-      anchor.setName("Second Chapter");
+//      anchor = new Anchor("Second Chapter", catFont);
+//      anchor.setName("Second Chapter");
 
       // Second parameter is the number of the chapter
-      catPart = new Chapter(new Paragraph(anchor), 1);
+//      catPart = new Chapter(new Paragraph(anchor), 1);
 
-      subPara = new Paragraph("Subcategory", subFont);
-      subCatPart = catPart.addSection(subPara);
-      subCatPart.add(new Paragraph("This is a very important message"));
+//      subPara = new Paragraph("Subcategory", subFont);
+//      subCatPart = catPart.addSection(subPara);
+//      subCatPart.add(new Paragraph("This is a very important message"));
 
       // now add all this to the document
-      document.add(catPart);
+//      document.add(catPart);
 
     }
 
-    private static void createTable(Section subCatPart, List<String> expenses)
+    private static void createTable(Document document,Session session, List<String> expenses)
       throws DocumentException, IOException {
       PdfPTable table = new PdfPTable(expenses.size());
 
@@ -286,7 +267,11 @@ public class PDFCreator {
       c1.setHorizontalAlignment(Element.ALIGN_CENTER);
       table.addCell(c1);
       Font font = new Font(bf, 13, Font.BOLD);
-expenses.forEach(i -> {
+      Period period2  = Period.parsePeriod(session.getPeriod());
+      final int dayOfMonth = period2.getDateFrom().getDayOfMonth();
+      final int dayOfMonth1 = period2.getDateTo().getDayOfMonth();
+      IntStream.rangeClosed(dayOfMonth,dayOfMonth1)
+.forEach(i -> {
 
     PdfPCell cell = new PdfPCell(new Phrase(String.valueOf(i),font));
     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -303,14 +288,14 @@ expenses.forEach(i -> {
 });
       table.setHeaderRows(1);
 
-      table.addCell("1.0");
-      table.addCell("1.1");
-      table.addCell("1.2");
-      table.addCell("2.1");
-      table.addCell("2.2");
-      table.addCell("2.3");
 
-      subCatPart.add(table);
+      final Period period = Period.parsePeriod(session.getPeriod());
+//      final int dayOfMonth = period.getDateFrom().getDayOfMonth();
+//      final int dayOfMonth1 = period.getDateTo().getDayOfMonth();
+      IntStream.rangeClosed(dayOfMonth,dayOfMonth1).forEach(i ->
+      table.addCell(String.valueOf(i)));
+
+      document.add(table);
 
     }
 

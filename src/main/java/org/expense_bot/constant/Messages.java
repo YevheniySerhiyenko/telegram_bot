@@ -71,7 +71,7 @@ public class Messages {
 
   public static final String CHECK_BALANCE = "Перевірити поточний залишок";
 
-  public static final String INCOMES = "\uD83D\uDFE2 Доходи";
+  public static final String INCOMES = "\uD83D\uDD35 Доходи";
 
   public static final String EXPENSES = "\uD83D\uDD34 Витрати";
 
