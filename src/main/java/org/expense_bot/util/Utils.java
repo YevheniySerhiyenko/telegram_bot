@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.List;
 import java.util.Map;
@@ -47,11 +48,24 @@ public class Utils {
 
     for (Entry<String, String> button : buttons.entrySet()) {
       keyboardBuilder.keyboardRow(
-          List.of(Utils.buildButton(button.getKey(), button.getValue()))
+        List.of(Utils.buildButton(button.getKey(), button.getValue()))
       );
     }
 
     return keyboardBuilder.build();
+  }
+
+  public static KeyboardRow buildKey(String action) {
+    KeyboardRow keyboardRow = new KeyboardRow();
+    keyboardRow.add(action);
+    return keyboardRow;
+  }
+
+  public static KeyboardRow buildTwoKeys(String firstAction, String secondAction) {
+    KeyboardRow keyboardRow = new KeyboardRow();
+    keyboardRow.add(firstAction);
+    keyboardRow.add(secondAction);
+    return keyboardRow;
   }
 
 }

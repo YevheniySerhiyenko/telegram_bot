@@ -9,7 +9,8 @@ public enum StickerAction {
   WRONG_ENTERED_SUM,
   NOTHING_FOR_TODAY,
   DATE_FROM_FUTURE,//date from future
-  NOTIFICATION
+  NOTIFICATION,
+  HELLO
 
 
 }

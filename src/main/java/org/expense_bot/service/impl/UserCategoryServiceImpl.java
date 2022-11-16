@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
+import org.expense_bot.enums.StickerAction;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.repository.UserCategoryRepository;
 import org.expense_bot.sender.StickerSender;
@@ -42,15 +43,11 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
   private void existByUser(Long userId, String category) {
     repository.getByUserIdAndCategory(userId, category).ifPresent(value -> {
-      telegramService.sendSticker(userId, getSticker(userId));
+      stickerSender.sendSticker(userId, StickerAction.ALREADY_EXISTS_CATEGORY.name());
       telegramService.sendMessage(userId, Messages.ALREADY_HAD_SUCH_CATEGORY);
       sessionService.updateState(userId, ConversationState.Categories.WAITING_FINAL_ACTION);
       throw new RuntimeException(Messages.ALREADY_HAD_SUCH_CATEGORY);
     });
-  }
-
-  public String getSticker(Long userId) {
-    return stickerSender.getSticker(userId, Messages.ERROR_STICKER_MESSAGE);
   }
 
   private UserCategory getCategory(Long userId, String categoryName) {

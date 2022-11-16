@@ -17,8 +17,6 @@ public class Messages {
 
   public static final String ENTER_CATEGORY_NAME = "Введіть назву категорії";
 
-  public static final String YOUR_CATEGORIES = "Ваші категорії";
-
   public static final String CHOOSE_CATEGORY_FROM_LIST = "Оберіть категорію зі списку";
 
   public static final String CHOOSE_PERIOD = "Оберіть період!";
@@ -44,8 +42,6 @@ public class Messages {
   public static final String ADD_FROM_DEFAULT = "Додати існуючу категорію";
 
   public static final String CATEGORY_ADDED_TO_YOUR_LIST = "Категорія додана до вашого списку!";
-
-  public static final String CATEGORY_DELETED = "Категорія %s видалена!";
 
   public static final String ENTER_SUM = "✍️Введи суму витрат⤵️";
 
@@ -102,5 +98,11 @@ public class Messages {
   public static final String PERIOD = "За період";
 
   public static final String CREATE_PDF = "Створити PDF";
+
+  public static final String WRONG_SUM_FORMAT = "Неправильно введена сума";
+
+  public static final String OFF = "Вимкнути";
+
+  public static final String CHANGE = "Змінити";
 
 }

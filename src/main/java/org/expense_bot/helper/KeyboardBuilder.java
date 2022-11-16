@@ -6,7 +6,6 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
-import org.expense_bot.model.Sticker;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.util.Utils;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
@@ -32,10 +30,8 @@ public class KeyboardBuilder {
 	final List<KeyboardRow> buttonsList = new ArrayList<>();
 	final List<String> allCategories = getCategoryList(userId);
 
-	setButtons(buttonsList, allCategories);
-	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Buttons.BUTTON_BACK);
-	buttonsList.add(cancelRow);
+	allCategories.stream().map(Utils::buildKey).forEach(buttonsList::add);
+	buttonsList.add(Utils.buildKey(Buttons.BUTTON_BACK));
 
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(buttonsList)
@@ -46,11 +42,8 @@ public class KeyboardBuilder {
   }
 
   public ReplyKeyboard buildMainMenu() {
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Messages.EXPENSES);
-	row.add(Messages.INCOMES);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row))
+	  .keyboard(List.of(Utils.buildTwoKeys(Messages.EXPENSES,Messages.INCOMES)))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false).build();
@@ -58,14 +51,10 @@ public class KeyboardBuilder {
 
 
   public ReplyKeyboard buildExpenseMenu() {
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Messages.WRITE_EXPENSES);
-	row.add(Messages.CHECK_EXPENSES);
-	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Buttons.BUTTON_BACK);
-
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row, row1))
+	  .keyboard(List.of(
+	    Utils.buildTwoKeys(Messages.WRITE_EXPENSES,Messages.CHECK_EXPENSES),
+		Utils.buildKey(Buttons.BUTTON_BACK)))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(true)
@@ -73,33 +62,24 @@ public class KeyboardBuilder {
   }
 
   public ReplyKeyboard buildIncomeMenu() {
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Messages.WRITE_INCOMES);
-	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Messages.CHECK_INCOMES);
-	final KeyboardRow row2 = new KeyboardRow();
-	row2.add(Messages.CHECK_BALANCE);
-	final KeyboardRow row3 = new KeyboardRow();
-	row3.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row,row1, row2, row3))
+	  .keyboard(List.of(
+	    Utils.buildKey(Messages.WRITE_INCOMES),
+		Utils.buildKey(Messages.CHECK_INCOMES),
+		Utils.buildKey(Messages.CHECK_BALANCE),
+		Utils.buildKey(Buttons.BUTTON_BACK)))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
   public ReplyKeyboard buildCheckPeriodMenu() {
-	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Period.DAY.getValue());
-	final KeyboardRow row2 = new KeyboardRow();
-	row2.add(Period.WEEK.getValue());
-	final KeyboardRow row3 = new KeyboardRow();
-	row3.add(Period.MONTH.getValue());
-	final KeyboardRow row4 = new KeyboardRow();
-	row4.add(Period.PERIOD.getValue());
-	final KeyboardRow row5 = new KeyboardRow();
-	row5.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row1, row2, row3, row4, row5))
+	  .keyboard(List.of(
+		Utils.buildKey(Period.DAY.getValue()),
+		Utils.buildKey(Period.WEEK.getValue()),
+		Utils.buildKey(Period.MONTH.getValue()),
+		Utils.buildKey(Period.PERIOD.getValue()),
+		Utils.buildKey(Buttons.BUTTON_BACK)))
 	  .resizeKeyboard(true)
 	  .build();
   }
@@ -108,118 +88,81 @@ public class KeyboardBuilder {
 	final List<String> categoryList = getCategoryList(userId);
 
 	final List<KeyboardRow> keyboardRows = new ArrayList<>();
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Messages.BY_ALL_CATEGORIES);
-	keyboardRows.add(row);
-	setButtons(keyboardRows, categoryList);
+	keyboardRows.add(Utils.buildKey(Messages.BY_ALL_CATEGORIES));
+	categoryList.stream().map(Utils::buildKey).forEach(keyboardRows::add);
 
-	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(Buttons.BUTTON_BACK);
-	keyboardRows.add(row1);
+	keyboardRows.add(Utils.buildKey(Buttons.BUTTON_BACK));
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(keyboardRows)
 	  .build();
   }
 
   public ReplyKeyboard buildCategoryOptionsMenu() {
-	final KeyboardRow row1 = new KeyboardRow();
-	row1.add(CategoryAction.ADD_NEW_CATEGORY.getValue());
-	final KeyboardRow row2 = new KeyboardRow();
-	row2.add(CategoryAction.DELETE_MY_CATEGORIES.getValue());
-	final KeyboardRow row3 = new KeyboardRow();
-	row3.add(CategoryAction.ADD_FROM_DEFAULT.getValue());
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row1, row2, row3))
+	  .keyboard(List.of(
+	    Utils.buildKey(CategoryAction.ADD_NEW_CATEGORY.getValue()),
+		Utils.buildKey(CategoryAction.DELETE_MY_CATEGORIES.getValue()),
+		Utils.buildKey(CategoryAction.ADD_FROM_DEFAULT.getValue())
+	  ))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
   public ReplyKeyboard buildCustomCategoriesMenu(List<String> allCategories) {
-	final List<KeyboardRow> buttonsList = new ArrayList<>();
-	setButtons(buttonsList, allCategories);
-	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Buttons.BUTTON_BACK);
-	buttonsList.add(cancelRow);
+	final List<KeyboardRow> keyboard = allCategories.stream()
+	  .map(Utils::buildKey)
+	  .collect(Collectors.toList());
+	keyboard.add(Utils.buildKey(Buttons.BUTTON_BACK));
 
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(buttonsList)
+	  .keyboard(keyboard)
 	  .resizeKeyboard(true)
 	  .build();
   }
 
-  private void setButtons(List<KeyboardRow> buttonsList, List<String> allCategories) {
-	for (String category : allCategories) {
-	  final KeyboardRow row = new KeyboardRow();
-	  row.add(category);
-	  buttonsList.add(row);
-	}
-  }
-
   public ReplyKeyboard buildSetDateMenu() {
-	final KeyboardRow row = new KeyboardRow();
-	final KeyboardRow row1 = new KeyboardRow();
-	row.add(Messages.ENTER_DATE);
-	row1.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row, row1))
+	  .keyboard(List.of(
+	    Utils.buildKey(Messages.ENTER_DATE),
+		Utils.buildKey(Buttons.BUTTON_BACK)
+	  ))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
   public ReplyKeyboard buildBackButton() {
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(row))
+	  .keyboard(List.of(Utils.buildKey(Buttons.BUTTON_BACK)))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
   public ReplyKeyboard buildSettingsMenu() {
-	final KeyboardRow row = new KeyboardRow();
-	row.add(Messages.MY_STICKERS);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(Collections.singletonList(row))
+	  .keyboard(Collections.singletonList(Utils.buildKey(Messages.MY_STICKERS)))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
   public ReplyKeyboard buildStickerOptions(String action) {
 	final InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-	final List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
-	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	final InlineKeyboardButton button = new InlineKeyboardButton();
-	button.setText("Вимкнути");
-	button.setCallbackData(action);
-	final InlineKeyboardButton button2 = new InlineKeyboardButton();
-	button2.setText("Змінити");
-	button2.setCallbackData(action);
-	buttons.add(button);
-	buttons.add(button2);
-	keyboards.add(buttons);
-	keyboard.setKeyboard(keyboards);
+	keyboard.setKeyboard(
+	  List.of(
+		List.of(Utils.buildButton(Messages.OFF, Messages.OFF + " " + action),
+		  Utils.buildButton(Messages.CHANGE, Messages.CHANGE + " " + action))));
 	return keyboard;
   }
 
-  public ReplyKeyboard buildStickersActionMenu(List<Sticker> actualStickers) {
-	final List<KeyboardRow> buttonsList = new ArrayList<>();
-	final KeyboardRow cancelRow = new KeyboardRow();
-	cancelRow.add(Buttons.BUTTON_BACK);
-	setStickerActionButtons(buttonsList, actualStickers);
-	buttonsList.add(cancelRow);
+  public ReplyKeyboard buildStickersActionMenu(List<String> stickerActions) {
+	final List<KeyboardRow> buttonsList = stickerActions.stream()
+	  .map(Utils::buildKey)
+	  .collect(Collectors.toList());
+
+	buttonsList.add(Utils.buildKey(Buttons.BUTTON_BACK));
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(buttonsList)
 	  .resizeKeyboard(true)
 	  .build();
-  }
-
-  private void setStickerActionButtons(List<KeyboardRow> buttonsList, List<Sticker> stickers) {
-	for (Sticker sticker : stickers) {
-	  final KeyboardRow row = new KeyboardRow();
-	  row.add(sticker.getAction());
-	  row.add(Buttons.BUTTON_ON);
-	  buttonsList.add(row);
-	}
   }
 
   private List<String> getCategoryList(Long userId) {
@@ -230,22 +173,20 @@ public class KeyboardBuilder {
   }
 
   public ReplyKeyboard buildExpenseOptions(ExpenseGroup group) {
-	final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-	final List<List<InlineKeyboardButton>> keyboards = new ArrayList<>();
-	final List<InlineKeyboardButton> buttons = new ArrayList<>();
-	buttons.add(Utils.buildButton(Buttons.BUTTON_INFO, group.getCategory()));
-	keyboards.add(buttons);
-	inlineKeyboardMarkup.setKeyboard(keyboards);
-	return inlineKeyboardMarkup;
+	final InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+	keyboard.setKeyboard(
+	  List.of(
+	    List.of(
+	      Utils.buildButton(Buttons.BUTTON_INFO, group.getCategory()))));
+	return keyboard;
   }
 
   public ReplyKeyboard buildCreatePDFMenu() {
-	final KeyboardRow createPDFButton = new KeyboardRow();
-	createPDFButton.add(Messages.CREATE_PDF);
-	final KeyboardRow backButton = new KeyboardRow();
-	backButton.add(Buttons.BUTTON_BACK);
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(createPDFButton, backButton))
+	  .keyboard(List.of(
+		Utils.buildKey(Messages.CREATE_PDF),
+		Utils.buildKey(Buttons.BUTTON_BACK)
+	  ))
 	  .resizeKeyboard(true)
 	  .build();
   }
