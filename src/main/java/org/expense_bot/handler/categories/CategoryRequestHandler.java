@@ -1,10 +1,9 @@
 package org.expense_bot.handler.categories;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Commands;
+import org.expense_bot.constant.Command;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.impl.SessionService;
@@ -21,11 +20,10 @@ public class CategoryRequestHandler extends RequestHandler {
   private final TelegramService telegramService;
   private final SessionService sessionService;
   private final KeyboardBuilder keyboardBuilder;
-  private final BackButtonHandler backButtonHandler;
 
   @Override
   public boolean isApplicable(Request request) {
-	return isTextMessage(request.getUpdate(), Commands.CATEGORIES);
+	return isTextMessage(request.getUpdate(), Command.CATEGORIES);
   }
 
   @Override

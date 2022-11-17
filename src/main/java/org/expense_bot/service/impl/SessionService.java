@@ -70,7 +70,7 @@ public class SessionService {
                 final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
                 telegramService.sendMessage(request.getUserId(), Messages.ENTER_DATE, calendar);
                 updateState(request.getUserId(), state);
-                throw new RuntimeException("Build calendar");
+                return;
             }
         }
         if(RequestHandler.hasCallBack(request)) {
@@ -80,7 +80,7 @@ public class SessionService {
                 final LocalDate date = Calendar.getDate(request);
                 telegramService.editNextMessage(request, String.format(Messages.DATE, date));
                 updateSession(clazz, userId, date);
-                throw new RuntimeException("Change day");
+                return;
             }
             telegramService.editKeyboardMarkup(request, keyboard);
         }

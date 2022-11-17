@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.util.SessionUtil;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class CategoryFinalActionHandler extends RequestHandler {
 
   private final SessionService sessionService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
   private final ApplicationContext context;
 
   @Override
@@ -26,7 +26,7 @@ public class CategoryFinalActionHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	if(backButtonHandler.handleCategoriesBackButton(request)) {
+	if(backHandler.handleCategoriesBackButton(request)) {
 	  return;
 	}
 	final Long userId = request.getUserId();

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.Session;
@@ -27,7 +27,7 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -36,11 +36,12 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleExpensesBackButton(request);
+	if(backHandler.handleExpensesBackButton(request)) {
+	  return;
+	}
 	final Long userId = request.getUserId();
-
 	final boolean anotherMonth = drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
-	if(anotherMonth){
+	if(anotherMonth) {
 	  return;
 	}
 	final boolean enteredPeriod = checkPeriod(request);

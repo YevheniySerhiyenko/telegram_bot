@@ -3,7 +3,6 @@ package org.expense_bot.util;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
-import org.expense_bot.enums.StickerAction;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Session;
 
@@ -90,22 +89,6 @@ public class SessionUtil {
 	  .userId(userId)
 	  .incomeDate(localDate)
 	  .state(ConversationState.Incomes.WAITING_FOR_INCOME_SUM)
-	  .build();
-  }
-
-  public static Session getSession(Long userId, StickerAction action) {
-	return Session.builder()
-	  .userId(userId)
-	  .stickerAction(action)
-	  .state(ConversationState.Settings.WAITING_STICKERS_FINAL_ACTION)
-	  .build();
-  }
-
-  public static Session getStickerSession(Long userId, String action) {
-	return Session.builder()
-	  .userId(userId)
-	  .action(action)
-	  .state(ConversationState.Settings.WAITING_STICKERS_ACTION)
 	  .build();
   }
 

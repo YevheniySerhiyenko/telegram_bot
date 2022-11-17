@@ -1,8 +1,6 @@
 package org.expense_bot.util;
 
-import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -10,7 +8,6 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -18,7 +15,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import lombok.SneakyThrows;
 import org.expense_bot.constant.PDFMessages;
 import org.expense_bot.enums.Period;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Request;
@@ -32,9 +29,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -52,20 +47,20 @@ public class PDFCreator {
   private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
   public PDFCreator(
-    TelegramService telegramService,
-    KeyboardBuilder keyboardBuilder,
-    SessionService sessionService,
-    ExpenseService expenseService,
-    BackButtonHandler backButtonHandler
+	TelegramService telegramService,
+	KeyboardBuilder keyboardBuilder,
+	SessionService sessionService,
+	ExpenseService expenseService,
+	BackHandler backHandler
   ) {
     this.telegramService = telegramService;
     this.keyboardBuilder = keyboardBuilder;
     this.sessionService = sessionService;
     this.expenseService = expenseService;
-    this.backButtonHandler = backButtonHandler;
+    this.backHandler = backHandler;
   }
 
   public static String makePeriodHeader(Session session) {

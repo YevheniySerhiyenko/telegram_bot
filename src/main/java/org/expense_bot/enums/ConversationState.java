@@ -99,9 +99,7 @@ public interface ConversationState {
 
   enum Settings implements ConversationState {
     WAITING_SETTINGS_ACTION,
-    WAITING_FINAL_SETTING_ACTION,
-    WAITING_STICKERS_ACTION,
-    WAITING_STICKERS_FINAL_ACTION;
+    WAITING_FINAL_SETTING_ACTION;
 
     public static ConversationState getByOrdinal(Integer ordinal) {
       return Arrays.stream(Settings.values())

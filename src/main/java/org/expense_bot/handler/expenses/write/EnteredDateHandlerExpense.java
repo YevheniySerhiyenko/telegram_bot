@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.service.impl.SessionService;
@@ -22,7 +22,7 @@ public class EnteredDateHandlerExpense extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -31,20 +31,26 @@ public class EnteredDateHandlerExpense extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleExpensesBackButton(request);
+	if(backHandler.handleExpensesBackButton(request)) {
+	  return;
+	}
 	final Long userId = request.getUserId();
-	drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
+	final boolean anotherMonth = drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
+	if(anotherMonth){
+	  return;
+	}
 	final LocalDate localDate = Calendar.getDate(request);
 	sessionService.update(SessionUtil.buildSession(userId, localDate));
 	telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
   }
 
-  private void drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {
-	if(Objects.nonNull(keyboard)) {
-	  telegramService.editKeyboardMarkup(request, keyboard);
-	  sessionService.updateState(request.getUserId(), ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE);
-	  throw new RuntimeException("Waiting another date");
+  private boolean drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {
+	if(Objects.isNull(keyboard)) {
+	  return false;
 	}
+	sessionService.updateState(request.getUserId(), ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE);
+	telegramService.editKeyboardMarkup(request, keyboard);
+	return true;
   }
 
   @Override

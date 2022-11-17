@@ -1,6 +1,6 @@
 package org.expense_bot.constant;
 
-public class Commands {
+public class Command {
 
   public static final String CATEGORIES = "/categories";
 

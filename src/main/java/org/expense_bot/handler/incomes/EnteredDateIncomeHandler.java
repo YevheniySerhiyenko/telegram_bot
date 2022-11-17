@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
@@ -22,7 +22,7 @@ public class EnteredDateIncomeHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -31,14 +31,16 @@ public class EnteredDateIncomeHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-    backButtonHandler.handleIncomeBackButton(request);
+    if(backHandler.handleIncomeBackButton(request)){
+      return;
+    }
     final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
     final Long userId = request.getUserId();
     final boolean anotherMonth = drawAnotherMonthCalendar(request, keyboard);
     if(anotherMonth) {
       return;
     }
-    LocalDate localDate = getLocalDate(request, keyboard);
+    final LocalDate localDate = getLocalDate(request, keyboard);
     sessionService.update(SessionUtil.buildIncomeSession(userId, localDate));
     telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
   }

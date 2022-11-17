@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.mapper.ExpenseMapper;
 import org.expense_bot.model.Expense;
@@ -31,7 +31,7 @@ public class AdditionalActionHandler extends RequestHandler {
   private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
   private final PDFCreator pdfCreator;
 
   @Override
@@ -41,7 +41,9 @@ public class AdditionalActionHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-    backButtonHandler.handleExpensesBackButton(request);
+    if(backHandler.handleExpensesBackButton(request)) {
+      return;
+    }
     createPDF(request);
     handleInfo(request);
     sessionService.update(SessionUtil.finalUpdate(request.getUserId()));

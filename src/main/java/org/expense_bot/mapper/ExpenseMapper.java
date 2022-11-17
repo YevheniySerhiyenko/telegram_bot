@@ -37,7 +37,7 @@ public class ExpenseMapper {
 		"\n\uD83D\uDD34\t\t" + expense.getSum()
 		  + " грн  \t\t\uD83D\uDCC5\t"
 		  + DateUtil.getDateTime(expense.getDateTime())
-		  + "\n🕢"
+		  + " 🕢"
 		  + DateUtil.getTime(expense.getDateTime()))
 	  .collect(Collectors.toList());
   }

@@ -5,7 +5,7 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.ExpenseAction;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.Request;
@@ -23,7 +23,7 @@ public class ExpenseHandler extends RequestHandler {
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;
   private final UserCategoryService userCategoryService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
   private final ApplicationContext context;
 
   @Override
@@ -33,7 +33,9 @@ public class ExpenseHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleMainMenuBackButton(request);
+	if(backHandler.handleMainMenuBackButton(request)) {
+	  return;
+	}
 	final Long userId = request.getUserId();
 	final List<UserCategory> categories = userCategoryService.getByUserId(userId);
 	final ExpenseAction action = ExpenseAction.parse(getUpdateData(request));

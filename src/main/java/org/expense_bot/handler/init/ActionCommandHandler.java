@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ActionCommandHandler extends RequestHandler {
 
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
   private final ApplicationContext context;
 
   @Override
@@ -22,7 +22,9 @@ public class ActionCommandHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleMainMenuBackButton(request);
+	if(backHandler.handleMainMenuBackButton(request)) {
+	  return;
+	}
 	final Long userId = request.getUserId();
 	final InitAction initAction = InitAction.parseAction(getUpdateData(request));
 	context.getBean(initAction.getHandler()).handle(userId);

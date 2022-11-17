@@ -8,8 +8,6 @@ public class Buttons {
 
   public static final String BUTTON_TRASH = "\uD83D\uDDD1";
 
-  public static final String BUTTON_ON = "⏼";
-
   public static final String BUTTON_INFO = "Деталі ℹ";
 
 }

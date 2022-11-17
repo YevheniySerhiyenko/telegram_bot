@@ -6,7 +6,7 @@ import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.Period;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.mapper.ExpenseMapper;
 import org.expense_bot.model.Expense;
@@ -30,7 +30,7 @@ public class CheckCategoryHandler extends RequestHandler {
   private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -39,7 +39,9 @@ public class CheckCategoryHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleExpensesBackButton(request);
+	if(backHandler.handleExpensesBackButton(request)) {
+	  return;
+	}
 	final Long userId = request.getUserId();
 	final String category = getUpdateData(request);
 	final String period = sessionService.getSession(userId).getPeriod();

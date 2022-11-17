@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.impl.TelegramService;
@@ -20,7 +20,7 @@ public class CategoryEnteredHandler extends RequestHandler {
   private final TelegramService telegramService;
   private final SessionService sessionService;
   private final KeyboardBuilder keyboardBuilder;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -29,7 +29,9 @@ public class CategoryEnteredHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	backButtonHandler.handleExpensesBackButton(request);
+	if(backHandler.handleExpensesBackButton(request)) {
+	  return;
+	}
 	final Long userId = request.getUserId();
 	final ReplyKeyboard keyboard = keyboardBuilder.buildSetDateMenu();
 	telegramService.sendMessage(userId, Messages.ENTER_SUM, keyboard);

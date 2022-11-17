@@ -2,7 +2,7 @@ package org.expense_bot.handler.init;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.expense_bot.constant.Commands;
+import org.expense_bot.constant.Command;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
@@ -23,7 +23,7 @@ public class StartCommandHandler extends RequestHandler {
 
     @Override
     public boolean isApplicable(Request request) {
-        return isCommand(request.getUpdate(), Commands.START);
+        return isCommand(request.getUpdate(), Command.START);
     }
 
     @Override

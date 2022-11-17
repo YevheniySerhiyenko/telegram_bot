@@ -3,9 +3,8 @@ package org.expense_bot.handler.expenses.write;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.enums.StickerAction;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
 import org.expense_bot.sender.StickerSender;
@@ -29,7 +28,7 @@ public class SumEnteredHandler extends RequestHandler {
   private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final StickerSender stickerSender;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
 
 
   @Override
@@ -39,9 +38,11 @@ public class SumEnteredHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
+	if(backHandler.handleExpensesBackButton(request)) {
+	  return;
+	}
 	sessionService.checkEnteredDate(request, ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE, this.getClass());
-	backButtonHandler.handleExpensesBackButton(request);
-	final ReplyKeyboard replyKeyboardMarkup = keyboardBuilder.buildExpenseMenu();
+	final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
 	  final BigDecimal sum = stickerSender.checkWrongSum(request);
 	  if(Objects.isNull(sum)) {
@@ -50,8 +51,8 @@ public class SumEnteredHandler extends RequestHandler {
 	  final Long userId = request.getUserId();
 	  sessionService.update(SessionUtil.getSession(sum, userId));
 	  expenseService.save(ExpenseUtil.getExpense(sessionService.getSession(userId)));
-	  stickerSender.sendSticker(userId, StickerAction.SUCCESS_EXPENSE_SUM.name());
-	  telegramService.sendMessage(userId, Messages.SUCCESS_SENT_SUM, replyKeyboardMarkup);
+	  telegramService.sendMessage(userId, Messages.SUCCESS);
+	  telegramService.sendMessage(userId, Messages.SUCCESS_SENT_SUM, keyboard);
 	}
   }
 

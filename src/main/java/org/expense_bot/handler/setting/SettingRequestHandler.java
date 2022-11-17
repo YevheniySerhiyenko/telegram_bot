@@ -1,7 +1,7 @@
 package org.expense_bot.handler.setting;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Commands;
+import org.expense_bot.constant.Command;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
@@ -22,7 +22,7 @@ public class SettingRequestHandler extends RequestHandler {
 
   @Override
   public boolean isApplicable(Request request) {
-	return isTextMessage(request.getUpdate(), Commands.SETTINGS);
+	return isTextMessage(request.getUpdate(), Command.SETTINGS);
   }
 
   @Override

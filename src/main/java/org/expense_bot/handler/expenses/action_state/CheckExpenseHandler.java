@@ -7,6 +7,7 @@ import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Component
 @RequiredArgsConstructor
@@ -18,7 +19,8 @@ public class CheckExpenseHandler implements ExpenseActionState {
 
   @Override
   public void handle(Long userId) {
-	telegramService.sendMessage(userId, Messages.CHOOSE_PERIOD, keyboardBuilder.buildCheckPeriodMenu());
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCheckPeriodMenu();
+	telegramService.sendMessage(userId, Messages.CHOOSE_PERIOD, keyboard);
 	sessionService.updateState(userId, ConversationState.Expenses.WAITING_FOR_PERIOD);
   }
 

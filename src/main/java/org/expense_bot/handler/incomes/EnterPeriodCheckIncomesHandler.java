@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.init.BackButtonHandler;
+import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.model.Income;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.IncomeService;
@@ -25,7 +25,7 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final BackButtonHandler backButtonHandler;
+  private final BackHandler backHandler;
   private final IncomeService incomeService;
 
   @Override
@@ -35,7 +35,9 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-    backButtonHandler.handleIncomeBackButton(request);
+    if(backHandler.handleIncomeBackButton(request)){
+      return;
+    }
     final Long userId = request.getUserId();
     if(hasMessage(request) && Objects.equals(getUpdateData(request), Messages.ENTER_DATE)) {
       telegramService.sendMessage(userId, Messages.ENTER_DATE, Calendar.buildMonthCalendar(LocalDate.now()));
