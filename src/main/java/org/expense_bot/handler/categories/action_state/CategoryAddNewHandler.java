@@ -8,6 +8,7 @@ import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +28,8 @@ public class CategoryAddNewHandler implements CategoryActionState {
   @Override
   public void handleFinal(Long userId, String categoryParam) {
     userCategoryService.add(userId, categoryParam);
-    telegramService.sendMessage(userId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboardBuilder.buildCategoryOptionsMenu());
+    final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+    telegramService.sendMessage(userId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboard);
     sessionService.updateState(userId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 

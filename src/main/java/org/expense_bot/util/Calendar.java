@@ -9,6 +9,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -62,7 +63,7 @@ public class Calendar {
 	return value.length() == 1 ? "0" + value : value;
   }
 
-  public static InlineKeyboardMarkup changeMonth(Request request) {
+  public static Optional<InlineKeyboardMarkup> changeMonth(Request request) {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
 	  if(data.startsWith("back") || data.startsWith("forward")) {
@@ -70,16 +71,16 @@ public class Calendar {
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousMonth(text);
 		if("back".equals(command)) {
-		  return Calendar.buildCalendar(of.minusMonths(1));
+		  return Optional.of(Calendar.buildCalendar(of.minusMonths(1)));
 		} else if("forward".equals(command)) {
-		  return Calendar.buildCalendar(of.plusMonths(1));
+		  return Optional.of(Calendar.buildCalendar(of.plusMonths(1)));
 		}
 	  }
 	}
-	return null;
+	return Optional.empty();
   }
 
-  public static InlineKeyboardMarkup changeYear(Request request) {
+  public static Optional<InlineKeyboardMarkup> changeYear(Request request) {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
 	  if(data.startsWith("back") || data.startsWith("forward")) {
@@ -87,13 +88,13 @@ public class Calendar {
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousYear(text);
 		if("back".equals(command)) {
-		  return Calendar.buildMonthCalendar(of.minusYears(1));
+		  return Optional.of(Calendar.buildYear(of.minusYears(1)));
 		} else if("forward".equals(command)) {
-		  return Calendar.buildMonthCalendar(of.plusYears(1));
+		  return Optional.of(Calendar.buildYear(of.plusYears(1)));
 		}
 	  }
 	}
-	return null;
+	return Optional.empty();
   }
 
   private static LocalDate getNextOrPreviousYear(String[] text) {
@@ -113,7 +114,7 @@ public class Calendar {
 	return LocalDate.now();
   }
 
-  public static InlineKeyboardMarkup buildMonthCalendar(LocalDate date) {
+  public static InlineKeyboardMarkup buildYear(LocalDate date) {
 	final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 	final int year = date.getYear();
 

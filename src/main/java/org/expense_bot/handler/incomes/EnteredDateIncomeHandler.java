@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -31,29 +32,31 @@ public class EnteredDateIncomeHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-    if(backHandler.handleIncomeBackButton(request)){
+    if(backHandler.handleIncomeBackButton(request)) {
       return;
     }
-    final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
+    final Optional<InlineKeyboardMarkup> keyboard = Calendar.changeMonth(request);
     final Long userId = request.getUserId();
-    final boolean anotherMonth = drawAnotherMonthCalendar(request, keyboard);
+    final boolean anotherMonth = drawAnotherMonth(request, keyboard);
     if(anotherMonth) {
       return;
     }
-    final LocalDate localDate = getLocalDate(request, keyboard);
-    sessionService.update(SessionUtil.buildIncomeSession(userId, localDate));
-    telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
+    keyboard.ifPresent(keyboardMarkup -> {
+      final LocalDate localDate = getLocalDate(request, keyboardMarkup);
+      sessionService.update(SessionUtil.buildIncomeSession(userId, localDate));
+      telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
+    });
   }
 
   private LocalDate getLocalDate(Request request, InlineKeyboardMarkup keyboard) {
     return Objects.isNull(keyboard) ? Calendar.getDate(request) : null;
   }
 
-  private boolean drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {
-    if(Objects.isNull(keyboard)) {
+  private boolean drawAnotherMonth(Request request, Optional<InlineKeyboardMarkup> keyboard) {
+    if(keyboard.isEmpty()) {
       return false;
     }
-    telegramService.editKeyboardMarkup(request, keyboard);
+    telegramService.editKeyboardMarkup(request, keyboard.get());
     sessionService.updateState(request.getUserId(), ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
     return true;
   }

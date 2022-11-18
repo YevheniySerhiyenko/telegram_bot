@@ -27,14 +27,10 @@ public abstract class RequestHandler {
     }
 
     public static String getUpdateData(Request request) {
-        String data = null;
         if(request.getUpdate().hasMessage()) {
-            data = request.getUpdate().getMessage().getText();
+          return request.getUpdate().getMessage().getText();
         }
-        if(request.getUpdate().hasCallbackQuery()) {
-            data = request.getUpdate().getCallbackQuery().getData();
-        }
-        return data;
+        return request.getUpdate().getCallbackQuery().getData();
     }
 
     public static boolean isStateEqual(Request request, ConversationState state) {

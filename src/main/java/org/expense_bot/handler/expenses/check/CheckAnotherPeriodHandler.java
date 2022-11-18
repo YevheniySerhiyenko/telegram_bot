@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.expense_bot.constant.Messages.DATE;
 
@@ -67,14 +68,14 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
 	final Session session = request.getSession();
 	final LocalDate periodFrom = session.getPeriodFrom();
 	final LocalDate periodTo = session.getPeriodTo();
-	if(periodFrom == null) {
+	if(Objects.isNull(periodFrom)) {
 	  session.setPeriodFrom(date);
 	  return true;
 	}
-	if(periodTo == null) {
+	if(Objects.isNull(periodTo)) {
 	  session.setPeriodTo(date);
 	}
-	if(session.getPeriodFrom() != null && session.getPeriodTo() != null) {
+	if(Objects.nonNull(session.getPeriodFrom()) && Objects.nonNull(session.getPeriodTo())) {
 	  session.setState(ConversationState.Expenses.WAITING_CHECK_CATEGORY);
 	  sessionService.update(session);
 	  return false;
@@ -84,11 +85,11 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
 	return false;
   }
 
-  private boolean drawAnotherMonthCalendar(Request request, InlineKeyboardMarkup keyboard) {
-	if(Objects.isNull(keyboard)) {
+  private boolean drawAnotherMonthCalendar(Request request, Optional<InlineKeyboardMarkup> keyboard) {
+	if(keyboard.isEmpty()) {
 	  return false;
 	}
-	telegramService.editKeyboardMarkup(request, keyboard);
+	telegramService.editKeyboardMarkup(request, keyboard.get());
 	sessionService.updateState(request.getUserId(), ConversationState.Expenses.WAITING_FOR_TWO_DATES);
 	return true;
   }

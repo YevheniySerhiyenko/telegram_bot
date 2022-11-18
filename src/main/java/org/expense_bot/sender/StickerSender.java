@@ -8,6 +8,8 @@ import org.expense_bot.service.impl.TelegramService;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.expense_bot.handler.RequestHandler.getUpdateData;
 
@@ -19,7 +21,7 @@ public class StickerSender {
 
   public void sendSticker(Long userId, String action) {
 	final String token = getSticker(userId, action);
-	if(token != null && !token.isEmpty()) {
+	if(Objects.nonNull(token) && !token.isEmpty()) {
 	  telegramService.sendSticker(userId, token);
 	}
   }
@@ -29,15 +31,15 @@ public class StickerSender {
   }
 
 // move to util
-  public BigDecimal checkWrongSum(Request request) {
+  public Optional<BigDecimal> checkWrongSum(Request request) {
 	try {
-	  return new BigDecimal(getUpdateData(request));
+	  return Optional.of(new BigDecimal(getUpdateData(request)));
 	} catch (NumberFormatException e) {
 	  final Long userId = request.getUserId();
 	  sendSticker(userId, StickerAction.WRONG_ENTERED_SUM.name());
 	  telegramService.sendMessage(userId, Messages.WRONG_SUM_FORMAT);
 	}
-	return null;
+	return Optional.empty();
   }
 
 }

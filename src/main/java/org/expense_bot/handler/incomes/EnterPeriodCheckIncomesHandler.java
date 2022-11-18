@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -40,11 +41,10 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
     }
     final Long userId = request.getUserId();
     if(hasMessage(request) && Objects.equals(getUpdateData(request), Messages.ENTER_DATE)) {
-      telegramService.sendMessage(userId, Messages.ENTER_DATE, Calendar.buildMonthCalendar(LocalDate.now()));
+      telegramService.sendMessage(userId, Messages.ENTER_DATE, Calendar.buildYear(LocalDate.now()));
     }
     if(hasCallBack(request)) {
-      final InlineKeyboardMarkup keyboard = Calendar.changeYear(request);
-      final boolean anotherYear = drawAnotherYearCalendar(request, keyboard);
+      final boolean anotherYear = drawAnotherYearCalendar(request, Calendar.changeYear(request));
       if(anotherYear){
         return;
       }
@@ -64,11 +64,11 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
     incomes.forEach(income -> telegramService.sendMessage(userId, IncomeUtil.getIncome(income)));
   }
 
-  private boolean drawAnotherYearCalendar(Request request, InlineKeyboardMarkup keyboard) {
-    if(Objects.isNull(keyboard)) {
+  private boolean drawAnotherYearCalendar(Request request, Optional<InlineKeyboardMarkup> keyboard) {
+    if(keyboard.isEmpty()) {
       return false;
     }
-    telegramService.editKeyboardMarkup(request, keyboard);
+    telegramService.editKeyboardMarkup(request, keyboard.get());
     sessionService.updateState(request.getUserId(), ConversationState.Incomes.WAITING_FOR_PERIOD);
     return true;
   }

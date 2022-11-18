@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -44,12 +44,12 @@ public class SumEnteredHandler extends RequestHandler {
 	sessionService.checkEnteredDate(request, ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE, this.getClass());
 	final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
-	  final BigDecimal sum = stickerSender.checkWrongSum(request);
-	  if(Objects.isNull(sum)) {
+	  final Optional<BigDecimal> sum = stickerSender.checkWrongSum(request);
+	  if(sum.isEmpty()) {
 		return;
 	  }
 	  final Long userId = request.getUserId();
-	  sessionService.update(SessionUtil.getSession(sum, userId));
+	  sessionService.update(SessionUtil.getSession(sum.get(), userId));
 	  expenseService.save(ExpenseUtil.getExpense(sessionService.getSession(userId)));
 	  telegramService.sendMessage(userId, Messages.SUCCESS);
 	  telegramService.sendMessage(userId, Messages.SUCCESS_SENT_SUM, keyboard);

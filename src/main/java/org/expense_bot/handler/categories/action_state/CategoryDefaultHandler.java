@@ -42,17 +42,22 @@ public class CategoryDefaultHandler implements CategoryActionState {
 
   private void sendListNotSelected(Long userId) {
 	final List<String> userCategories = getUserCategories(userId);
-	final List<String> defaultCategories = categoryService.getDefault()
-	  .stream()
-	  .map(Category::getName)
-	  .collect(Collectors.toList());
-	defaultCategories.removeAll(userCategories);
+	final List<String> defaultCategories = getDefaultCategories(userCategories);
 	final boolean allAdded = checkAll(userId, defaultCategories);
 	if(allAdded){
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
 	telegramService.sendMessage(userId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
+  }
+
+  private List<String> getDefaultCategories(List<String> userCategories) {
+	final List<String> defaultCategories = categoryService.getDefault()
+	  .stream()
+	  .map(Category::getName)
+	  .collect(Collectors.toList());
+	defaultCategories.removeAll(userCategories);
+	return defaultCategories;
   }
 
   public List<String> subtractCategories(Long userId) {

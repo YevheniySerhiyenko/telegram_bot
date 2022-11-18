@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -37,12 +37,12 @@ public class IncomeWriteHandler implements IncomeActionState {
   @Override
   public void handleFinal(Request request) {
     final Long userId = request.getUserId();
-    final BigDecimal sum = stickerSender.checkWrongSum(request);
-    if(Objects.isNull(sum)){
+    final Optional<BigDecimal> sum = stickerSender.checkWrongSum(request);
+    if(sum.isEmpty()){
       return;
     }
     final LocalDate incomeDate = request.getSession().getIncomeDate();
-    incomeService.save(IncomeUtil.buildIncome(userId,sum,incomeDate));
+    incomeService.save(IncomeUtil.buildIncome(userId,sum.get(),incomeDate));
     stickerSender.sendSticker(userId, StickerAction.SUCCESS_EXPENSE_SUM.name());
     telegramService.sendMessage(userId, Messages.SUCCESS_INCOME, keyboardBuilder.buildIncomeMenu());
     sessionService.updateState(userId, ConversationState.Init.WAITING_INCOME_ACTION);

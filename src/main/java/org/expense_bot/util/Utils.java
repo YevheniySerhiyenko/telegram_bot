@@ -15,9 +15,9 @@ import static java.util.Collections.singletonList;
 public class Utils {
 
   public static String getFileId(final Message message) {
-    if (message == null) {
-      return null;
-    }
+//    if (message == null) {
+//      return null;
+//    }
 
     String fileId = null;
     if (message.hasPhoto()) {
