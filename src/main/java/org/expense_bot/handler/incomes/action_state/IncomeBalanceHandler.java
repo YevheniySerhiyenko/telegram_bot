@@ -1,6 +1,7 @@
 package org.expense_bot.handler.incomes.action_state;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.enums.Period;
@@ -35,7 +36,8 @@ public class IncomeBalanceHandler implements IncomeActionState {
     final LocalDateTime from = Period.MONTH.getDateFrom();
     final LocalDateTime to = Period.MONTH.getDateTo();
 
-    final List<Expense> expenses = expenseService.getByPeriod(userId, from, to, Messages.BY_ALL_CATEGORIES);
+    final List<Expense> expenses = expenseService
+      .getByPeriod(userId, from, to, Buttons.BY_ALL_CATEGORIES.getValue());
     final BigDecimal allExpensesSum = ExpenseUtil.getSum(expenses);
     final BigDecimal allIncomesSum = IncomeUtil.getSum(incomes);
 

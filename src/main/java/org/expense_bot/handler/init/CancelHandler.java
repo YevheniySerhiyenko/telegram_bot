@@ -22,7 +22,7 @@ public class CancelHandler extends RequestHandler {
 
     @Override
     public boolean isApplicable(Request request) {
-        return isTextMessage(request.getUpdate(), BUTTON_CANCEL);
+        return isTextMessage(request.getUpdate(), BUTTON_CANCEL.getValue());
     }
 
     @Override

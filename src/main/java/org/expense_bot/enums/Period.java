@@ -1,7 +1,7 @@
 package org.expense_bot.enums;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Messages;
+import org.expense_bot.constant.Buttons;
 import org.expense_bot.util.DateUtil;
 
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 public enum Period {
-  DAY(Messages.DAY) {
+  DAY(Buttons.DAY.getValue()) {
     @Override
     public LocalDateTime getDateFrom() {
       return DateUtil.getTodayMidnight();
@@ -21,7 +21,7 @@ public enum Period {
       return DateUtil.getTomorrowMidnight();
     }
   },
-  WEEK(Messages.WEEK){
+  WEEK(Buttons.WEEK.getValue()){
     @Override
     public LocalDateTime getDateFrom() {
       return DateUtil.getStartOfWeek();
@@ -32,7 +32,7 @@ public enum Period {
       return DateUtil.getTomorrowMidnight(LocalDate.now());
     }
   },
-  MONTH(Messages.MONTH){
+  MONTH(Buttons.MONTH.getValue()){
     @Override
     public LocalDateTime getDateFrom() {
       return DateUtil.getStartOfMonth();
@@ -44,7 +44,7 @@ public enum Period {
     }
   },
 
-  PERIOD(Messages.PERIOD){
+  PERIOD(Buttons.PERIOD.getValue()){
     @Override
     public LocalDateTime getDateFrom() {
       return null;

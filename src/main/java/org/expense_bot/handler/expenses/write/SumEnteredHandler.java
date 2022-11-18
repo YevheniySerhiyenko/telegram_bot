@@ -41,7 +41,11 @@ public class SumEnteredHandler extends RequestHandler {
 	if(backHandler.handleExpensesBackButton(request)) {
 	  return;
 	}
-	sessionService.checkEnteredDate(request, ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE, this.getClass());
+	final boolean enteredDate = sessionService.checkEnteredDate(
+	  request, ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE);
+	if(enteredDate){
+	  return;
+	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
 	  final Optional<BigDecimal> sum = stickerSender.checkWrongSum(request);

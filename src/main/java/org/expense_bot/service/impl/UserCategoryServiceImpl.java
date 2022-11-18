@@ -33,7 +33,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   public void delete(Long userId, String categoryName) {
     repository.getByUserIdAndCategory(userId, categoryName)
       .ifPresent(repository::delete);
-    telegramService.sendMessage(userId, Buttons.BUTTON_TRASH);
+    telegramService.sendMessage(userId, Buttons.BUTTON_TRASH.getValue());
   }
 
   @Override

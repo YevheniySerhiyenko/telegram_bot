@@ -28,8 +28,13 @@ public class IncomeActionHandler extends RequestHandler {
 	if(backHandler.handleIncomeBackButton(request)){
 	  return;
 	}
-	sessionService.checkEnteredDate(request, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE, this.getClass());
+	final boolean enteredDate = sessionService.checkEnteredDate(
+	  request, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
+	if(enteredDate){
+	  return;
+	}
 	final IncomeAction action = request.getSession().getIncomeAction();
+	sessionService.updateState(request.getUserId(), ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
 	context.getBean(action.getHandler()).handleFinal(request);
   }
 

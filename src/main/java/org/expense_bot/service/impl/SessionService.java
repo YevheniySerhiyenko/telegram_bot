@@ -1,6 +1,7 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
@@ -63,31 +64,34 @@ public class SessionService {
         saveSession(session);
     }
 
-    public void checkEnteredDate(Request request, ConversationState state, Object clazz) {
+    public boolean checkEnteredDate(Request request, ConversationState state) {
+        boolean enteredDate = false;
         if(RequestHandler.hasMessage(request)) {
             final String text = RequestHandler.getUpdateData(request);
-            if(Objects.equals(text, Messages.ENTER_DATE)) {
+            if(Objects.equals(text, Buttons.ENTER_DATE.getValue())) {
                 final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
-                telegramService.sendMessage(request.getUserId(), Messages.ENTER_DATE, calendar);
+                telegramService.sendMessage(request.getUserId(), Buttons.ENTER_DATE.getValue(), calendar);
                 updateState(request.getUserId(), state);
-                return;
+                enteredDate = true;
             }
         }
         if(RequestHandler.hasCallBack(request)) {
             final Long userId = request.getUserId();
-            final InlineKeyboardMarkup keyboard = Calendar.changeMonth(request);
-            if(Objects.isNull(keyboard)) {
+            final Optional<InlineKeyboardMarkup> keyboard = Calendar.changeMonth(request);
+            if(keyboard.isEmpty()) {
                 final LocalDate date = Calendar.getDate(request);
                 telegramService.editNextMessage(request, String.format(Messages.DATE, date));
-                updateSession(clazz, userId, date);
-                return;
+                updateSession(userId, date,state);
+            } else {
+                telegramService.editKeyboardMarkup(request, keyboard.get());
+                enteredDate = true;
             }
-            telegramService.editKeyboardMarkup(request, keyboard);
         }
+        return enteredDate;
     }
 
-    private void updateSession(Object clazz, Long userId, LocalDate date) {
-        if(clazz instanceof SumEnteredHandler) {
+    private void updateSession(Long userId, LocalDate date, ConversationState state) {
+        if(state instanceof ConversationState.Expenses) {
             update(SessionUtil.buildExpenseSession(userId, date));
         } else {
             update(SessionUtil.buildIncomeSession(userId, date));

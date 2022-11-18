@@ -58,7 +58,7 @@ public class BackHandler {
 	if(!RequestHandler.hasMessage(request)) {
 	  return false;
 	}
-	return Objects.equals(RequestHandler.getUpdateData(request), Buttons.BUTTON_BACK);
+	return Objects.equals(RequestHandler.getUpdateData(request), Buttons.BUTTON_BACK.getValue());
   }
 
 }

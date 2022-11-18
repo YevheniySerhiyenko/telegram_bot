@@ -1,6 +1,7 @@
 package org.expense_bot.handler.incomes;
 
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.Buttons;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
@@ -40,8 +41,8 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
       return;
     }
     final Long userId = request.getUserId();
-    if(hasMessage(request) && Objects.equals(getUpdateData(request), Messages.ENTER_DATE)) {
-      telegramService.sendMessage(userId, Messages.ENTER_DATE, Calendar.buildYear(LocalDate.now()));
+    if(hasMessage(request) && Objects.equals(getUpdateData(request), Buttons.ENTER_DATE.getValue())) {
+      telegramService.sendMessage(userId, Buttons.ENTER_DATE.getValue(), Calendar.buildYear(LocalDate.now()));
     }
     if(hasCallBack(request)) {
       final boolean anotherYear = drawAnotherYearCalendar(request, Calendar.changeYear(request));
