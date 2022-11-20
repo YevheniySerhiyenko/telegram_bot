@@ -8,6 +8,7 @@ import org.expense_bot.repository.UserRepository;
 import org.expense_bot.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,13 +19,18 @@ public class UserServiceImpl implements UserService {
   private final NewUserHandler firstEnteredHandler;
 
   @Override
+  public List<User> getAll() {
+	return userRepository.findAll();
+  }
+
+  @Override
   public void checkUser(Request request) {
 	final String firstName = getFirstName(request);
 	final Optional<User> user = getByUserId(request.getUserId());
-	if(!user.isPresent()){
+	if(user.isEmpty()) {
 	  firstEnteredHandler.handle(request);
 	}
-	 userRepository.save(getUser(request, firstName));
+	userRepository.save(getUser(request, firstName));
   }
 
   private String getFirstName(Request request) {

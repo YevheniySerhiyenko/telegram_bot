@@ -1,62 +1,64 @@
 package org.expense_bot;
 
 import lombok.extern.slf4j.Slf4j;
+import org.expense_bot.handler.init.StartCommandHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.Session;
 import org.expense_bot.service.impl.SessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
 @Component
 public class ExpenseBot extends TelegramLongPollingBot {
 
+  private final Dispatcher dispatcher;
+  private final SessionService sessionService;
+  private final StartCommandHandler startCommandHandler;
+
+  @Value("${bot.token}")
+  private String botToken;
+  @Value("${bot.username}")
+  private String botUsername;
+
+  public ExpenseBot(Dispatcher dispatcher, SessionService sessionService, StartCommandHandler startCommandHandler) {
+    this.dispatcher = dispatcher;
+    this.sessionService = sessionService;
+    this.startCommandHandler = startCommandHandler;
+  }
+
   /**
-   *
+   * This is an entry point for any messages, or updates received from user<br>
+   * Docs for "Update object: https://core.telegram.org/bots/api#update
    */
-    @Value("${bot.token}")
-    private String botToken;
-
-    @Value("${bot.username}")
-    private String botUsername;
-
-    private final Dispatcher dispatcher;
-    private final SessionService sessionService;
-
-    public ExpenseBot(Dispatcher dispatcher, SessionService sessionService) {
-        this.dispatcher = dispatcher;
-        this.sessionService = sessionService;
-    }
-
-    /**
-     * This is an entry point for any messages, or updates received from user<br>
-     * Docs for "Update object: https://core.telegram.org/bots/api#update
-     */
-    @Override
-    public void onUpdateReceived(Update update) {
-      final String textFromUser = getText(update);
-      final Long userId = getUserId(update);
-      String userFirstName = getFirstName(update);
+  @Override
+  public void onUpdateReceived(Update update) {
+    final String textFromUser = getText(update);
+    final Long userId = getUserId(update);
+    String userFirstName = getFirstName(update);
 
       log.info("[{}, {}] : {}", userId, userFirstName, textFromUser);
 
-      Session session = sessionService.getSession(userId);
-      Request request = Request
-        .builder()
-        .update(update)
-        .session(session)
-        .userId(userId)
-        .build();
+    Session session = sessionService.getSession(userId);
+    Request request = Request
+      .builder()
+      .update(update)
+      .session(session)
+      .userId(userId)
+      .build();
 
+    try {
       boolean dispatched = dispatcher.dispatch(request);
-
       if(!dispatched) {
         log.warn("Unexpected update from user");
       }
+    } catch (Exception e) {
+      startCommandHandler.handle(request);
     }
+
+  }
 
   private String getText(Update update) {
       if(update.hasMessage()){
