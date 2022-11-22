@@ -95,23 +95,7 @@ public class PDFCreator {
 
     final Map<String, Object> objectMap = new HashMap<>() {
       {
-        put("periodFrom", session.getPeriodFrom());
-        put("periodTo", session.getPeriodTo());
-        put("userId", session.getUserId());
-        put("state", session.getState());
-        put("categoryAction", session.getCategoryAction());
-        put("action", session.getAction());
-        put("category", session.getCategory());
-        put("expenseSum", session.getExpenseSum());
-        put("incomeSum", session.getIncomeSum());
-        put("expenseDate", session.getExpenseDate());
-        put("incomeDate", session.getIncomeDate());
-        put("incomeAction", session.getIncomeAction());
-        put("period", session.getPeriod());
-        put("stickerAction", session.getStickerAction());
-        put("expenseList", session.getExpenseList());
-        put("incomeList", "session.getIncomeList()");
-
+        put("onesession", session);
       }
     };
 
