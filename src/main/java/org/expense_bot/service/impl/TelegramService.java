@@ -1,46 +1,54 @@
 package org.expense_bot.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.sender.ExpenseBotSender;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.ActionType;
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.io.ByteArrayInputStream;
-import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class TelegramService {
 
     private final ExpenseBotSender botSender;
+    private static final ConcurrentHashMap<Long, List<Integer>> messageIds = new ConcurrentHashMap<>();
 
-    public void editKeyboardMarkup(Request request, InlineKeyboardMarkup keyboard){
+    public TelegramService(ExpenseBotSender botSender) {
+        this.botSender = botSender;
+    }
+
+    public void editKeyboardMarkup(Request request, InlineKeyboardMarkup keyboard) {
         final Long userId = request.getUserId();
         sendTyping(userId);
         if(RequestHandler.hasCallBack(request)) {
             final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
             execute(getReplyMarkup(keyboard, userId, messageId));
         }
+    }
+
+
+    private Integer getMessageId(Request request) {
+        if(request.getUpdate().hasCallbackQuery()) {
+            return request.getUpdate().getCallbackQuery().getMessage().getMessageId();
+        }
+        return request.getUpdate().getMessage().getMessageId();
     }
 
     private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup keyboard, Long userId, Integer messageId) {

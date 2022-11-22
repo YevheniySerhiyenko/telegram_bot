@@ -1,11 +1,11 @@
-package org.expense_bot.constant;
+package org.expense_bot.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Buttons {
+public enum Button {
   BUTTON_CANCEL("❌"),
   BUTTON_BACK("\uD83D\uDD19"),
   BUTTON_TRASH("\uD83D\uDDD1"),

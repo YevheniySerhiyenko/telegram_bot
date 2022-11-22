@@ -1,7 +1,7 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.StickerAction;
@@ -33,7 +33,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
   public void delete(Long userId, String categoryName) {
     repository.getByUserIdAndCategory(userId, categoryName)
       .ifPresent(repository::delete);
-    telegramService.sendMessage(userId, Buttons.BUTTON_TRASH.getValue());
+    telegramService.sendMessage(userId, Button.BUTTON_TRASH.getValue());
   }
 
   @Override

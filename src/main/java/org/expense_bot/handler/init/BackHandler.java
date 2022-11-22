@@ -1,7 +1,7 @@
 package org.expense_bot.handler.init;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
@@ -58,7 +58,7 @@ public class BackHandler {
 	if(!RequestHandler.hasMessage(request)) {
 	  return false;
 	}
-	return Objects.equals(RequestHandler.getUpdateData(request), Buttons.BUTTON_BACK.getValue());
+	return Objects.equals(RequestHandler.getUpdateData(request), Button.BUTTON_BACK.getValue());
   }
 
 }

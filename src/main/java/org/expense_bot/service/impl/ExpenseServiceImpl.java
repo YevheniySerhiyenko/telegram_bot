@@ -1,7 +1,7 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.model.Expense;
 import org.expense_bot.repository.ExpenseRepository;
 import org.expense_bot.service.ExpenseService;
@@ -25,7 +25,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public List<Expense> getByPeriod(Long userId, LocalDateTime from, LocalDateTime to, String category) {
 	final LocalDateTime tomorrowMidnight = DateUtil.getTomorrowMidnight(to.toLocalDate());
-	if(category.equals(Buttons.BY_ALL_CATEGORIES.getValue())) {
+	if(category.equals(Button.BY_ALL_CATEGORIES.getValue())) {
 	  return expenseRepository.getAllByUserIdAndDateTimeBetween(userId, from, tomorrowMidnight);
 	}
 	return expenseRepository.getAllByUserIdAndDateTimeBetweenAndCategory(userId, from, tomorrowMidnight, category);

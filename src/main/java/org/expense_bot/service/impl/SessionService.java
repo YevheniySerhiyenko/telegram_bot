@@ -1,11 +1,10 @@
 package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
-import org.expense_bot.handler.expenses.write.SumEnteredHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.Session;
 import org.expense_bot.util.Calendar;
@@ -68,9 +67,9 @@ public class SessionService {
         boolean enteredDate = false;
         if(RequestHandler.hasMessage(request)) {
             final String text = RequestHandler.getUpdateData(request);
-            if(Objects.equals(text, Buttons.ENTER_DATE.getValue())) {
+            if(Objects.equals(text, Button.ENTER_DATE.getValue())) {
                 final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
-                telegramService.sendMessage(request.getUserId(), Buttons.ENTER_DATE.getValue(), calendar);
+                telegramService.sendMessage(request.getUserId(), Button.ENTER_DATE.getValue(), calendar);
                 updateState(request.getUserId(), state);
                 enteredDate = true;
             }

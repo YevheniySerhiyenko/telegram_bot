@@ -10,7 +10,7 @@ import org.expense_bot.service.impl.SessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
-import static org.expense_bot.constant.Buttons.BUTTON_CANCEL;
+import static org.expense_bot.enums.Button.BUTTON_CANCEL;
 
 @Component
 @RequiredArgsConstructor

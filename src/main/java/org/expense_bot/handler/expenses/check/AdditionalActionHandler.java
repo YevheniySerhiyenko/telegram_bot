@@ -1,7 +1,7 @@
 package org.expense_bot.handler.expenses.check;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackHandler;
@@ -50,7 +50,7 @@ public class AdditionalActionHandler extends RequestHandler {
   }
 
   private void createPDF(Request request) {
-    if(hasMessage(request) && getUpdateData(request).equals(Buttons.CREATE_PDF.getValue())) {
+    if(hasMessage(request) && getUpdateData(request).equals(Button.CREATE_PDF.getValue())) {
       final Long userId = request.getUserId();
       final Session session = sessionService.getSession(userId);
       final ByteArrayInputStream document = pdfCreator.generatePdf(request, session.getExpenseList());

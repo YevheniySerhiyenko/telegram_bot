@@ -1,7 +1,7 @@
 package org.expense_bot.helper;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
@@ -30,7 +30,7 @@ public class KeyboardBuilder {
 	final List<String> allCategories = getCategoryList(userId);
 
 	allCategories.stream().map(Utils::buildKey).forEach(buttonsList::add);
-	buttonsList.add(Utils.buildKey(Buttons.BUTTON_BACK.getValue()));
+	buttonsList.add(Utils.buildKey(Button.BUTTON_BACK.getValue()));
 
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(buttonsList)
@@ -43,7 +43,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildMainMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildTwoKeys(Buttons.EXPENSES.getValue(),Buttons.INCOMES.getValue())))
+	    Utils.buildTwoKeys(Button.EXPENSES.getValue(), Button.INCOMES.getValue())))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false).build();
@@ -53,8 +53,8 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildExpenseMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildTwoKeys(Buttons.WRITE_EXPENSES.getValue(), Buttons.CHECK_EXPENSES.getValue()),
-		Utils.buildKey(Buttons.BUTTON_BACK.getValue())))
+	    Utils.buildTwoKeys(Button.WRITE_EXPENSES.getValue(), Button.CHECK_EXPENSES.getValue()),
+		Utils.buildKey(Button.BUTTON_BACK.getValue())))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(true)
@@ -64,10 +64,10 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildIncomeMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildKey(Buttons.WRITE_INCOMES.getValue()),
-		Utils.buildKey(Buttons.CHECK_INCOMES.getValue()),
-		Utils.buildKey(Buttons.CHECK_BALANCE.getValue()),
-		Utils.buildKey(Buttons.BUTTON_BACK.getValue())))
+	    Utils.buildKey(Button.WRITE_INCOMES.getValue()),
+		Utils.buildKey(Button.CHECK_INCOMES.getValue()),
+		Utils.buildKey(Button.CHECK_BALANCE.getValue()),
+		Utils.buildKey(Button.BUTTON_BACK.getValue())))
 	  .resizeKeyboard(true)
 	  .build();
   }
@@ -79,7 +79,7 @@ public class KeyboardBuilder {
 		Utils.buildKey(Period.WEEK.getValue()),
 		Utils.buildKey(Period.MONTH.getValue()),
 		Utils.buildKey(Period.PERIOD.getValue()),
-		Utils.buildKey(Buttons.BUTTON_BACK.getValue())))
+		Utils.buildKey(Button.BUTTON_BACK.getValue())))
 	  .resizeKeyboard(true)
 	  .build();
   }
@@ -88,10 +88,10 @@ public class KeyboardBuilder {
 	final List<String> categoryList = getCategoryList(userId);
 
 	final List<KeyboardRow> keyboardRows = new ArrayList<>();
-	keyboardRows.add(Utils.buildKey(Buttons.BY_ALL_CATEGORIES.getValue()));
+	keyboardRows.add(Utils.buildKey(Button.BY_ALL_CATEGORIES.getValue()));
 	categoryList.stream().map(Utils::buildKey).forEach(keyboardRows::add);
 
-	keyboardRows.add(Utils.buildKey(Buttons.BUTTON_BACK.getValue()));
+	keyboardRows.add(Utils.buildKey(Button.BUTTON_BACK.getValue()));
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(keyboardRows)
 	  .build();
@@ -112,7 +112,7 @@ public class KeyboardBuilder {
 	final List<KeyboardRow> keyboard = allCategories.stream()
 	  .map(Utils::buildKey)
 	  .collect(Collectors.toList());
-	keyboard.add(Utils.buildKey(Buttons.BUTTON_BACK.getValue()));
+	keyboard.add(Utils.buildKey(Button.BUTTON_BACK.getValue()));
 
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(keyboard)
@@ -123,8 +123,8 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildSetDateMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildKey(Buttons.ENTER_DATE.getValue()),
-		Utils.buildKey(Buttons.BUTTON_BACK.getValue())
+	    Utils.buildKey(Button.ENTER_DATE.getValue()),
+		Utils.buildKey(Button.BUTTON_BACK.getValue())
 	  ))
 	  .resizeKeyboard(true)
 	  .build();
@@ -132,14 +132,14 @@ public class KeyboardBuilder {
 
   public ReplyKeyboard buildBackButton() {
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(List.of(Utils.buildKey(Buttons.BUTTON_BACK.getValue())))
+	  .keyboard(List.of(Utils.buildKey(Button.BUTTON_BACK.getValue())))
 	  .resizeKeyboard(true)
 	  .build();
   }
 
   public ReplyKeyboard buildSettingsMenu() {
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(Collections.singletonList(Utils.buildKey(Buttons.CREATE_PDF.getValue())))
+	  .keyboard(Collections.singletonList(Utils.buildKey(Button.CREATE_PDF.getValue())))
 	  .resizeKeyboard(true)
 	  .build();
   }
@@ -156,15 +156,15 @@ public class KeyboardBuilder {
 	keyboard.setKeyboard(
 	  List.of(
 	    List.of(
-	      Utils.buildButton(Buttons.BUTTON_INFO.getValue(), group.getCategory()))));
+	      Utils.buildButton(Button.BUTTON_INFO.getValue(), group.getCategory()))));
 	return keyboard;
   }
 
   public ReplyKeyboard buildCreatePDFMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-		Utils.buildKey(Buttons.CREATE_PDF.getValue()),
-		Utils.buildKey(Buttons.BUTTON_BACK.getValue())
+		Utils.buildKey(Button.CREATE_PDF.getValue()),
+		Utils.buildKey(Button.BUTTON_BACK.getValue())
 	  ))
 	  .resizeKeyboard(true)
 	  .build();

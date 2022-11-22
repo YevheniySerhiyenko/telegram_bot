@@ -1,7 +1,7 @@
 package org.expense_bot.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.constant.Buttons;
+import org.expense_bot.enums.Button;
 import org.expense_bot.enums.Period;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Expense;
@@ -31,12 +31,11 @@ public class ScheduleConfig {
 	userService.getAll().forEach(user -> {
 	  final LocalDateTime dateFrom = Period.DAY.getDateFrom();
 	  final LocalDateTime dateTo = Period.DAY.getDateTo();
-	  final String byAllCategories = Buttons.BY_ALL_CATEGORIES.getValue();
+	  final String byAllCategories = Button.BY_ALL_CATEGORIES.getValue();
 	  final List<Expense> byPeriod = expenseService.getByPeriod(user.getUserId(), dateFrom, dateTo, byAllCategories);
 	  if(byPeriod.isEmpty()){
 		telegramService.sendMessage(
 		  user.getUserId(), "Hello, write your expenses",keyboardBuilder.buildExpenseMenu());
-
 	  }
 	});
   }
