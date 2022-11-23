@@ -5,6 +5,7 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
 import com.itextpdf.layout.font.FontProvider;
 import lombok.SneakyThrows;
+import org.apache.http.HttpRequestInterceptor;
 import org.expense_bot.constant.PDFMessages;
 import org.expense_bot.enums.Period;
 import org.expense_bot.handler.init.BackHandler;
@@ -15,14 +16,18 @@ import org.expense_bot.model.Session;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +49,7 @@ public class PDFCreator {
   private final ExpenseService expenseService;
   private final BackHandler backHandler;
 
+  @Autowired
   public PDFCreator(
 	TelegramService telegramService,
 	KeyboardBuilder keyboardBuilder,
@@ -93,6 +99,8 @@ public class PDFCreator {
     final ByteArrayOutputStream os = new ByteArrayOutputStream(FILE_SIZE);
 
 
+    session.setPeriodFrom(LocalDate.now());
+    session.setPeriodFrom(LocalDate.now().minusDays(8));
     final Map<String, Object> objectMap = new HashMap<>() {
       {
         put("onesession", session);
@@ -108,7 +116,12 @@ public class PDFCreator {
     final Context context = new Context();
     context.setVariables(data);
 
+    ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+    templateResolver.setSuffix(".html");
+    templateResolver.setTemplateMode(TemplateMode.HTML);
+
     TemplateEngine templateEngine = new TemplateEngine();
+    templateEngine.setTemplateResolver(templateResolver);
     final String s = "thymeleaf_template.html";
     final String htmlContent = templateEngine.process(s, context);
 
