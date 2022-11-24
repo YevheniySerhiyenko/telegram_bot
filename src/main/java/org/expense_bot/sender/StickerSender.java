@@ -30,7 +30,7 @@ public class StickerSender {
 	return "get token from message properties by action";
   }
 
-// move to util
+  // move to util
   public Optional<BigDecimal> checkWrongSum(Request request) {
 	try {
 	  return Optional.of(new BigDecimal(getUpdateData(request)));

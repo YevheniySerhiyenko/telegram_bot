@@ -18,21 +18,22 @@ public class IncomeRequestHandler extends RequestHandler {
 
   @Override
   public boolean isApplicable(Request request) {
-    return isStateEqual(request, ConversationState.Init.WAITING_INCOME_ACTION);
+	return isStateEqual(request, ConversationState.Init.WAITING_INCOME_ACTION);
   }
 
   @Override
   public void handle(Request request) {
-    if(backHandler.handleMainMenuBackButton(request)) {
-      return;
-    }
-    final Long userId = request.getUserId();
-    final IncomeAction action = IncomeAction.parse(getUpdateData(request));
-    context.getBean(action.getHandler()).handle(userId);
+	if(backHandler.handleMainMenuBackButton(request)) {
+	  return;
+	}
+	final Long userId = request.getUserId();
+	final IncomeAction action = IncomeAction.parse(getUpdateData(request));
+	context.getBean(action.getHandler()).handle(userId);
   }
 
   @Override
   public boolean isGlobal() {
-    return false;
+	return false;
   }
+
 }

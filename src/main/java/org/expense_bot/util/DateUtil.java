@@ -10,7 +10,7 @@ public class DateUtil {
   private static final LocalDate NOW = LocalDate.now();
   private static final int ONE_DAY_VALUE = 1;
   private static final String DATE_PATTERN = "dd.MM.yyyy";
-  private static final String TIME_PATTERN =  "hh:mm";
+  private static final String TIME_PATTERN = "hh:mm";
   private static final String DATE_TIME_PATTERN = "dd.MM.yyyy";
 
   public static LocalDateTime getTodayMidnight() {
@@ -24,20 +24,15 @@ public class DateUtil {
 
   private static Integer getCurrentMondayNumber(Integer dayOfMonth) {
 	final DayOfWeek dayOfWeek = NOW.getDayOfWeek();
-	if(dayOfWeek == DayOfWeek.SUNDAY) {
-	  return dayOfMonth - 6;
-	} else if(dayOfWeek == DayOfWeek.SATURDAY) {
-	  return dayOfMonth - 5;
-	} else if(dayOfWeek == DayOfWeek.FRIDAY) {
-	  return dayOfMonth - 4;
-	} else if(dayOfWeek == DayOfWeek.THURSDAY) {
-	  return dayOfMonth - 3;
-	} else if(dayOfWeek == DayOfWeek.WEDNESDAY) {
-	  return dayOfMonth - 2;
-	} else if(dayOfWeek == DayOfWeek.TUESDAY) {
-	  return dayOfMonth - 1;
-	}
-	return dayOfMonth;
+	return switch (dayOfWeek) {
+	  case SUNDAY -> dayOfMonth - 6;
+	  case SATURDAY -> dayOfMonth - 5;
+	  case FRIDAY -> dayOfMonth - 4;
+	  case THURSDAY -> dayOfMonth - 3;
+	  case WEDNESDAY -> dayOfMonth - 2;
+	  case TUESDAY -> dayOfMonth - 1;
+	  default -> dayOfMonth;
+	};
   }
 
   public static LocalDateTime getTomorrowMidnight(LocalDate localDate) {
@@ -63,4 +58,5 @@ public class DateUtil {
   public static String getTime(LocalDateTime localDate) {
 	return localDate.format(DateTimeFormatter.ofPattern(TIME_PATTERN));
   }
+
 }

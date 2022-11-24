@@ -2,7 +2,6 @@ package org.expense_bot.service;
 
 import org.expense_bot.model.Expense;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

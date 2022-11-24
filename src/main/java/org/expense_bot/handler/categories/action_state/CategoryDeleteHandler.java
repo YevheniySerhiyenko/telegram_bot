@@ -47,7 +47,7 @@ public class CategoryDeleteHandler implements CategoryActionState {
   private void sendListNotDeleted(Long userId) {
 	final List<String> userCategories = getUserCategories(userId);
 	final boolean allDeleted = checkAll(userId, userCategories);
-	if(allDeleted){
+	if(allDeleted) {
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(userCategories);

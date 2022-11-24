@@ -9,8 +9,6 @@ import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.impl.TelegramService;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class NewUserHandler {
@@ -19,10 +17,10 @@ public class NewUserHandler {
   private final TelegramService telegramService;
   private final StickerSender stickerSender;
 
-  public void handle(Request request)  {
+  public void handle(Request request) {
 
 	final Long userId = request.getUserId();
-	stickerSender.sendSticker(userId,StickerAction.HELLO.name());
+	stickerSender.sendSticker(userId, StickerAction.HELLO.name());
 	telegramService.sendMessage(userId, Messages.HELLO);
 	try {
 	  Thread.sleep(5000);

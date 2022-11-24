@@ -28,4 +28,5 @@ public class IncomeUtil {
 	  .map(Income::getSum)
 	  .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
+
 }

@@ -34,4 +34,5 @@ public class CategoryActionHandler extends RequestHandler {
   public boolean isGlobal() {
 	return false;
   }
+
 }

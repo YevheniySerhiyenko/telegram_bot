@@ -10,15 +10,16 @@ import org.telegram.telegrambots.bots.DefaultBotOptions;
 @Component
 public class ExpenseBotSender extends DefaultAbsSender {
 
-    @Value("${bot.token}")
-    private String botToken;
+  @Value("${bot.token}")
+  private String botToken;
 
-     public ExpenseBotSender() {
-        super(new DefaultBotOptions());
-    }
+  public ExpenseBotSender() {
+	super(new DefaultBotOptions());
+  }
 
-    @Override
-    public String getBotToken() {
-        return botToken;
-    }
+  @Override
+  public String getBotToken() {
+	return botToken;
+  }
+
 }

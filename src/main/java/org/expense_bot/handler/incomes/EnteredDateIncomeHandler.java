@@ -27,43 +27,43 @@ public class EnteredDateIncomeHandler extends RequestHandler {
 
   @Override
   public boolean isApplicable(Request request) {
-    return isStateEqual(request, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
+	return isStateEqual(request, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
   }
 
   @Override
   public void handle(Request request) {
-    if(backHandler.handleIncomeBackButton(request)) {
-      return;
-    }
-    final Optional<InlineKeyboardMarkup> keyboard = Calendar.changeMonth(request);
-    final Long userId = request.getUserId();
-    final boolean anotherMonth = drawAnotherMonth(request, keyboard);
-    if(anotherMonth) {
-      return;
-    }
-    keyboard.ifPresent(keyboardMarkup -> {
-      final LocalDate localDate = getLocalDate(request, keyboardMarkup);
-      sessionService.update(SessionUtil.buildIncomeSession(userId, localDate));
-      telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
-    });
+	if(backHandler.handleIncomeBackButton(request)) {
+	  return;
+	}
+	final Optional<InlineKeyboardMarkup> keyboard = Calendar.changeMonth(request);
+	final Long userId = request.getUserId();
+	final boolean anotherMonth = drawAnotherMonth(request, keyboard);
+	if(anotherMonth) {
+	  return;
+	}
+	keyboard.ifPresent(keyboardMarkup -> {
+	  final LocalDate localDate = getLocalDate(request, keyboardMarkup);
+	  sessionService.update(SessionUtil.buildIncomeSession(userId, localDate));
+	  telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
+	});
   }
 
   private LocalDate getLocalDate(Request request, InlineKeyboardMarkup keyboard) {
-    return Objects.isNull(keyboard) ? Calendar.getDate(request) : null;
+	return Objects.isNull(keyboard) ? Calendar.getDate(request) : null;
   }
 
   private boolean drawAnotherMonth(Request request, Optional<InlineKeyboardMarkup> keyboard) {
-    if(keyboard.isEmpty()) {
-      return false;
-    }
-    telegramService.editKeyboardMarkup(request, keyboard.get());
-    sessionService.updateState(request.getUserId(), ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
-    return true;
+	if(keyboard.isEmpty()) {
+	  return false;
+	}
+	telegramService.editKeyboardMarkup(request, keyboard.get());
+	sessionService.updateState(request.getUserId(), ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
+	return true;
   }
 
   @Override
   public boolean isGlobal() {
-    return false;
+	return false;
   }
 
 }

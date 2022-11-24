@@ -43,7 +43,7 @@ public class SumEnteredHandler extends RequestHandler {
 	}
 	final boolean enteredDate = sessionService.checkEnteredDate(
 	  request, ConversationState.Expenses.WAITING_FOR_ANOTHER_EXPENSE_DATE);
-	if(enteredDate){
+	if(enteredDate) {
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();

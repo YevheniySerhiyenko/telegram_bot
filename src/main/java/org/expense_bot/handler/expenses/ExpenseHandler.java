@@ -7,8 +7,8 @@ import org.expense_bot.enums.ExpenseAction;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
-import org.expense_bot.model.UserCategory;
 import org.expense_bot.model.Request;
+import org.expense_bot.model.UserCategory;
 import org.expense_bot.service.UserCategoryService;
 import org.expense_bot.service.impl.TelegramService;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +39,9 @@ public class ExpenseHandler extends RequestHandler {
 	final Long userId = request.getUserId();
 	final List<UserCategory> categories = userCategoryService.getByUserId(userId);
 	final ExpenseAction action = ExpenseAction.parse(getUpdateData(request));
-	if(checkEmpty(userId, categories)){ return; }
+	if(checkEmpty(userId, categories)) {
+	  return;
+	}
 	context.getBean(action.getHandler()).handle(userId);
   }
 

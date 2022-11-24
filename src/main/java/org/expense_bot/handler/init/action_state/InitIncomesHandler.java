@@ -18,8 +18,8 @@ public class InitIncomesHandler implements InitActionState {
 
   @Override
   public void handle(Long userId) {
-    sessionService.updateState(userId, ConversationState.Init.WAITING_INCOME_ACTION);
-    telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboardBuilder.buildIncomeMenu());
+	sessionService.updateState(userId, ConversationState.Init.WAITING_INCOME_ACTION);
+	telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboardBuilder.buildIncomeMenu());
   }
 
 }

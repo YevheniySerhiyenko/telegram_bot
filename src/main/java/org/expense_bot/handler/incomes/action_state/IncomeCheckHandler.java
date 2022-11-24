@@ -33,7 +33,7 @@ public class IncomeCheckHandler implements IncomeActionState {
 
   @Override
   public void handleFinal(Request request) {
-    // do something
+	// do something
   }
 
 }

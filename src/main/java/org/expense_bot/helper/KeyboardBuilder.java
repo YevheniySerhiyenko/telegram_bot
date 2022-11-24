@@ -1,8 +1,8 @@
 package org.expense_bot.helper;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.enums.Button;
 import org.expense_bot.dto.ExpenseGroup;
+import org.expense_bot.enums.Button;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.Period;
 import org.expense_bot.model.UserCategory;
@@ -43,7 +43,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildMainMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildTwoKeys(Button.EXPENSES.getValue(), Button.INCOMES.getValue())))
+		Utils.buildTwoKeys(Button.EXPENSES.getValue(), Button.INCOMES.getValue())))
 	  .selective(true)
 	  .resizeKeyboard(true)
 	  .oneTimeKeyboard(false).build();
@@ -53,7 +53,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildExpenseMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildTwoKeys(Button.WRITE_EXPENSES.getValue(), Button.CHECK_EXPENSES.getValue()),
+		Utils.buildTwoKeys(Button.WRITE_EXPENSES.getValue(), Button.CHECK_EXPENSES.getValue()),
 		Utils.buildKey(Button.BUTTON_BACK.getValue())))
 	  .selective(true)
 	  .resizeKeyboard(true)
@@ -64,7 +64,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildIncomeMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildKey(Button.WRITE_INCOMES.getValue()),
+		Utils.buildKey(Button.WRITE_INCOMES.getValue()),
 		Utils.buildKey(Button.CHECK_INCOMES.getValue()),
 		Utils.buildKey(Button.CHECK_BALANCE.getValue()),
 		Utils.buildKey(Button.BUTTON_BACK.getValue())))
@@ -100,7 +100,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildCategoryOptionsMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildKey(CategoryAction.ADD_NEW_CATEGORY.getValue()),
+		Utils.buildKey(CategoryAction.ADD_NEW_CATEGORY.getValue()),
 		Utils.buildKey(CategoryAction.DELETE_MY_CATEGORIES.getValue()),
 		Utils.buildKey(CategoryAction.ADD_FROM_DEFAULT.getValue())
 	  ))
@@ -123,7 +123,7 @@ public class KeyboardBuilder {
   public ReplyKeyboard buildSetDateMenu() {
 	return ReplyKeyboardMarkup.builder()
 	  .keyboard(List.of(
-	    Utils.buildKey(Button.ENTER_DATE.getValue()),
+		Utils.buildKey(Button.ENTER_DATE.getValue()),
 		Utils.buildKey(Button.BUTTON_BACK.getValue())
 	  ))
 	  .resizeKeyboard(true)
@@ -155,8 +155,8 @@ public class KeyboardBuilder {
 	final InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
 	keyboard.setKeyboard(
 	  List.of(
-	    List.of(
-	      Utils.buildButton(Button.BUTTON_INFO.getValue(), group.getCategory()))));
+		List.of(
+		  Utils.buildButton(Button.BUTTON_INFO.getValue(), group.getCategory()))));
 	return keyboard;
   }
 

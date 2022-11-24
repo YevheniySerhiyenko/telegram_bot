@@ -44,7 +44,7 @@ public class CategoryDefaultHandler implements CategoryActionState {
 	final List<String> userCategories = getUserCategories(userId);
 	final List<String> defaultCategories = getDefaultCategories(userCategories);
 	final boolean allAdded = checkAll(userId, defaultCategories);
-	if(allAdded){
+	if(allAdded) {
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);

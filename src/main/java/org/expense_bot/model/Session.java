@@ -20,20 +20,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Session {
-    private Long userId;
-    private ConversationState state;
-    private CategoryAction categoryAction;
-    private String action;
-    private String category;
-    private BigDecimal expenseSum;
-    private LocalDate periodFrom;
-    private LocalDate periodTo;
-    private BigDecimal incomeSum;
-    private LocalDate expenseDate;
-    private LocalDate incomeDate;
-    private IncomeAction incomeAction;
-    private String period;
-    private StickerAction stickerAction;
-    private List<Expense> expenseList;
-    private List<Income> incomeList;
+
+  private Long userId;
+  private ConversationState state;
+  private CategoryAction categoryAction;
+  private String action;
+  private String category;
+  private BigDecimal expenseSum;
+  private LocalDate periodFrom;
+  private LocalDate periodTo;
+  private BigDecimal incomeSum;
+  private LocalDate expenseDate;
+  private LocalDate incomeDate;
+  private IncomeAction incomeAction;
+  private String period;
+  private StickerAction stickerAction;
+  private List<Expense> expenseList;
+  private List<Income> incomeList;
+
 }

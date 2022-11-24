@@ -21,10 +21,10 @@ public enum CategoryAction {
   private final Class<? extends CategoryActionState> handler;
 
   public static CategoryAction parseAction(String text) {
-   return Arrays.stream(values())
-	 .filter(action -> action.getValue().equals(text))
-	 .findFirst()
-	 .orElseThrow(() -> new IllegalArgumentException("Unable to parse category action"));
+	return Arrays.stream(values())
+	  .filter(action -> action.getValue().equals(text))
+	  .findFirst()
+	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse category action"));
 
   }
 }

@@ -20,10 +20,10 @@ public enum IncomeAction {
   private final Class<? extends IncomeActionState> handler;
 
   public static IncomeAction parse(String text) {
-    return Arrays.stream(values())
-      .filter(action -> action.getValue().equals(text))
-      .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException("Unable to parse income action"));
+	return Arrays.stream(values())
+	  .filter(action -> action.getValue().equals(text))
+	  .findFirst()
+	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse income action"));
 
   }
 }

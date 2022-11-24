@@ -16,7 +16,7 @@ import static org.expense_bot.enums.ConversationState.Categories.WAITING_CATEGOR
 @Component
 @RequiredArgsConstructor
 public class CategoryRequestHandler extends RequestHandler {
-  
+
   private final TelegramService telegramService;
   private final SessionService sessionService;
   private final KeyboardBuilder keyboardBuilder;
@@ -37,4 +37,5 @@ public class CategoryRequestHandler extends RequestHandler {
   public boolean isGlobal() {
 	return true;
   }
+
 }

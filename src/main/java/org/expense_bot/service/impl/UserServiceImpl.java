@@ -34,10 +34,10 @@ public class UserServiceImpl implements UserService {
   }
 
   private String getFirstName(Request request) {
-    if(request.getUpdate().hasMessage()){
+	if(request.getUpdate().hasMessage()) {
 	  return request.getUpdate().getMessage().getFrom().getFirstName();
 	}
-    return request.getUpdate().getCallbackQuery().getFrom().getFirstName();
+	return request.getUpdate().getCallbackQuery().getFrom().getFirstName();
   }
 
   private Optional<User> getByUserId(Long userId) {

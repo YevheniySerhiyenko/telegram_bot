@@ -5,8 +5,8 @@
 
         <p>  <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
 
-        <h1 align="center"> Expenses  <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
-        <var th:text="${onesession.getPeriodFrom().toString()}"></var> </h1>
+        <h1 align="center"> Expenses <!--/*@thymesVar id="period" type="java.time.LocalDate"*/-->
+        <var th:text="${period}"></var> </h1>
     </div>
     <div>
 

@@ -22,15 +22,15 @@ public class CategoryAddNewHandler implements CategoryActionState {
 
   @Override
   public void handle(Long userId) {
-    telegramService.sendMessage(userId, Messages.ENTER_CATEGORY_NAME, keyboardBuilder.buildBackButton());
+	telegramService.sendMessage(userId, Messages.ENTER_CATEGORY_NAME, keyboardBuilder.buildBackButton());
   }
 
   @Override
   public void handleFinal(Long userId, String categoryParam) {
-    userCategoryService.add(userId, categoryParam);
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
-    telegramService.sendMessage(userId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboard);
-    sessionService.updateState(userId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
+	userCategoryService.add(userId, categoryParam);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+	telegramService.sendMessage(userId, Messages.CATEGORY_ADDED_TO_YOUR_LIST, keyboard);
+	sessionService.updateState(userId, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 
 }

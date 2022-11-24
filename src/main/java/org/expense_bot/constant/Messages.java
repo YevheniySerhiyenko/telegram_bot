@@ -1,12 +1,12 @@
 package org.expense_bot.constant;
 
 public class Messages {
+
   public static final String SUCCESS_SENT_SUM = "Сума витрат записана та відправлена!";
 
   public static final String SUCCESS = "✅";
 
   public static final String NO_EXPENSES_FOR_PERIOD = "Не знайдено витрат за період";
-
 
 
   public static final String CHOOSE_ACTION = "Оберіть дію";

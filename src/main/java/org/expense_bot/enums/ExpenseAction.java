@@ -19,10 +19,10 @@ public enum ExpenseAction {
   private final Class<? extends ExpenseActionState> handler;
 
   public static ExpenseAction parse(String text) {
-    return Arrays.stream(values())
-      .filter(action -> action.getValue().equals(text))
-      .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException("Unable to parse init action"));
+	return Arrays.stream(values())
+	  .filter(action -> action.getValue().equals(text))
+	  .findFirst()
+	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse init action"));
 
   }
 }

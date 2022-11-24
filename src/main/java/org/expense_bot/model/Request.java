@@ -7,7 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Data
 @Builder
 public class Request {
-    private Update update;
-    private Long userId;
-    private Session session;
+
+  private Update update;
+  private Long userId;
+  private Session session;
+
 }

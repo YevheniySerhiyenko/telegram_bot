@@ -25,7 +25,7 @@ public class ScheduleConfig {
   private final KeyboardBuilder keyboardBuilder;
   private final ExpenseService expenseService;
 
-  @Scheduled(cron = "0 28 * * * *")
+  @Scheduled(cron = "0 0 21 * * *")
   public void sendNotifications() {
 
 	userService.getAll().forEach(user -> {
@@ -33,9 +33,9 @@ public class ScheduleConfig {
 	  final LocalDateTime dateTo = Period.DAY.getDateTo();
 	  final String byAllCategories = Button.BY_ALL_CATEGORIES.getValue();
 	  final List<Expense> byPeriod = expenseService.getByPeriod(user.getUserId(), dateFrom, dateTo, byAllCategories);
-	  if(byPeriod.isEmpty()){
+	  if(byPeriod.isEmpty()) {
 		telegramService.sendMessage(
-		  user.getUserId(), "Hello, write your expenses",keyboardBuilder.buildExpenseMenu());
+		  user.getUserId(), "Hello, write your expenses", keyboardBuilder.buildExpenseMenu());
 	  }
 	});
   }

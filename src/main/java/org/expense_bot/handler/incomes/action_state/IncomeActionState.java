@@ -7,4 +7,5 @@ public interface IncomeActionState {
   void handle(Long userId);
 
   void handleFinal(Request request);
+
 }

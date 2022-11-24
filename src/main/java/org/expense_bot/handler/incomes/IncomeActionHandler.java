@@ -25,12 +25,12 @@ public class IncomeActionHandler extends RequestHandler {
 
   @Override
   public void handle(Request request) {
-	if(backHandler.handleIncomeBackButton(request)){
+	if(backHandler.handleIncomeBackButton(request)) {
 	  return;
 	}
 	final boolean enteredDate = sessionService.checkEnteredDate(
 	  request, ConversationState.Incomes.WAITING_FOR_ANOTHER_INCOME_DATE);
-	if(enteredDate){
+	if(enteredDate) {
 	  return;
 	}
 	final IncomeAction action = request.getSession().getIncomeAction();

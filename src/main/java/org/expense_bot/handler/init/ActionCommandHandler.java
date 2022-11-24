@@ -34,4 +34,5 @@ public class ActionCommandHandler extends RequestHandler {
   public boolean isGlobal() {
 	return false;
   }
+
 }

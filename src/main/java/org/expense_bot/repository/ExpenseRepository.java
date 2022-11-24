@@ -10,6 +10,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
 
   List<Expense> getAllByUserIdAndDateTimeBetween(Long userId, LocalDateTime dateFrom, LocalDateTime dateTo);
+
   List<Expense> getAllByUserIdAndDateTimeBetweenAndCategory(Long userId, LocalDateTime dateFrom, LocalDateTime dateTo, String category);
 
 

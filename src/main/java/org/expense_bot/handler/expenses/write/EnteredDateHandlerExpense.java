@@ -36,7 +36,7 @@ public class EnteredDateHandlerExpense extends RequestHandler {
 	}
 	final Long userId = request.getUserId();
 	final boolean anotherMonth = drawAnotherMonthCalendar(request, Calendar.changeMonth(request));
-	if(anotherMonth){
+	if(anotherMonth) {
 	  return;
 	}
 	final LocalDate localDate = Calendar.getDate(request);

@@ -70,11 +70,12 @@ public class Calendar {
 		final String[] text = data.split(" ");
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousMonth(text);
-		if("back".equals(command)) {
-		  return Optional.of(Calendar.buildCalendar(of.minusMonths(1)));
-		} else if("forward".equals(command)) {
-		  return Optional.of(Calendar.buildCalendar(of.plusMonths(1)));
-		}
+
+		return switch (command) {
+		  case "back" -> Optional.of(Calendar.buildCalendar(of.minusMonths(1)));
+		  case "forward" -> Optional.of(Calendar.buildCalendar(of.plusMonths(1)));
+		  default -> Optional.empty();
+		};
 	  }
 	}
 	return Optional.empty();
@@ -87,11 +88,12 @@ public class Calendar {
 		final String[] text = data.split(" ");
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousYear(text);
-		if("back".equals(command)) {
-		  return Optional.of(Calendar.buildYear(of.minusYears(1)));
-		} else if("forward".equals(command)) {
-		  return Optional.of(Calendar.buildYear(of.plusYears(1)));
-		}
+
+		return switch (command) {
+		  case "back" -> Optional.of(Calendar.buildYear(of.minusYears(1)));
+		  case "forward" -> Optional.of(Calendar.buildYear(of.plusYears(1)));
+		  default -> Optional.empty();
+		};
 	  }
 	}
 	return Optional.empty();
@@ -100,7 +102,7 @@ public class Calendar {
   private static LocalDate getNextOrPreviousYear(String[] text) {
 	final Month month = Month.valueOf(text[1]);
 	final int year = Integer.parseInt(text[2]);
-	return LocalDate.of(year, month,1);
+	return LocalDate.of(year, month, 1);
   }
 
   private static LocalDate getNextOrPreviousMonth(String[] text) {
@@ -138,11 +140,11 @@ public class Calendar {
 	  .collect(Collectors.toList());
   }
 
-  public static LocalDate parseMonthYear(String date){
+  public static LocalDate parseMonthYear(String date) {
 	final String[] monthYear = date.split(" ");
 	final Month month = Month.valueOf(monthYear[0]);
 	final int year = Integer.parseInt(monthYear[1]);
-	return LocalDate.of(year,month,1);
+	return LocalDate.of(year, month, 1);
   }
 
 }

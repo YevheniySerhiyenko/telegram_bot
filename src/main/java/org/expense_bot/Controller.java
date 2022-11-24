@@ -11,4 +11,5 @@ public class Controller {
   public String health() {
 	return "thymeleaf_template";
   }
+
 }

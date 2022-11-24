@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class InitExpenseHandler implements InitActionState{
+public class InitExpenseHandler implements InitActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
@@ -18,8 +18,8 @@ public class InitExpenseHandler implements InitActionState{
 
   @Override
   public void handle(Long userId) {
-    sessionService.updateState(userId, ConversationState.Init.WAITING_EXPENSE_ACTION);
-    telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboardBuilder.buildExpenseMenu());
+	sessionService.updateState(userId, ConversationState.Init.WAITING_EXPENSE_ACTION);
+	telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboardBuilder.buildExpenseMenu());
   }
 
 }

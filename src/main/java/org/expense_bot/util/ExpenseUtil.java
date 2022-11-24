@@ -28,7 +28,7 @@ public class ExpenseUtil {
   }
 
   public static String getSumMessage(List<Expense> expenses, String period) {
-	final BigDecimal sum = expenses.stream().map(Expense::getSum).reduce(BigDecimal.ZERO,BigDecimal::add);
+	final BigDecimal sum = expenses.stream().map(Expense::getSum).reduce(BigDecimal.ZERO, BigDecimal::add);
 	return String.format(Messages.RESPONSE_MESSAGE, period.toLowerCase(Locale.ROOT)) + sum;
   }
 

@@ -5,12 +5,9 @@ import org.expense_bot.model.Income;
 import org.expense_bot.repository.IncomeRepository;
 import org.expense_bot.service.IncomeService;
 import org.expense_bot.util.DateUtil;
-import org.expense_bot.util.IncomeUtil;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component

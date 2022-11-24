@@ -24,9 +24,9 @@ public class ExpenseBot extends TelegramLongPollingBot {
   private String botUsername;
 
   public ExpenseBot(Dispatcher dispatcher, SessionService sessionService, StartCommandHandler startCommandHandler) {
-    this.dispatcher = dispatcher;
-    this.sessionService = sessionService;
-    this.startCommandHandler = startCommandHandler;
+	this.dispatcher = dispatcher;
+	this.sessionService = sessionService;
+	this.startCommandHandler = startCommandHandler;
   }
 
   /**
@@ -35,64 +35,64 @@ public class ExpenseBot extends TelegramLongPollingBot {
    */
   @Override
   public void onUpdateReceived(Update update) {
-    final String textFromUser = getText(update);
-    final Long userId = getUserId(update);
-    String userFirstName = getFirstName(update);
+	final String textFromUser = getText(update);
+	final Long userId = getUserId(update);
+	String userFirstName = getFirstName(update);
 
-      log.info("[{}, {}] : {}", userId, userFirstName, textFromUser);
+	log.info("[{}, {}] : {}", userId, userFirstName, textFromUser);
 
-    Session session = sessionService.getSession(userId);
-    Request request = Request
-      .builder()
-      .update(update)
-      .session(session)
-      .userId(userId)
-      .build();
+	Session session = sessionService.getSession(userId);
+	Request request = Request
+	  .builder()
+	  .update(update)
+	  .session(session)
+	  .userId(userId)
+	  .build();
 
-    try {
-      boolean dispatched = dispatcher.dispatch(request);
-      if(!dispatched) {
-        log.warn("Unexpected update from user");
-      }
-    } catch (Exception e) {
-      startCommandHandler.handle(request);
-    }
+	try {
+	  boolean dispatched = dispatcher.dispatch(request);
+	  if(!dispatched) {
+		log.warn("Unexpected update from user");
+	  }
+	} catch (Exception e) {
+	  startCommandHandler.handle(request);
+	}
 
   }
 
   private String getText(Update update) {
-      if(update.hasMessage()){
-        return update.getMessage().getText();
-      }
-      return update.getCallbackQuery().getData();
+	if(update.hasMessage()) {
+	  return update.getMessage().getText();
+	}
+	return update.getCallbackQuery().getData();
   }
 
   private String getFirstName(Update update) {
-    if(update.hasMessage()) {
-      return update.getMessage().getFrom().getFirstName();
-    }
-    return update.getCallbackQuery().getFrom().getFirstName();
+	if(update.hasMessage()) {
+	  return update.getMessage().getFrom().getFirstName();
+	}
+	return update.getCallbackQuery().getFrom().getFirstName();
   }
 
   private Long getUserId(Update update) {
-    if(update.hasMessage()) {
-      return update.getMessage().getChatId();
-    }
-    return update.getCallbackQuery().getFrom().getId();
+	if(update.hasMessage()) {
+	  return update.getMessage().getChatId();
+	}
+	return update.getCallbackQuery().getFrom().getId();
   }
 
 
   @Override
   public String getBotUsername() {
-    // username which you give to your bot bia BotFather (without @)
-    return botUsername;
+	// username which you give to your bot bia BotFather (without @)
+	return botUsername;
   }
 
   @Override
   public String getBotToken() {
-    // do not expose the token to the repository,
-    // always provide it externally(for example as environmental variable)
-    return botToken;
+	// do not expose the token to the repository,
+	// always provide it externally(for example as environmental variable)
+	return botToken;
   }
 
 }

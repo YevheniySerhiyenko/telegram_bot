@@ -11,4 +11,5 @@ public interface UserCategoryService {
   void delete(Long userId, String categoryName);
 
   List<UserCategory> getByUserId(Long userId);
+
 }

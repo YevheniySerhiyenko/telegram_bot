@@ -30,22 +30,22 @@ public class IncomeWriteHandler implements IncomeActionState {
 
   @Override
   public void handle(Long userId) {
-    telegramService.sendMessage(userId, Messages.ENTER_INCOME_SUM, keyboardBuilder.buildSetDateMenu());
-    sessionService.update(SessionUtil.getSession(userId));
+	telegramService.sendMessage(userId, Messages.ENTER_INCOME_SUM, keyboardBuilder.buildSetDateMenu());
+	sessionService.update(SessionUtil.getSession(userId));
   }
 
   @Override
   public void handleFinal(Request request) {
-    final Long userId = request.getUserId();
-    final Optional<BigDecimal> sum = stickerSender.checkWrongSum(request);
-    if(sum.isEmpty()){
-      return;
-    }
-    final LocalDate incomeDate = request.getSession().getIncomeDate();
-    incomeService.save(IncomeUtil.buildIncome(userId,sum.get(),incomeDate));
-    stickerSender.sendSticker(userId, StickerAction.SUCCESS_EXPENSE_SUM.name());
-    telegramService.sendMessage(userId, Messages.SUCCESS_INCOME, keyboardBuilder.buildIncomeMenu());
-    sessionService.updateState(userId, ConversationState.Init.WAITING_INCOME_ACTION);
+	final Long userId = request.getUserId();
+	final Optional<BigDecimal> sum = stickerSender.checkWrongSum(request);
+	if(sum.isEmpty()) {
+	  return;
+	}
+	final LocalDate incomeDate = request.getSession().getIncomeDate();
+	incomeService.save(IncomeUtil.buildIncome(userId, sum.get(), incomeDate));
+	stickerSender.sendSticker(userId, StickerAction.SUCCESS_EXPENSE_SUM.name());
+	telegramService.sendMessage(userId, Messages.SUCCESS_INCOME, keyboardBuilder.buildIncomeMenu());
+	sessionService.updateState(userId, ConversationState.Init.WAITING_INCOME_ACTION);
   }
 
 }

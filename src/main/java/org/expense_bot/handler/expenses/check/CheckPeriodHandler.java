@@ -42,7 +42,7 @@ public class CheckPeriodHandler extends RequestHandler {
 	final Long userId = request.getUserId();
 	final String period = getUpdateData(request);
 	final boolean showCalendar = checkRequest(userId, period);
-	if(showCalendar){
+	if(showCalendar) {
 	  return;
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(userId);

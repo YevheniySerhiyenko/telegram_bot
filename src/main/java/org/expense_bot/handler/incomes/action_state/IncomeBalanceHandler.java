@@ -1,8 +1,8 @@
 package org.expense_bot.handler.incomes.action_state;
 
 import lombok.RequiredArgsConstructor;
-import org.expense_bot.enums.Button;
 import org.expense_bot.constant.Messages;
+import org.expense_bot.enums.Button;
 import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.enums.Period;
 import org.expense_bot.model.Expense;
@@ -32,25 +32,26 @@ public class IncomeBalanceHandler implements IncomeActionState {
 
   @Override
   public void handle(Long userId) {
-    final List<Income> incomes = incomeService.getAllCurrentMonth(userId);
-    final LocalDateTime from = Period.MONTH.getDateFrom();
-    final LocalDateTime to = Period.MONTH.getDateTo();
+	final List<Income> incomes = incomeService.getAllCurrentMonth(userId);
+	final LocalDateTime from = Period.MONTH.getDateFrom();
+	final LocalDateTime to = Period.MONTH.getDateTo();
 
-    final List<Expense> expenses = expenseService
-      .getByPeriod(userId, from, to, Button.BY_ALL_CATEGORIES.getValue());
-    final BigDecimal allExpensesSum = ExpenseUtil.getSum(expenses);
-    final BigDecimal allIncomesSum = IncomeUtil.getSum(incomes);
+	final List<Expense> expenses = expenseService
+	  .getByPeriod(userId, from, to, Button.BY_ALL_CATEGORIES.getValue());
+	final BigDecimal allExpensesSum = ExpenseUtil.getSum(expenses);
+	final BigDecimal allIncomesSum = IncomeUtil.getSum(incomes);
 
-    final BigDecimal actualBalance = allIncomesSum.subtract(allExpensesSum);
+	final BigDecimal actualBalance = allIncomesSum.subtract(allExpensesSum);
 
-    telegramService.sendMessage(userId, Messages.ALL_EXPENSES_SUM + allExpensesSum);
-    telegramService.sendMessage(userId, Messages.ALL_INCOMES_SUM + allIncomesSum);
-    telegramService.sendMessage(userId, Messages.ACTUAL_BALANCE + actualBalance);
-    sessionService.update(SessionUtil.getSession(userId, IncomeAction.WRITE));
+	telegramService.sendMessage(userId, Messages.ALL_EXPENSES_SUM + allExpensesSum);
+	telegramService.sendMessage(userId, Messages.ALL_INCOMES_SUM + allIncomesSum);
+	telegramService.sendMessage(userId, Messages.ACTUAL_BALANCE + actualBalance);
+	sessionService.update(SessionUtil.getSession(userId, IncomeAction.WRITE));
   }
 
   @Override
   public void handleFinal(Request request) {
-    //do something
+	//do something
   }
+
 }

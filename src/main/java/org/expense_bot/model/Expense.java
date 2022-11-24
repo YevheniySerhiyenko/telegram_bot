@@ -30,13 +30,13 @@ public class Expense {
   @Column(name = "user_id")
   private Long userId;
 
-  @Column(name = "category",nullable = false)
+  @Column(name = "category", nullable = false)
   private String category;
 
-  @Column(name = "sum",nullable = false)
+  @Column(name = "sum", nullable = false)
   private BigDecimal sum;
 
-  @Column(name = "date_time",nullable = false)
+  @Column(name = "date_time", nullable = false)
   private LocalDateTime dateTime;
 
 }
