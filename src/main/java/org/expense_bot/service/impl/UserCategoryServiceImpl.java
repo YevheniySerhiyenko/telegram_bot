@@ -5,6 +5,7 @@ import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.Button;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.StickerAction;
+import org.expense_bot.exception.DuplicateException;
 import org.expense_bot.model.UserCategory;
 import org.expense_bot.repository.UserCategoryRepository;
 import org.expense_bot.sender.StickerSender;
@@ -46,7 +47,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 	  stickerSender.sendSticker(userId, StickerAction.ALREADY_EXISTS_CATEGORY.name());
 	  telegramService.sendMessage(userId, Messages.ALREADY_HAD_SUCH_CATEGORY);
 	  sessionService.updateState(userId, ConversationState.Categories.WAITING_FINAL_ACTION);
-	  throw new RuntimeException(Messages.ALREADY_HAD_SUCH_CATEGORY);
+	  throw new DuplicateException(Messages.ALREADY_HAD_SUCH_CATEGORY);
 	});
   }
 

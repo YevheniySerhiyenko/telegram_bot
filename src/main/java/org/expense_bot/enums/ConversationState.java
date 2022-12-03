@@ -37,6 +37,7 @@ public interface ConversationState {
 
   enum Init implements ConversationState {
 	CONVERSATION_STARTED,
+	PASSWORD_ENTERED,
 	WAITING_INIT_ACTION,
 	WAITING_EXPENSE_ACTION,
 	WAITING_INCOME_ACTION,

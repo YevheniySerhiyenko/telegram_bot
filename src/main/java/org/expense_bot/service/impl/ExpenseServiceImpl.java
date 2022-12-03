@@ -25,10 +25,9 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public List<Expense> getByPeriod(Long userId, LocalDateTime from, LocalDateTime to, String category) {
 	final LocalDateTime tomorrowMidnight = DateUtil.getTomorrowMidnight(to.toLocalDate());
-	if(category.equals(Button.BY_ALL_CATEGORIES.getValue())) {
-	  return expenseRepository.getAllByUserIdAndDateTimeBetween(userId, from, tomorrowMidnight);
-	}
-	return expenseRepository.getAllByUserIdAndDateTimeBetweenAndCategory(userId, from, tomorrowMidnight, category);
+	return category.equals(Button.BY_ALL_CATEGORIES.getValue())
+	  ? expenseRepository.getAllByUserIdAndDateTimeBetween(userId, from, tomorrowMidnight)
+	  : expenseRepository.getAllByUserIdAndDateTimeBetweenAndCategory(userId, from, tomorrowMidnight, category);
   }
 
   @Override

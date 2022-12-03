@@ -68,6 +68,7 @@ public class PDFCreator {
 	context.setVariables(objectMap);
 
 	ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+	templateResolver.setSuffix("/WEB_INF/templates/");
 	templateResolver.setSuffix(".html");
 	templateResolver.setTemplateMode(TemplateMode.HTML);
 

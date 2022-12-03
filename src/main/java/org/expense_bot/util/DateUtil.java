@@ -1,10 +1,15 @@
 package org.expense_bot.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateUtil {
 
   private static final LocalDate NOW = LocalDate.now();
@@ -18,21 +23,7 @@ public class DateUtil {
   }
 
   public static LocalDateTime getStartOfWeek() {
-	final Integer mondayNumber = getCurrentMondayNumber(NOW.getDayOfMonth());
-	return LocalDate.of(NOW.getYear(), NOW.getMonth(), mondayNumber).atStartOfDay();
-  }
-
-  private static Integer getCurrentMondayNumber(Integer dayOfMonth) {
-	final DayOfWeek dayOfWeek = NOW.getDayOfWeek();
-	return switch (dayOfWeek) {
-	  case SUNDAY -> dayOfMonth - 6;
-	  case SATURDAY -> dayOfMonth - 5;
-	  case FRIDAY -> dayOfMonth - 4;
-	  case THURSDAY -> dayOfMonth - 3;
-	  case WEDNESDAY -> dayOfMonth - 2;
-	  case TUESDAY -> dayOfMonth - 1;
-	  default -> dayOfMonth;
-	};
+	return NOW.with(TemporalAdjusters.previous(DayOfWeek.MONDAY)).atStartOfDay();
   }
 
   public static LocalDateTime getTomorrowMidnight(LocalDate localDate) {
@@ -44,19 +35,23 @@ public class DateUtil {
   }
 
   public static LocalDateTime getStartOfMonth() {
-	return LocalDate.of(NOW.getYear(), NOW.getMonth(), ONE_DAY_VALUE).atStartOfDay();
+	return NOW.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
   }
 
   public static String getDate(LocalDateTime localDate) {
-	return localDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
+	return getFormat(localDate, DATE_PATTERN);
   }
 
   public static String getDateTime(LocalDateTime localDate) {
-	return localDate.format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
+	return getFormat(localDate, DATE_TIME_PATTERN);
   }
 
   public static String getTime(LocalDateTime localDate) {
-	return localDate.format(DateTimeFormatter.ofPattern(TIME_PATTERN));
+	return getFormat(localDate, TIME_PATTERN);
+  }
+
+  private static String getFormat(LocalDateTime localDate, String timePattern) {
+	return localDate.format(DateTimeFormatter.ofPattern(timePattern));
   }
 
 }

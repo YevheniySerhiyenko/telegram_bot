@@ -3,6 +3,7 @@ package org.expense_bot.handler.expenses.write;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
+import org.expense_bot.enums.StickerAction;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
@@ -13,6 +14,7 @@ import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
 import org.expense_bot.util.ExpenseUtil;
 import org.expense_bot.util.SessionUtil;
+import org.expense_bot.util.Utils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
@@ -48,7 +50,8 @@ public class SumEnteredHandler extends RequestHandler {
 	}
 	final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
-	  final Optional<BigDecimal> sum = stickerSender.checkWrongSum(request);
+
+	  final Optional<BigDecimal> sum = getSum(request);
 	  if(sum.isEmpty()) {
 		return;
 	  }
@@ -58,6 +61,17 @@ public class SumEnteredHandler extends RequestHandler {
 	  telegramService.sendMessage(userId, Messages.SUCCESS);
 	  telegramService.sendMessage(userId, Messages.SUCCESS_SENT_SUM, keyboard);
 	}
+  }
+
+  private Optional<BigDecimal> getSum(Request request) {
+	try {
+	  return Utils.checkWrongSum(request);
+	} catch (NumberFormatException e) {
+	  final Long userId = request.getUserId();
+	  stickerSender.sendSticker(userId, StickerAction.WRONG_ENTERED_SUM.name());
+	  telegramService.sendMessage(userId, Messages.WRONG_SUM_FORMAT);
+	}
+	return Optional.empty();
   }
 
   @Override

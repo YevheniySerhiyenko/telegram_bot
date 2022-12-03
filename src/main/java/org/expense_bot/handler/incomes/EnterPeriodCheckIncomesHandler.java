@@ -79,5 +79,4 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
 	return false;
   }
 
-
 }

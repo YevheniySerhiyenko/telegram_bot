@@ -1,5 +1,9 @@
 package org.expense_bot.constant;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Messages {
 
   public static final String SUCCESS_SENT_SUM = "Сума витрат записана та відправлена!";
@@ -64,5 +68,7 @@ public class Messages {
   public static final String NO_INCOMES_FOR_PERIOD = "Не знайдено доходів за ";
 
   public static final String WRONG_SUM_FORMAT = "Неправильно введена сума";
+
+  public static final String ENTER_PASSWORD = "Введіть пароль";
 
 }

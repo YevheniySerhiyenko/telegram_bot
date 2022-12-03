@@ -26,4 +26,10 @@ public class User {
   @Column(nullable = false, unique = true)
   private String name;
 
+  @Column(unique = true)
+  private String password;
+
+  @Column(nullable = false)
+  private boolean enablePassword;
+
 }

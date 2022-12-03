@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.handler.init.action_state.InitActionState;
 import org.expense_bot.handler.init.action_state.InitExpenseHandler;
 import org.expense_bot.handler.init.action_state.InitIncomesHandler;
+import org.expense_bot.handler.init.action_state.PasswordEnteredHandler;
 
 import java.util.Arrays;
 
@@ -12,7 +13,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum InitAction {
   EXPENSES(Button.EXPENSES.getValue(), InitExpenseHandler.class),
-  INCOMES(Button.INCOMES.getValue(), InitIncomesHandler.class);
+  INCOMES(Button.INCOMES.getValue(), InitIncomesHandler.class),
+  PASSWORD(null, PasswordEnteredHandler.class);
 
   private final String value;
   private final Class<? extends InitActionState> handler;

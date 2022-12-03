@@ -1,0 +1,1 @@
+alter table users add column enable_password boolean default false;

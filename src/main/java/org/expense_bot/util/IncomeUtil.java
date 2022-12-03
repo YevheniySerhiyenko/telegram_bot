@@ -1,5 +1,7 @@
 package org.expense_bot.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.expense_bot.model.Income;
 
 import java.math.BigDecimal;
@@ -7,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IncomeUtil {
 
   private static final LocalDateTime NOW = LocalDateTime.now();

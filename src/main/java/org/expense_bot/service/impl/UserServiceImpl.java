@@ -33,6 +33,23 @@ public class UserServiceImpl implements UserService {
 	userRepository.save(getUser(request, firstName));
   }
 
+  @Override
+  public void updatePassword(Long userId, String password) {
+    getByUserId(userId).ifPresent(user ->
+	  userRepository.save(User.builder()
+		.userId(userId).name(user.getName())
+		.enablePassword(true)
+		.password(password)
+		.build()));
+  }
+
+  @Override
+  public boolean checkPassword(Long userId, String password) {
+	return getByUserId(userId)
+	  .map(value -> value.getPassword().equals(password))
+	  .orElse(false);
+  }
+
   private String getFirstName(Request request) {
 	if(request.getUpdate().hasMessage()) {
 	  return request.getUpdate().getMessage().getFrom().getFirstName();
@@ -40,7 +57,8 @@ public class UserServiceImpl implements UserService {
 	return request.getUpdate().getCallbackQuery().getFrom().getFirstName();
   }
 
-  private Optional<User> getByUserId(Long userId) {
+  @Override
+  public Optional<User> getByUserId(Long userId) {
 	return userRepository.findByUserId(userId);
   }
 

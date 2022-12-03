@@ -1,8 +1,11 @@
 package org.expense_bot.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
+import org.expense_bot.enums.InitAction;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Session;
 
@@ -10,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SessionUtil {
 
   public static Session getSession(Long userId, CategoryAction categoryAction) {
@@ -98,6 +102,14 @@ public class SessionUtil {
 	  .periodFrom(null)
 	  .periodTo(null)
 	  .state(ConversationState.Expenses.WAITING_ADDITIONAL_ACTION)
+	  .build();
+  }
+
+  public static Session getSession(Long userId, InitAction action) {
+	return Session.builder()
+	  .userId(userId)
+	  .action(action.getValue())
+	  .state(ConversationState.Init.PASSWORD_ENTERED)
 	  .build();
   }
 

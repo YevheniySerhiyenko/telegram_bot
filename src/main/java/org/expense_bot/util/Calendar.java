@@ -1,5 +1,7 @@
 package org.expense_bot.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.expense_bot.model.Request;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -16,9 +18,13 @@ import java.util.stream.IntStream;
 import static org.expense_bot.handler.RequestHandler.getUpdateData;
 import static org.expense_bot.handler.RequestHandler.hasCallBack;
 
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Calendar {
 
+  public static final String BACK = "back";
   private static final String PATTERN = "dd.MM.yyyy";
+  private static final String FORWARD = "forward";
 
   public static InlineKeyboardMarkup buildCalendar(LocalDate now) {
 	final Month month = now.getMonth();
@@ -38,8 +44,8 @@ public class Calendar {
 
   private static List<InlineKeyboardButton> getLastLine(LocalDate now) {
 	return List.of(
-	  Utils.buildButton("<", "back " + now.getMonth() + " " + now.getYear()),
-	  Utils.buildButton(">", "forward " + now.getMonth() + " " + now.getYear()));
+	  Utils.buildButton("<", BACK + " " + now.getMonth() + " " + now.getYear()),
+	  Utils.buildButton(">", FORWARD+ " " + now.getMonth() + " " + now.getYear()));
   }
 
   private static List<InlineKeyboardButton> getDateLine(String month, Integer year) {
@@ -49,11 +55,11 @@ public class Calendar {
 
   private static List<InlineKeyboardButton> getNumbersLine(int number, int numberOfDays, LocalDate now) {
 	return IntStream.rangeClosed(number, numberOfDays)
-	  .mapToObj(num -> Utils.buildButton(String.valueOf(num), getCallbackData(now, num)))
+	  .mapToObj(num -> Utils.buildButton(String.valueOf(num), getCalBACKData(now, num)))
 	  .collect(Collectors.toList());
   }
 
-  private static String getCallbackData(LocalDate now, int number) {
+  private static String getCalBACKData(LocalDate now, int number) {
 	final String callBackDayValue = getCallBackFormatValue(String.valueOf(number));
 	final String callBackMonthValue = getCallBackFormatValue(String.valueOf(now.getMonth().getValue()));
 	return callBackDayValue + "." + callBackMonthValue + "." + now.getYear();
@@ -66,16 +72,19 @@ public class Calendar {
   public static Optional<InlineKeyboardMarkup> changeMonth(Request request) {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
-	  if(data.startsWith("back") || data.startsWith("forward")) {
+	  if(data.startsWith(BACK) || data.startsWith(FORWARD)) {
 		final String[] text = data.split(" ");
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousMonth(text);
 
-		return switch (command) {
-		  case "back" -> Optional.of(Calendar.buildCalendar(of.minusMonths(1)));
-		  case "forward" -> Optional.of(Calendar.buildCalendar(of.plusMonths(1)));
-		  default -> Optional.empty();
-		};
+		switch (command) {
+		  case BACK:
+			return Optional.of(Calendar.buildCalendar(of.minusMonths(1)));
+		  case FORWARD:
+			return Optional.of(Calendar.buildCalendar(of.plusMonths(1)));
+		  default:
+			return Optional.empty();
+		}
 	  }
 	}
 	return Optional.empty();
@@ -84,16 +93,17 @@ public class Calendar {
   public static Optional<InlineKeyboardMarkup> changeYear(Request request) {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
-	  if(data.startsWith("back") || data.startsWith("forward")) {
+	  if(data.startsWith(BACK) || data.startsWith(FORWARD)) {
 		final String[] text = data.split(" ");
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousYear(text);
 
-		return switch (command) {
-		  case "back" -> Optional.of(Calendar.buildYear(of.minusYears(1)));
-		  case "forward" -> Optional.of(Calendar.buildYear(of.plusYears(1)));
-		  default -> Optional.empty();
-		};
+		if(BACK.equals(command)) {
+		  return Optional.of(Calendar.buildYear(of.minusYears(1)));
+		} else if(FORWARD.equals(command)) {
+		  return Optional.of(Calendar.buildYear(of.plusYears(1)));
+		}
+		return Optional.empty();
 	  }
 	}
 	return Optional.empty();

@@ -37,5 +37,5 @@ public class Session {
   private StickerAction stickerAction;
   private List<Expense> expenseList;
   private List<Income> incomeList;
-
+  private String password;
 }

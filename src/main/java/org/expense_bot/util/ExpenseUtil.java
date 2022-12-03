@@ -1,5 +1,7 @@
 package org.expense_bot.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.dto.ExpenseGroup;
 import org.expense_bot.model.Expense;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpenseUtil {
 
   private static final LocalDateTime NOW = LocalDateTime.now();
