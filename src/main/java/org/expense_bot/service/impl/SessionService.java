@@ -76,17 +76,17 @@ public class SessionService {
 
   public boolean checkEnteredDate(Request request, ConversationState state) {
 	boolean enteredDate = false;
+	final Long userId = request.getUserId();
 	if(RequestHandler.hasMessage(request)) {
 	  final String text = RequestHandler.getUpdateData(request);
 	  if(Objects.equals(text, Button.ENTER_DATE.getValue())) {
 		final ReplyKeyboard calendar = Calendar.buildCalendar(LocalDate.now());
-		telegramService.sendMessage(request.getUserId(), Button.ENTER_DATE.getValue(), calendar);
-		updateState(request.getUserId(), state);
+		telegramService.sendMessage(userId, Button.ENTER_DATE.getValue(), calendar);
+		updateState(userId, state);
 		enteredDate = true;
 	  }
 	}
 	if(RequestHandler.hasCallBack(request)) {
-	  final Long userId = request.getUserId();
 	  final Optional<InlineKeyboardMarkup> keyboard = Calendar.changeMonth(request);
 	  if(keyboard.isEmpty()) {
 		final LocalDate date = Calendar.getDate(request);

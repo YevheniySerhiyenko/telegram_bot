@@ -127,6 +127,7 @@ public class KeyboardBuilder {
 		Utils.buildKey(Button.BUTTON_BACK.getValue())
 	  ))
 	  .resizeKeyboard(true)
+	  .oneTimeKeyboard(true)
 	  .build();
   }
 

@@ -38,7 +38,10 @@ public class Utils {
 
 
   public static InlineKeyboardButton buildButton(String text, String callback) {
-	return InlineKeyboardButton.builder().text(text).callbackData(callback).build();
+	return InlineKeyboardButton.builder()
+	  .text(text)
+	  .callbackData(callback)
+	  .build();
   }
 
   public static InlineKeyboardMarkup getOneButtonBoard(String text, String callback) {

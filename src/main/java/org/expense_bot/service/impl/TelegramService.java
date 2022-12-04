@@ -19,15 +19,15 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
 public class TelegramService {
 
   private final ExpenseBotSender botSender;
-  private static final ConcurrentHashMap<Long, List<Integer>> messageIds = new ConcurrentHashMap<>();
+  private static final List<Integer> messageIds = new ArrayList<>(3);
 
   public TelegramService(ExpenseBotSender botSender) {
 	this.botSender = botSender;

@@ -21,15 +21,15 @@ public class Messages {
 
   public static final String CHOOSE_PERIOD = "Оберіть період!";
 
-
   public static final String CHOOSE_CATEGORY = "Оберіть категорію!";
 
   public static final String HELLO_MESSAGE = "\uD83D\uDC4BПривіт! За допомогою цього чат-бота ви зможете записати та перевірити ваші витрати!";
 
+  public static final String HELLO_SHORT = "\uD83D\uDC4BПривіт!";
+
   public static final String CHOOSE_YOUR_ACTION = "Обирайте що хочете зробити ⤵️";
 
   public static final String CHOOSE_EXPENSES_CATEGORY = "Оберіть категорію витрат ⤵️";
-
 
   public static final String ALREADY_HAD_SUCH_CATEGORY = "Ви вже маєте дану категорію!";
 

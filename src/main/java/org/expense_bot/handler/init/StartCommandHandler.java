@@ -34,17 +34,18 @@ public class StartCommandHandler extends RequestHandler {
   public void handle(Request request) {
 	final Long userId = request.getUserId();
 	userService.getByUserId(userId).ifPresent(user -> {
-	  if(user.isEnablePassword()) {
-	     if(!user.isLogined()){
-		  telegramService.sendMessage(userId, Messages.ENTER_PASSWORD);
-		  sessionService.update(SessionUtil.getSession(userId, InitAction.PASSWORD));
-		}
+	  if(user.isEnablePassword() && !user.isLogined()) {
+	    telegramService.sendMessage(userId, Messages.ENTER_PASSWORD);
+		sessionService.update(SessionUtil.getSession(userId, InitAction.PASSWORD));
 	  } else {
-		telegramService.sendMessage(userId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
-		telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION);
-		sessionService.updateState(userId, ConversationState.Init.WAITING_INIT_ACTION);
+		extracted(userId);
 	  }
 	});
+  }
+
+  private void extracted(Long userId) {
+	telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION, keyboardBuilder.buildMainMenu());
+	sessionService.updateState(userId, ConversationState.Init.WAITING_INIT_ACTION);
   }
 
   @Override

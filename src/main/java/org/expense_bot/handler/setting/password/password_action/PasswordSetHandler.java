@@ -37,10 +37,7 @@ public class PasswordSetHandler implements PasswordActionState {
 
   @Override
   public void handle(Request request) {
-	final Long userId = request.getUserId();
-//	final String password = sessionService.getSession(userId).getPassword();
-//	sessionService.update(Session.builder().userId(userId).password(password).build());
-	telegramService.sendMessage(userId, Messages.ENTER_PASSWORD_ONE_MORE);
+	telegramService.sendMessage(request.getUserId(), Messages.ENTER_PASSWORD_ONE_MORE);
   }
 
   @Override
