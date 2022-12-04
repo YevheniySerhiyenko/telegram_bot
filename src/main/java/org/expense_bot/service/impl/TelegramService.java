@@ -38,7 +38,12 @@ public class TelegramService {
 	sendTyping(userId);
 	if(RequestHandler.hasCallBack(request)) {
 	  final Integer messageId = request.getUpdate().getCallbackQuery().getMessage().getMessageId();
-	  execute(getReplyMarkup(keyboard, userId, messageId));
+	  final EditMessageReplyMarkup replyMarkup = EditMessageReplyMarkup.builder()
+		.chatId(String.valueOf(userId))
+		.replyMarkup(keyboard)
+		.messageId(messageId)
+		.build();
+	  execute(replyMarkup);
 	}
   }
 
@@ -48,14 +53,6 @@ public class TelegramService {
 	  return request.getUpdate().getCallbackQuery().getMessage().getMessageId();
 	}
 	return request.getUpdate().getMessage().getMessageId();
-  }
-
-  private EditMessageReplyMarkup getReplyMarkup(InlineKeyboardMarkup keyboard, Long userId, Integer messageId) {
-	return EditMessageReplyMarkup.builder()
-	  .chatId(String.valueOf(userId))
-	  .replyMarkup(keyboard)
-	  .messageId(messageId)
-	  .build();
   }
 
   public void sendMessage(Long userId, String text) {

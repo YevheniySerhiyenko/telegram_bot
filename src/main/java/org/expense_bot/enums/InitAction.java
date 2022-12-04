@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.expense_bot.handler.init.action_state.InitActionState;
 import org.expense_bot.handler.init.action_state.InitExpenseHandler;
 import org.expense_bot.handler.init.action_state.InitIncomesHandler;
-import org.expense_bot.handler.init.action_state.PasswordEnteredHandler;
+import org.expense_bot.handler.init.action_state.PasswordEnteredChecker;
 
 import java.util.Arrays;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 public enum InitAction {
   EXPENSES(Button.EXPENSES.getValue(), InitExpenseHandler.class),
   INCOMES(Button.INCOMES.getValue(), InitIncomesHandler.class),
-  PASSWORD(null, PasswordEnteredHandler.class);
+  PASSWORD(null, PasswordEnteredChecker.class);
 
   private final String value;
   private final Class<? extends InitActionState> handler;
@@ -24,6 +24,5 @@ public enum InitAction {
 	  .filter(action -> action.getValue().equals(text))
 	  .findFirst()
 	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse init action"));
-
   }
 }

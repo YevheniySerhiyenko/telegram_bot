@@ -55,6 +55,7 @@ public class ExpenseBot extends TelegramLongPollingBot {
 		log.warn("Unexpected update from user");
 	  }
 	} catch (Exception e) {
+	  log.error("Error", e);
 	  startCommandHandler.handle(request);
 	}
 

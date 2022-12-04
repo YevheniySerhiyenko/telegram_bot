@@ -6,6 +6,7 @@ import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.enums.InitAction;
+import org.expense_bot.enums.PasswordAction;
 import org.expense_bot.model.Expense;
 import org.expense_bot.model.Session;
 
@@ -110,6 +111,15 @@ public class SessionUtil {
 	  .userId(userId)
 	  .action(action.getValue())
 	  .state(ConversationState.Init.PASSWORD_ENTERED)
+	  .build();
+  }
+
+  public static Session getSession(Long userId, PasswordAction passwordAction, String password) {
+	return Session.builder()
+	  .userId(userId)
+	  .state(ConversationState.Settings.WAITING_FINAL_PASSWORD_ACTION)
+	  .passwordAction(passwordAction)
+	  .password(password)
 	  .build();
   }
 

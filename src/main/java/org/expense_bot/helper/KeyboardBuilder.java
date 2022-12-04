@@ -139,7 +139,7 @@ public class KeyboardBuilder {
 
   public ReplyKeyboard buildSettingsMenu() {
 	return ReplyKeyboardMarkup.builder()
-	  .keyboard(Collections.singletonList(Utils.buildKey(Button.CREATE_PDF.getValue())))
+	  .keyboard(Collections.singletonList(Utils.buildKey(Button.PASSWORD.getValue())))
 	  .resizeKeyboard(true)
 	  .build();
   }
@@ -166,6 +166,25 @@ public class KeyboardBuilder {
 		Utils.buildKey(Button.CREATE_PDF.getValue()),
 		Utils.buildKey(Button.BUTTON_BACK.getValue())
 	  ))
+	  .resizeKeyboard(true)
+	  .build();
+  }
+
+  public ReplyKeyboard buildPasswordOptions(boolean enablePassword) {
+
+	final List<KeyboardRow> passwordExistOptions = List.of(
+	  Utils.buildKey(Button.UPDATE_PASSWORD.getValue()),
+	  Utils.buildKey(Button.DISABLE_PASSWORD.getValue()),
+	  Utils.buildKey(Button.BUTTON_BACK.getValue())
+	);
+
+	final List<KeyboardRow> passwordNotExistOptions = List.of(
+	  Utils.buildKey(Button.SET_PASSWORD.getValue()),
+	  Utils.buildKey(Button.BUTTON_BACK.getValue())
+	);
+
+	return ReplyKeyboardMarkup.builder()
+	  .keyboard(enablePassword ? passwordExistOptions : passwordNotExistOptions)
 	  .resizeKeyboard(true)
 	  .build();
   }

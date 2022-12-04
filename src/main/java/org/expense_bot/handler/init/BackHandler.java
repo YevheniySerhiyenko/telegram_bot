@@ -36,6 +36,11 @@ public class BackHandler {
 	return handleBack(request, keyboardBuilder.buildExpenseMenu(), WAITING_EXPENSE_ACTION);
   }
 
+  public boolean handleBackPasswordSetting(Request request) {
+	final ReplyKeyboard keyboard = keyboardBuilder.buildSettingsMenu();
+	return handleBack(request, keyboard, ConversationState.Settings.WAITING_SETTINGS_ACTION);
+  }
+
   public boolean handleMainMenuBackButton(Request request) {
 	return handleBack(request, keyboardBuilder.buildMainMenu(), WAITING_INIT_ACTION);
   }

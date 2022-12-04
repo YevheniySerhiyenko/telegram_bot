@@ -26,7 +26,11 @@ public enum Button {
   WEEK("За тиждень"),
   MONTH("За місяць"),
   PERIOD("За період"),
-  CHECK_EXPENSES("\uD83D\uDCCA Перевірити витрати");
+  CHECK_EXPENSES("\uD83D\uDCCA Перевірити витрати"),
+  UPDATE_PASSWORD("\uD83D\uDCDD Змінити"),
+  SET_PASSWORD("\uD83D\uDEE0 Налаштувати"),
+  DISABLE_PASSWORD("❌ Вимкнути"),
+  PASSWORD("\uD83D\uDD10 Пароль");
 
   private final String value;
 

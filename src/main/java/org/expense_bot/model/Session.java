@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.expense_bot.enums.CategoryAction;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.enums.IncomeAction;
+import org.expense_bot.enums.PasswordAction;
 import org.expense_bot.enums.StickerAction;
 
 import java.math.BigDecimal;
@@ -38,4 +39,7 @@ public class Session {
   private List<Expense> expenseList;
   private List<Income> incomeList;
   private String password;
+  private String passwordConfirmed;
+  private boolean enablePassword;
+  private PasswordAction passwordAction;
 }

@@ -18,4 +18,8 @@ public interface UserService {
 
   boolean checkPassword(Long userId, String password);
 
+  void disablePassword(Long userId);
+
+  void login(Long userId);
+
 }

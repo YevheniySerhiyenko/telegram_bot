@@ -32,4 +32,6 @@ public class User {
   @Column(nullable = false)
   private boolean enablePassword;
 
+  @Column(nullable = false)
+  private boolean isLogined;
 }

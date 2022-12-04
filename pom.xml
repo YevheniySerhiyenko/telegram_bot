@@ -27,7 +27,6 @@
                     <user>postgres</user>
                     <password>password</password>
                     <cleanDisabled>false</cleanDisabled>
-                    <
                 </configuration>
             </plugin>
             <plugin>

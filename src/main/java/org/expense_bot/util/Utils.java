@@ -69,8 +69,4 @@ public class Utils {
 	return keyboardRow;
   }
 
-  public static Optional<BigDecimal> checkWrongSum(Request request) {
-	return Optional.of(new BigDecimal(getUpdateData(request)));
-  }
-
 }

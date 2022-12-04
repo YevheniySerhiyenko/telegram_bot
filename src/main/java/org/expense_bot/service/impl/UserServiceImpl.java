@@ -25,22 +25,23 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void checkUser(Request request) {
-	final String firstName = getFirstName(request);
 	final Optional<User> user = getByUserId(request.getUserId());
 	if(user.isEmpty()) {
 	  firstEnteredHandler.handle(request);
+	  userRepository.save(getUser(request));
 	}
-	userRepository.save(getUser(request, firstName));
   }
 
   @Override
   public void updatePassword(Long userId, String password) {
-    getByUserId(userId).ifPresent(user ->
-	  userRepository.save(User.builder()
-		.userId(userId).name(user.getName())
-		.enablePassword(true)
-		.password(password)
-		.build()));
+	getByUserId(userId).ifPresent(user ->
+	  userRepository.save(
+		User.builder()
+		  .userId(userId)
+		  .name(user.getName())
+		  .enablePassword(true)
+		  .password(password)
+		  .build()));
   }
 
   @Override
@@ -50,11 +51,29 @@ public class UserServiceImpl implements UserService {
 	  .orElse(false);
   }
 
-  private String getFirstName(Request request) {
-	if(request.getUpdate().hasMessage()) {
-	  return request.getUpdate().getMessage().getFrom().getFirstName();
-	}
-	return request.getUpdate().getCallbackQuery().getFrom().getFirstName();
+  @Override
+  public void disablePassword(Long userId) {
+	getByUserId(userId).ifPresent(user ->
+	  userRepository.save(
+		User.builder()
+		  .userId(userId)
+		  .name(user.getName())
+		  .enablePassword(false)
+		  .password(null)
+		  .build()));
+  }
+
+  @Override
+  public void login(Long userId) {
+	getByUserId(userId)
+	  .ifPresent(user -> userRepository.save(
+		User.builder()
+		  .userId(userId)
+		  .name(user.getName())
+		  .password(user.getPassword())
+		  .enablePassword(user.isEnablePassword())
+		  .isLogined(true)
+		  .build()));
   }
 
   @Override
@@ -62,11 +81,18 @@ public class UserServiceImpl implements UserService {
 	return userRepository.findByUserId(userId);
   }
 
-  private User getUser(Request request, String firstName) {
+  private User getUser(Request request) {
 	return User.builder()
-	  .name(firstName)
+	  .name(getFirstName(request))
 	  .userId(request.getUserId())
 	  .build();
+  }
+
+  private String getFirstName(Request request) {
+	if(request.getUpdate().hasMessage()) {
+	  return request.getUpdate().getMessage().getFrom().getFirstName();
+	}
+	return request.getUpdate().getCallbackQuery().getFrom().getFirstName();
   }
 
 }

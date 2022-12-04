@@ -71,4 +71,24 @@ public class Messages {
 
   public static final String ENTER_PASSWORD = "Введіть пароль";
 
+  public static final String USER_NOT_FOUND = "User not found by id ";
+
+  public static final String ALREADY_HAD_PASSWORD = "\uD83D\uDD35 Ви вже маєте пароль";
+
+  public static final String NO_PASSWORD = "\uD83D\uDD34 Пароль не налаштований";
+
+  public static final String ENTER_OLD_PASSWORD = "\uD83D\uDCDD Введіть старий пароль";
+
+  public static final String ENTER_NEW_PASSWORD = "\uD83D\uDCDD Введіть новий пароль";
+
+  public static final String WRONG_PASSWORD = "❌ Пароль невірний";
+
+  public static final String PASSWORD_CHANGED = "✅ Пароль змінено";
+
+  public static final String PASSWORD_DISABLED = "✅ Пароль вимкнено";
+
+  public static final String ENTER_PASSWORD_ONE_MORE = "\uD83D\uDCDD Введіть пароль ще раз";
+
+  public static final String PASSWORDS_NOT_IDENTICAL = "❌ Паролі не співпадають";
+
 }
