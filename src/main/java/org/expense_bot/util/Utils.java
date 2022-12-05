@@ -2,20 +2,16 @@ package org.expense_bot.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.expense_bot.model.Request;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.singletonList;
-import static org.expense_bot.handler.RequestHandler.getUpdateData;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils {
