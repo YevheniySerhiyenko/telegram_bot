@@ -113,7 +113,7 @@ public class SessionService {
 
   private void updateSession(Long userId, LocalDate date, ConversationState state) {
 	if(state instanceof ConversationState.Expenses) {
-	  update(SessionUtil.buildExpenseSession(userId, date));
+	  update(SessionUtil.getSession(userId, date));
 	} else {
 	  update(SessionUtil.buildIncomeSession(userId, date));
 	}

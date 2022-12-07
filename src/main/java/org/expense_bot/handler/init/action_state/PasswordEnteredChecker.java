@@ -33,7 +33,7 @@ public class PasswordEnteredChecker implements InitActionState {
 		sessionService.updateState(userId, ConversationState.Init.WAITING_INIT_ACTION);
 		userService.login(userId);
 	  } else {
-		sessionService.updateState(userId, ConversationState.Init.PASSWORD_ENTERED);
+		sessionService.updateState(userId, ConversationState.Init.PASSWORD_ENTER);
 	  }
 	});
   }

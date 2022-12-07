@@ -46,7 +46,8 @@ public class KeyboardBuilder {
 		Utils.buildTwoKeys(Button.EXPENSES.getValue(), Button.INCOMES.getValue())))
 	  .selective(true)
 	  .resizeKeyboard(true)
-	  .oneTimeKeyboard(false).build();
+	  .oneTimeKeyboard(false)
+	  .build();
   }
 
 

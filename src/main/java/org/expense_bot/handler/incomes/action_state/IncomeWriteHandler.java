@@ -3,6 +3,7 @@ package org.expense_bot.handler.incomes.action_state;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
+import org.expense_bot.enums.IncomeAction;
 import org.expense_bot.enums.StickerAction;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
@@ -31,7 +32,7 @@ public class IncomeWriteHandler implements IncomeActionState {
   @Override
   public void handle(Long userId) {
 	telegramService.sendMessage(userId, Messages.ENTER_INCOME_SUM, keyboardBuilder.buildSetDateMenu());
-	sessionService.update(SessionUtil.getSession(userId));
+	sessionService.update(SessionUtil.getSession(IncomeAction.WRITE, userId));
   }
 
   @Override

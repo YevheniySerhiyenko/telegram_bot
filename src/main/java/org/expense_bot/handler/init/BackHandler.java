@@ -29,7 +29,8 @@ public class BackHandler {
   private final TelegramService telegramService;
 
   public boolean handleCategoriesBackButton(Request request) {
-	return handleBack(request, keyboardBuilder.buildCategoryOptionsMenu(), WAITING_CATEGORY_ACTION);
+	final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+	return handleBack(request, keyboard, WAITING_CATEGORY_ACTION);
   }
 
   public boolean handleExpensesBackButton(Request request) {
@@ -49,7 +50,7 @@ public class BackHandler {
 	return handleBack(request, keyboardBuilder.buildIncomeMenu(), WAITING_INCOME_ACTION);
   }
 
-  public boolean handleBack(Request request, ReplyKeyboard keyboard, ConversationState state) {
+  private boolean handleBack(Request request, ReplyKeyboard keyboard, ConversationState state) {
 	if(isBack(request)) {
 	  final Long userId = request.getUserId();
 	  sessionService.updateState(userId, state);

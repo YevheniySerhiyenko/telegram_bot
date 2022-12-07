@@ -41,14 +41,6 @@ public class SessionUtil {
 	  .build();
   }
 
-  public static Session buildExpenseSession(Long userId, LocalDate date) {
-	return Session.builder()
-	  .userId(userId)
-	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
-	  .expenseDate(date)
-	  .build();
-  }
-
   public static Session getSession(Long userId, List<Expense> expenses, String category) {
 	return Session.builder()
 	  .userId(userId)
@@ -58,11 +50,11 @@ public class SessionUtil {
 	  .build();
   }
 
-  public static Session buildSession(Long userId, LocalDate localDate) {
+  public static Session getSession(Long userId, LocalDate date) {
 	return Session.builder()
 	  .userId(userId)
-	  .expenseDate(localDate)
 	  .state(ConversationState.Expenses.WAITING_FOR_EXPENSE_SUM)
+	  .expenseDate(date)
 	  .build();
   }
 
@@ -74,10 +66,10 @@ public class SessionUtil {
 	  .build();
   }
 
-  public static Session getSession(Long userId) {
+  public static Session getSession(IncomeAction action, Long userId) {
 	return Session.builder()
 	  .userId(userId)
-	  .incomeAction(IncomeAction.WRITE)
+	  .incomeAction(action)
 	  .state(ConversationState.Incomes.WAITING_FOR_INCOME_SUM)
 	  .build();
   }
@@ -97,7 +89,7 @@ public class SessionUtil {
 	  .build();
   }
 
-  public static Session finalUpdate(Long userId) {
+  public static Session getSession(Long userId) {
 	return Session.builder()
 	  .userId(userId)
 	  .periodFrom(null)
@@ -110,7 +102,7 @@ public class SessionUtil {
 	return Session.builder()
 	  .userId(userId)
 	  .action(action.getValue())
-	  .state(ConversationState.Init.PASSWORD_ENTERED)
+	  .state(ConversationState.Init.PASSWORD_ENTER)
 	  .build();
   }
 
@@ -119,6 +111,36 @@ public class SessionUtil {
 	  .userId(userId)
 	  .state(ConversationState.Settings.WAITING_FINAL_PASSWORD_ACTION)
 	  .passwordAction(passwordAction)
+	  .password(password)
+	  .build();
+  }
+
+  public static Session getSession(Long userId, boolean enablePassword) {
+	return Session.builder()
+	  .userId(userId)
+	  .state(ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION)
+	  .enablePassword(enablePassword)
+	  .build();
+  }
+
+  public static Session getSession(Long userId, PasswordAction passwordAction) {
+	return Session.builder().userId(userId)
+	  .state(ConversationState.Settings.WAITING_PASSWORD_ACTION)
+	  .passwordAction(passwordAction)
+	  .build();
+  }
+
+  public static Session getSession(Long userId, String password) {
+	return Session.builder()
+	  .userId(userId)
+	  .passwordConfirmed(password)
+	  .state(ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION)
+	  .build();
+  }
+
+  public static Session getSession(String password, Long userId) {
+	return Session.builder()
+	  .userId(userId)
 	  .password(password)
 	  .build();
   }

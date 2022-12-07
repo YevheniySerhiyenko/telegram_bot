@@ -46,7 +46,7 @@ public class AdditionalActionHandler extends RequestHandler {
 	}
 	createPDF(request);
 	handleInfo(request);
-	sessionService.update(SessionUtil.finalUpdate(request.getUserId()));
+	sessionService.update(SessionUtil.getSession(request.getUserId()));
   }
 
   private void createPDF(Request request) {

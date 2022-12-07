@@ -40,7 +40,7 @@ public class EnteredDateHandlerExpense extends RequestHandler {
 	  return;
 	}
 	final LocalDate localDate = Calendar.getDate(request);
-	sessionService.update(SessionUtil.buildSession(userId, localDate));
+	sessionService.update(SessionUtil.getSession(userId, localDate));
 	telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
   }
 

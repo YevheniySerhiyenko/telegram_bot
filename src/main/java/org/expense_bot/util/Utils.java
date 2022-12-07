@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -56,15 +57,14 @@ public class Utils {
   }
 
   public static KeyboardRow buildKey(String action) {
-	KeyboardRow keyboardRow = new KeyboardRow();
+	final KeyboardRow keyboardRow = new KeyboardRow();
 	keyboardRow.add(action);
 	return keyboardRow;
   }
 
   public static KeyboardRow buildTwoKeys(String firstAction, String secondAction) {
-	KeyboardRow keyboardRow = new KeyboardRow();
-	keyboardRow.add(firstAction);
-	keyboardRow.add(secondAction);
+	final KeyboardRow keyboardRow = new KeyboardRow();
+	Arrays.asList(firstAction, secondAction).forEach(keyboardRow::add);
 	return keyboardRow;
   }
 
