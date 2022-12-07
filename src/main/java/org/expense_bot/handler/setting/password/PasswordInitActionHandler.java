@@ -18,6 +18,7 @@ public class PasswordInitActionHandler extends RequestHandler {
   private final ApplicationContext context;
   private final SessionService sessionService;
   private final BackHandler backHandler;
+
   @Override
   public boolean isApplicable(Request request) {
 	return isStateEqual(request, ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION);
@@ -28,15 +29,17 @@ public class PasswordInitActionHandler extends RequestHandler {
 	if(backHandler.handleBackPasswordSetting(request)) {
 	  return;
 	}
-
 	final Long userId = request.getUserId();
 	final PasswordAction passwordAction = PasswordAction.parseAction(getUpdateData(request));
-	sessionService.update(
-	  Session.builder().userId(userId)
-		.state(ConversationState.Settings.WAITING_PASSWORD_ACTION)
-		.passwordAction(passwordAction)
-		.build());
+	sessionService.update(getSession(userId, passwordAction));
 	context.getBean(passwordAction.getHandler()).initHandle(userId);
+  }
+
+  private Session getSession(Long userId, PasswordAction passwordAction) {
+	return Session.builder().userId(userId)
+	  .state(ConversationState.Settings.WAITING_PASSWORD_ACTION)
+	  .passwordAction(passwordAction)
+	  .build();
   }
 
   @Override

@@ -26,7 +26,7 @@ public class PasswordEnteredChecker implements InitActionState {
 	final Session session = sessionService.getSession(userId);
 	final String password = session.getPassword();
 	userService.getByUserId(userId).ifPresent(user -> {
-      final boolean validPassword = encoder.matches(password,user.getPassword());
+	  final boolean validPassword = encoder.matches(password, user.getPassword());
 	  if(validPassword) {
 		telegramService.sendMessage(userId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
 		telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION);

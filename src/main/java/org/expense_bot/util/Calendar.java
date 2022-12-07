@@ -45,7 +45,7 @@ public class Calendar {
   private static List<InlineKeyboardButton> getLastLine(LocalDate now) {
 	return List.of(
 	  Utils.buildButton("<", BACK + " " + now.getMonth() + " " + now.getYear()),
-	  Utils.buildButton(">", FORWARD+ " " + now.getMonth() + " " + now.getYear()));
+	  Utils.buildButton(">", FORWARD + " " + now.getMonth() + " " + now.getYear()));
   }
 
   private static List<InlineKeyboardButton> getDateLine(String month, Integer year) {

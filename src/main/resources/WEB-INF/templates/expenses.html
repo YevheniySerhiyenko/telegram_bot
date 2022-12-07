@@ -6,18 +6,18 @@
         <p>  <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
 
         <h1 align="center"> Expenses <!--/*@thymesVar id="period" type="java.time.LocalDate"*/-->
-        <var th:text="${period}"></var> </h1>
+            <var th:text="${period}"></var></h1>
     </div>
     <div>
 
         <p><!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
-        <span th:text="${onesession.getPeriodFrom()}"></span></p>
+            <span th:text="${onesession.getPeriodFrom()}"></span></p>
 
         <p>First Name : <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
-        <span th:text="${onesession.getExpenseDate()}"></span></p>
+            <span th:text="${onesession.getExpenseDate()}"></span></p>
 
         <p>Last Name : <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
-        <span th:text="${onesession.getExpenseDate()}"></span></p>
+            <span th:text="${onesession.getExpenseDate()}"></span></p>
 
 
     </div>
@@ -58,27 +58,27 @@
             </tr>
             </thead>
         </table>
-        </div>
-            <!--/*@thymesVar id="incomeDate" type="java.util.Date"*/-->
+    </div>
+    <!--/*@thymesVar id="incomeDate" type="java.util.Date"*/-->
 
-<!--            &lt;!&ndash;/*@thymesVar id="expenseList" type=""*/&ndash;&gt;-->
-<!--            <var th:name="expenses" th:value="${expenseList}"></var>-->
-<!--            <var th:name="expenses" : th:value="${session.values()}"></var>-->
-<!--            <a th:text="${article.}" th:href="${article.url}"></a>-->
-<!--            <tbody>-->
-<!--            <tr th:each="objj: ${ctx.values()}">-->
-<!--                <td th:text="${objj}"></td>-->
-<!--                <td th:text="${employee.designation}"></td>-->
-<!--                <td th:text="${employee.credentials}"></td>-->
-<!--                <td th:text="${employee.departmentName == null} ? 'Empty' : ${employee.departmentName}"></td>-->
-<!--                <td><img th:src="@{'/uploads/' + ${employee.image_fn}}"/></td>-->
-<!--                <td th:text="${employee.image_fn}"></td>-->
-<!--            </tr>-->
-<!--            </tbody>-->
-<!--            </table>-->
+    <!--            &lt;!&ndash;/*@thymesVar id="expenseList" type=""*/&ndash;&gt;-->
+    <!--            <var th:name="expenses" th:value="${expenseList}"></var>-->
+    <!--            <var th:name="expenses" : th:value="${session.values()}"></var>-->
+    <!--            <a th:text="${article.}" th:href="${article.url}"></a>-->
+    <!--            <tbody>-->
+    <!--            <tr th:each="objj: ${ctx.values()}">-->
+    <!--                <td th:text="${objj}"></td>-->
+    <!--                <td th:text="${employee.designation}"></td>-->
+    <!--                <td th:text="${employee.credentials}"></td>-->
+    <!--                <td th:text="${employee.departmentName == null} ? 'Empty' : ${employee.departmentName}"></td>-->
+    <!--                <td><img th:src="@{'/uploads/' + ${employee.image_fn}}"/></td>-->
+    <!--                <td th:text="${employee.image_fn}"></td>-->
+    <!--            </tr>-->
+    <!--            </tbody>-->
+    <!--            </table>-->
 
-            <!-- Modal -->
-<!--        </div>-->
+    <!-- Modal -->
+    <!--        </div>-->
 </div>
 <script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>

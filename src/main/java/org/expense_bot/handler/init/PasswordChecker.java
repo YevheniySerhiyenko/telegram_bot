@@ -17,7 +17,6 @@ public class PasswordChecker extends RequestHandler {
 
   private final ApplicationContext context;
   private final SessionService sessionService;
-  private final PasswordEncoder encoder;
 
   @Override
   public boolean isApplicable(Request request) {

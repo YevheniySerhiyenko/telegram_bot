@@ -39,10 +39,11 @@ public class PasswordChangeHandler implements PasswordActionState {
 	  .orElseThrow(() -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
 
 	final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
-	if(encoder.matches(oldPassword, user.getPassword())) {
+	final boolean validPassword = encoder.matches(oldPassword, user.getPassword());
+	if(validPassword) {
 	  telegramService.sendMessage(userId, Messages.ENTER_NEW_PASSWORD, keyboard);
 	  sessionService.updateState(userId, ConversationState.Settings.WAITING_FINAL_PASSWORD_ACTION);
-	} else{
+	} else {
 	  telegramService.sendMessage(userId, Messages.WRONG_PASSWORD, keyboard);
 	  telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, keyboard);
 	  sessionService.updateState(userId, ConversationState.Settings.WAITING_PASSWORD_ACTION);
@@ -56,7 +57,7 @@ public class PasswordChangeHandler implements PasswordActionState {
 	final String newPassword = session.getPasswordConfirmed();
 	userService.updatePassword(userId, encoder.encode(newPassword));
 	final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(true);
-	telegramService.sendMessage(userId,Messages.SUCCESS);
+	telegramService.sendMessage(userId, Messages.SUCCESS);
 	telegramService.sendMessage(userId, Messages.PASSWORD_CHANGED, keyboard);
   }
 

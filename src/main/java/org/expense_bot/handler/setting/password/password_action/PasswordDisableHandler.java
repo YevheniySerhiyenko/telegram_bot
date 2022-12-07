@@ -40,11 +40,12 @@ public class PasswordDisableHandler implements PasswordActionState {
 	final String oldPassword = sessionService.getSession(userId).getPassword();
 	final User user = userService.getByUserId(userId)
 	  .orElseThrow(() -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
-	if(encoder.matches(oldPassword, user.getPassword())) {
+	final boolean validPassword = encoder.matches(oldPassword, user.getPassword());
+	if(validPassword) {
 	  userService.disablePassword(userId);
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(false);
 	  telegramService.sendMessage(userId, Messages.PASSWORD_DISABLED, keyboard);
-	  sessionService.updateState(userId,ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION);
+	  sessionService.updateState(userId, ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION);
 	} else {
 	  telegramService.sendMessage(userId, Messages.WRONG_PASSWORD);
 	  telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, keyboardBuilder.buildBackButton());

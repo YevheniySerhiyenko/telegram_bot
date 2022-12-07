@@ -42,4 +42,5 @@ public class Session {
   private String passwordConfirmed;
   private boolean enablePassword;
   private PasswordAction passwordAction;
+
 }

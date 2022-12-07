@@ -32,14 +32,17 @@ public class PasswordFinalActionHandler extends RequestHandler {
 	final Long userId = request.getUserId();
 	final PasswordAction passwordAction = sessionService.getSession(userId).getPasswordAction();
 	final String password = getUpdateData(request);
-	sessionService.update(
-	  Session.builder()
-		.userId(userId)
-		.passwordConfirmed(password)
-		.state(ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION)
-		.build());
+	sessionService.update(getSession(userId, password));
 
 	context.getBean(passwordAction.getHandler()).handleFinal(request);
+  }
+
+  private Session getSession(Long userId, String password) {
+	return Session.builder()
+	  .userId(userId)
+	  .passwordConfirmed(password)
+	  .state(ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION)
+	  .build();
   }
 
   @Override

@@ -48,15 +48,20 @@ public class PasswordSettingsRequestHandler extends RequestHandler {
 	} else {
 	  telegramService.sendMessage(userId, Messages.NO_PASSWORD, keyboard);
 	}
-	sessionService.update(Session.builder()
+	sessionService.update(getSession(userId, enablePassword));
+  }
+
+  private Session getSession(Long userId, boolean enablePassword) {
+	return Session.builder()
 	  .userId(userId)
 	  .state(ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION)
 	  .enablePassword(enablePassword)
-	  .build());
+	  .build();
   }
 
   @Override
   public boolean isGlobal() {
 	return false;
   }
+
 }

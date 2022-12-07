@@ -15,4 +15,5 @@
       "type": "java.lang.String",
       "description": "Description for spring.main.allow-bean-definition-overriding=true."
     }
-  ] }
+  ]
+}
