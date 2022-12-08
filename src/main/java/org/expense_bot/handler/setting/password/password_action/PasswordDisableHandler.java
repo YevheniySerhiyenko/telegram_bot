@@ -3,7 +3,6 @@ package org.expense_bot.handler.setting.password.password_action;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.exception.UserNotFoundException;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.User;
@@ -26,8 +25,7 @@ public class PasswordDisableHandler implements PasswordActionState {
 
   @Override
   public void initHandle(Long userId) {
-	final User user = userService.getByUserId(userId)
-	  .orElseThrow(() -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
+	final User user = userService.getUser(userId);
 	if(user.isEnablePassword() && user.getPassword() != null) {
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
 	  telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, keyboard);
@@ -38,11 +36,10 @@ public class PasswordDisableHandler implements PasswordActionState {
   public void handle(Request request) {
 	final Long userId = request.getUserId();
 	final String oldPassword = sessionService.getSession(userId).getPassword();
-	final User user = userService.getByUserId(userId)
-	  .orElseThrow(() -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
+	final User user = userService.getUser(userId);
 	final boolean validPassword = encoder.matches(oldPassword, user.getPassword());
 	if(validPassword) {
-	  userService.disablePassword(userId);
+	  userService.updatePassword(userId,null,false);
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(false);
 	  telegramService.sendMessage(userId, Messages.PASSWORD_DISABLED, keyboard);
 	  sessionService.updateState(userId, ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION);

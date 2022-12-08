@@ -10,15 +10,13 @@ public interface UserService {
 
   List<User> getAll();
 
-  Optional<User> getByUserId(Long userId);
+  User getUser(Long userId);
+
+  Optional<User> getOptionalUser(Long userId);
 
   void checkUser(Request request);
 
-  void updatePassword(Long userId, String password);
-
-  boolean checkPassword(Long userId, String password);
-
-  void disablePassword(Long userId);
+  void updatePassword(Long userId, String password, Boolean enablePassword);
 
   void login(Long userId);
 

@@ -2,6 +2,8 @@ package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.expense_bot.constant.Messages;
+import org.expense_bot.exception.UserNotFoundException;
 import org.expense_bot.handler.NewUserHandler;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.User;
@@ -30,8 +32,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public User getUser(Long userId) {
+	return getOptionalUser(userId).orElseThrow(
+	  () -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
+  }
+
+  @Override
   public void checkUser(Request request) {
-	final Optional<User> user = getByUserId(request.getUserId());
+	final Optional<User> user = getOptionalUser(request.getUserId());
 	if(user.isEmpty()) {
 	  firstEnteredHandler.handle(request);
 	  userRepository.save(getUser(request));
@@ -39,62 +47,39 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void updatePassword(Long userId, String password) {
-	getByUserId(userId).ifPresent(user ->
-	{
-	  user.setPassword(password);
-	  user.setEnablePassword(true);
-	  userRepository.save(user);
-	});
-  }
-
-  @Override
-  public boolean checkPassword(Long userId, String password) {
-	return getByUserId(userId)
-	  .map(value -> value.getPassword().equals(password))
-	  .orElse(false);
-  }
-
-  @Override
-  public void disablePassword(Long userId) {
-	getByUserId(userId).ifPresent(user -> {
-	  user.setEnablePassword(false);
-	  userRepository.save(user);
-	});
+  public void updatePassword(Long userId, String password, Boolean enablePassword) {
+	final User user = getUser(userId);
+	user.setPassword(password);
+	user.setEnablePassword(enablePassword);
+	userRepository.save(user);
   }
 
   @Override
   public void login(Long userId) {
-	getByUserId(userId).ifPresent(user -> {
-	  user.setLogined(true);
-	  userRepository.save(user);
-	});
+	final User user = getUser(userId);
+	user.setLogined(true);
+	userRepository.save(user);
   }
 
   @Override
   public void closeSession(Long userId) {
-	getByUserId(userId).ifPresent(user ->
-	  {
-		final LocalDateTime lastActionTime = user.getLastActionTime();
-		final LocalDateTime now = LocalDateTime.now();
-		final LocalDateTime dateTime = lastActionTime.plusMinutes(sessionTimeout);
-		if(dateTime.isEqual(now) || dateTime.isBefore(now)) {
-		  unLogin(userId);
-		}
-	  }
-	);
+	final LocalDateTime lastActionTime = getUser(userId).getLastActionTime();
+	final LocalDateTime now = LocalDateTime.now();
+	final LocalDateTime dateTime = lastActionTime.plusMinutes(sessionTimeout);
+	if(dateTime.isEqual(now) || dateTime.isBefore(now)) {
+	  unLogin(userId);
+	}
   }
 
   @Override
   public void updateActionTime(Long userId) {
-	getByUserId(userId).ifPresent(user -> {
-	  user.setLastActionTime(LocalDateTime.now());
-	  userRepository.save(user);
-	});
+	final User user = getUser(userId);
+	user.setLastActionTime(LocalDateTime.now());
+	userRepository.save(user);
   }
 
   @Override
-  public Optional<User> getByUserId(Long userId) {
+  public Optional<User> getOptionalUser(Long userId) {
 	return userRepository.findByUserId(userId);
   }
 
@@ -113,13 +98,13 @@ public class UserServiceImpl implements UserService {
   }
 
   private void unLogin(Long userId) {
-	getByUserId(userId).ifPresent(user -> {
-	  if(user.isLogined()){
-		user.setLogined(false);
-		userRepository.save(user);
-		log.info("User session by user {} closed", userId);
-	  }
-	});
+	final User user = getUser(userId);
+	if(!user.isLogined()) {
+	  return;
+	}
+	user.setLogined(false);
+	userRepository.save(user);
+	log.info("User session by user {} closed", userId);
   }
 
 }

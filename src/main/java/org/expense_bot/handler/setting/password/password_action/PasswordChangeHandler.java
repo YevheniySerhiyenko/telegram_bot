@@ -3,7 +3,6 @@ package org.expense_bot.handler.setting.password.password_action;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.exception.UserNotFoundException;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
 import org.expense_bot.model.Session;
@@ -35,8 +34,7 @@ public class PasswordChangeHandler implements PasswordActionState {
   public void handle(Request request) {
 	final Long userId = request.getUserId();
 	final String oldPassword = sessionService.getSession(userId).getPassword();
-	final User user = userService.getByUserId(userId)
-	  .orElseThrow(() -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
+	final User user = userService.getUser(userId);
 
 	final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
 	final boolean validPassword = encoder.matches(oldPassword, user.getPassword());
@@ -55,7 +53,7 @@ public class PasswordChangeHandler implements PasswordActionState {
 	final Long userId = request.getUserId();
 	final Session session = sessionService.getSession(userId);
 	final String newPassword = session.getPasswordConfirmed();
-	userService.updatePassword(userId, encoder.encode(newPassword));
+	userService.updatePassword(userId, encoder.encode(newPassword),true);
 	final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(true);
 	telegramService.sendMessage(userId, Messages.SUCCESS);
 	telegramService.sendMessage(userId, Messages.PASSWORD_CHANGED, keyboard);

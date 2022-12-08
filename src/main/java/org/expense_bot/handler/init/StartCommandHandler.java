@@ -33,7 +33,7 @@ public class StartCommandHandler extends RequestHandler {
   @Override
   public void handle(Request request) {
 	final Long userId = request.getUserId();
-	userService.getByUserId(userId).ifPresent(user -> {
+	userService.getOptionalUser(userId).ifPresent(user -> {
 	  if(user.isEnablePassword() && !user.isLogined()) {
 		telegramService.sendMessage(userId, Messages.ENTER_PASSWORD);
 		sessionService.update(SessionUtil.getSession(userId, InitAction.PASSWORD));

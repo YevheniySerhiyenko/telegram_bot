@@ -3,7 +3,6 @@ package org.expense_bot.handler.setting.password;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.constant.Messages;
 import org.expense_bot.enums.ConversationState;
-import org.expense_bot.exception.UserNotFoundException;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
@@ -38,8 +37,7 @@ public class PasswordSettingsRequestHandler extends RequestHandler {
 	}
 
 	final Long userId = request.getUserId();
-	final User user = userService.getByUserId(userId)
-	  .orElseThrow(() -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
+	final User user = userService.getUser(userId);
 	final boolean enablePassword = user.isEnablePassword();
 	final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(enablePassword);
 
