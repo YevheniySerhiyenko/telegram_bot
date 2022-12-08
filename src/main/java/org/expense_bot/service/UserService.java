@@ -22,4 +22,8 @@ public interface UserService {
 
   void login(Long userId);
 
+  void closeSession(Long userId);
+
+  void updateActionTime(Long userId);
+
 }

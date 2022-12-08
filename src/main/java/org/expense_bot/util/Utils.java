@@ -3,6 +3,7 @@ package org.expense_bot.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -66,6 +67,27 @@ public class Utils {
 	final KeyboardRow keyboardRow = new KeyboardRow();
 	Arrays.asList(firstAction, secondAction).forEach(keyboardRow::add);
 	return keyboardRow;
+  }
+
+  public static Long getUserId(Update update) {
+	if(update.hasMessage()) {
+	  return update.getMessage().getChatId();
+	}
+	return update.getCallbackQuery().getFrom().getId();
+  }
+
+  public static String getText(Update update) {
+	if(update.hasMessage()) {
+	  return update.getMessage().getText();
+	}
+	return update.getCallbackQuery().getData();
+  }
+
+  public static String getFirstName(Update update) {
+	if(update.hasMessage()) {
+	  return update.getMessage().getFrom().getFirstName();
+	}
+	return update.getCallbackQuery().getFrom().getFirstName();
   }
 
 }

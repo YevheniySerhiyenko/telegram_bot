@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,6 +20,7 @@ import javax.persistence.Table;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 public class User {
 
   @Id
@@ -35,4 +38,6 @@ public class User {
   @Column(nullable = false)
   private boolean isLogined;
 
+  @Column(nullable = false)
+  private LocalDateTime lastActionTime;
 }

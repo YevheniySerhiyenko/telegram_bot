@@ -1,1 +1,0 @@
-alter table users add column is_logined boolean default false;
