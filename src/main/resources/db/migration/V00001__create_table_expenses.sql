@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS expenses
-(
-    id        serial PRIMARY KEY,
-    category  varchar   NOT NULL,
-    sum       decimal   NOT NULL,
-    date_time timestamp NOT NULL,
-    user_id   bigint    NOT NULL
+
+create table if not exists expenses(
+    id serial primary key,
+    category varchar not null,
+    sum decimal not null,
+    date_time timestamp not null,
+    user_id bigint not null
 );
 
 

@@ -1,5 +1,4 @@
-CREATE TABLE IF NOT EXISTS users
-(
-    user_id bigint PRIMARY KEY,
-    name    varchar(256) NOT NULL
+create table if not exists users(
+  user_id bigint primary key,
+  name varchar(256) not null
 )
