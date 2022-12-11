@@ -1,22 +1,28 @@
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="d-flex" id="wrapper">
     <div class="container-fluid">
 
-        <p>  <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
+        <p>
+            <!--/*@thymesVar id="onesession" type="expense_bot.model.Session"*/-->
 
-        <h1 align="center"> Expenses <!--/*@thymesVar id="period" type="java.time.LocalDate"*/-->
+        <h1 align="center"> Expenses
+            <!--/*@thymesVar id="period" type="java.time.LocalDate"*/-->
             <var th:text="${period}"></var></h1>
     </div>
     <div>
 
-        <p><!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
+        <p>
+            <!--/*@thymesVar id="onesession" type="expense_bot.model.Session"*/-->
             <span th:text="${onesession.getPeriodFrom()}"></span></p>
 
-        <p>First Name : <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
+        <p>First Name :
+            <!--/*@thymesVar id="onesession" type="expense_bot.model.Session"*/-->
             <span th:text="${onesession.getExpenseDate()}"></span></p>
 
-        <p>Last Name : <!--/*@thymesVar id="onesession" type="org.expense_bot.model.Session"*/-->
+        <p>Last Name :
+            <!--/*@thymesVar id="onesession" type="expense_bot.model.Session"*/-->
             <span th:text="${onesession.getExpenseDate()}"></span></p>
 
 

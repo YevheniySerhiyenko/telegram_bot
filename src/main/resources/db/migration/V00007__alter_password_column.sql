@@ -1,4 +1,8 @@
-alter table users add column password varchar(255);
-alter table users add column is_logined boolean default false;
-alter table users add column enable_password boolean default false;
-alter table users add column last_action_time timestamp default now();
+ALTER TABLE users
+    ADD COLUMN password varchar(255);
+ALTER TABLE users
+    ADD COLUMN is_logined boolean DEFAULT FALSE;
+ALTER TABLE users
+    ADD COLUMN enable_password boolean DEFAULT FALSE;
+ALTER TABLE users
+    ADD COLUMN last_action_time timestamp DEFAULT NOW();

@@ -53,7 +53,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>target/</classpathPrefix>
-                            <mainClass>org.expense_bot.Application</mainClass>
+                            <mainClass>expense_bot.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -167,6 +167,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

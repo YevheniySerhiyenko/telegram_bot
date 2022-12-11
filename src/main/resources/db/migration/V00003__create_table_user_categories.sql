@@ -1,5 +1,6 @@
-create table if not exists user_categories(
-    id serial primary key,
-    category varchar(256) not null,
-    user_id decimal not null
+CREATE TABLE IF NOT EXISTS user_categories
+(
+    id       serial PRIMARY KEY,
+    category varchar(256) NOT NULL,
+    user_id  decimal      NOT NULL
 );
