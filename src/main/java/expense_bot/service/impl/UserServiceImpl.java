@@ -90,6 +90,8 @@ public class UserServiceImpl implements UserService {
   private User getUser(Request request) {
     return User.builder()
       .name(Utils.getFirstName(request))
+      .lastActionTime(LocalDateTime.now())
+      .enablePassword(false)
       .userId(request.getUserId())
       .build();
   }
