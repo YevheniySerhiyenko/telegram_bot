@@ -19,6 +19,20 @@
             </plugin>
 
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>9.5.1</version>
@@ -38,7 +52,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
+                            <classpathPrefix>target/</classpathPrefix>
                             <mainClass>org.expense_bot.Application</mainClass>
                         </manifest>
                     </archive>
@@ -53,7 +67,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <commons-logging.version>1.2</commons-logging.version>
         <lombok.version>1.18.20</lombok.version>
-        <spring-boot.version>2.5.9</spring-boot.version>
+        <spring-boot.version>2.7.3</spring-boot.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
@@ -71,6 +85,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.7.3</version>
+            <type>pom</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -79,7 +101,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
 
         <!-- This starter will allow to auto-register your bot        -->
@@ -91,23 +112,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>2.7.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>9.3.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.5.0</version>
         </dependency>
 
         <dependency>
@@ -130,36 +138,35 @@
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>3.0.0-alpha3</version>
-        </dependency>
-
         <dependency>
                 <groupId>com.itextpdf</groupId>
                 <artifactId>html2pdf</artifactId>
                 <version>4.0.2</version>
         </dependency>
 
-                <dependency>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>bom</artifactId>
-                    <version>2.18.8</version>
-                    <type>pom</type>
-                    <scope>import</scope>
-                </dependency>
-
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
             <version>3.0.11.RELEASE</version>
         </dependency>
+
         <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-pdf</artifactId>
             <version>9.1.20</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>9.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.0</version>
         </dependency>
     </dependencies>
 

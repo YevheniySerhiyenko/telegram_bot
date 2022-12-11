@@ -2,6 +2,7 @@ package org.expense_bot.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.ErrorMessages;
 import org.expense_bot.handler.incomes.action_state.IncomeActionState;
 import org.expense_bot.handler.incomes.action_state.IncomeBalanceHandler;
 import org.expense_bot.handler.incomes.action_state.IncomeCheckHandler;
@@ -23,7 +24,6 @@ public enum IncomeAction {
 	return Arrays.stream(values())
 	  .filter(action -> action.getValue().equals(text))
 	  .findFirst()
-	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse income action"));
-
+	  .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.PARSE_INCOME_ACTION_ERROR));
   }
 }

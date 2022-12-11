@@ -2,6 +2,7 @@ package org.expense_bot.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.expense_bot.constant.ErrorMessages;
 import org.expense_bot.handler.setting.password.password_action.PasswordActionState;
 import org.expense_bot.handler.setting.password.password_action.PasswordChangeHandler;
 import org.expense_bot.handler.setting.password.password_action.PasswordDisableHandler;
@@ -23,6 +24,6 @@ public enum PasswordAction {
 	return Arrays.stream(values())
 	  .filter(action -> action.getValue().equals(text))
 	  .findFirst()
-	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse password action"));
+	  .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.PARSE_PASSWORD_ACTION_ERROR));
   }
 }

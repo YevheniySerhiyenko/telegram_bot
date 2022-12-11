@@ -71,8 +71,6 @@ public class Messages {
 
   public static final String ENTER_PASSWORD = "Введіть пароль";
 
-  public static final String USER_NOT_FOUND = "User not found by id ";
-
   public static final String ALREADY_HAD_PASSWORD = "\uD83D\uDD35 Ви вже маєте пароль";
 
   public static final String NO_PASSWORD = "\uD83D\uDD34 Пароль не налаштований";

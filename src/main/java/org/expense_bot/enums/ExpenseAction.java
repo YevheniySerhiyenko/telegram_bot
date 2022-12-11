@@ -2,6 +2,7 @@ package org.expense_bot.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.ErrorMessages;
 import org.expense_bot.handler.expenses.action_state.CheckExpenseHandler;
 import org.expense_bot.handler.expenses.action_state.ExpenseActionState;
 import org.expense_bot.handler.expenses.action_state.WriteExpenseHandler;
@@ -14,7 +15,6 @@ public enum ExpenseAction {
   CHECK(Button.CHECK_EXPENSES.getValue(), CheckExpenseHandler.class),
   WRITE(Button.WRITE_EXPENSES.getValue(), WriteExpenseHandler.class);
 
-
   private final String value;
   private final Class<? extends ExpenseActionState> handler;
 
@@ -22,7 +22,7 @@ public enum ExpenseAction {
 	return Arrays.stream(values())
 	  .filter(action -> action.getValue().equals(text))
 	  .findFirst()
-	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse init action"));
+	  .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.PARSE_EXPENSE_ACTION_ERROR));
 
   }
 }

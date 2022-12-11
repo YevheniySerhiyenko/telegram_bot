@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.expense_bot.enums.Button;
 import org.expense_bot.enums.Period;
+import org.expense_bot.enums.StickerAction;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Expense;
+import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.UserService;
 import org.expense_bot.service.impl.TelegramService;
@@ -26,6 +28,7 @@ public class ScheduleConfig {
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;
   private final ExpenseService expenseService;
+  private final StickerSender stickerSender;
 
   @Scheduled(cron = "0 0 21 * * *")
   public void sendNotifications() {
@@ -38,6 +41,7 @@ public class ScheduleConfig {
 	  if(byPeriod.isEmpty()) {
 		telegramService.sendMessage(
 		  user.getUserId(), "Hello, write your expenses", keyboardBuilder.buildExpenseMenu());
+		stickerSender.sendSticker(user.getUserId(), StickerAction.NOTIFICATION.name());
 	  }
 	});
   }

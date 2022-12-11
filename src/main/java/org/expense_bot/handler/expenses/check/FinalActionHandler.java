@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AdditionalActionHandler extends RequestHandler {
+public class FinalActionHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final KeyboardBuilder keyboardBuilder;

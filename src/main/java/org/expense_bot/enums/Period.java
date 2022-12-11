@@ -3,7 +3,6 @@ package org.expense_bot.enums;
 import lombok.RequiredArgsConstructor;
 import org.expense_bot.util.DateUtil;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -28,7 +27,7 @@ public enum Period {
 
 	@Override
 	public LocalDateTime getDateTo() {
-	  return DateUtil.getTomorrowMidnight(LocalDate.now());
+	  return DateUtil.getTomorrowMidnight();
 	}
   },
   MONTH(Button.MONTH.getValue()) {
@@ -39,7 +38,7 @@ public enum Period {
 
 	@Override
 	public LocalDateTime getDateTo() {
-	  return DateUtil.getTomorrowMidnight(LocalDate.now());
+	  return DateUtil.getTomorrowMidnight();
 	}
   },
 

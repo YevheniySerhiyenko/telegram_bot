@@ -32,7 +32,7 @@ public class PasswordInitActionHandler extends RequestHandler {
 	final Long userId = request.getUserId();
 	final PasswordAction passwordAction = PasswordAction.parseAction(getUpdateData(request));
 	sessionService.update(SessionUtil.getSession(userId, passwordAction));
-	context.getBean(passwordAction.getHandler()).initHandle(userId);
+	context.getBean(passwordAction.getHandler()).init(userId);
   }
 
   @Override

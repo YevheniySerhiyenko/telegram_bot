@@ -18,13 +18,13 @@ import java.util.stream.IntStream;
 import static org.expense_bot.handler.RequestHandler.getUpdateData;
 import static org.expense_bot.handler.RequestHandler.hasCallBack;
 
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Calendar {
 
   public static final String BACK = "back";
   private static final String PATTERN = "dd.MM.yyyy";
   private static final String FORWARD = "forward";
+  private static final String BLANK = " ";
 
   public static InlineKeyboardMarkup buildCalendar(LocalDate now) {
 	final Month month = now.getMonth();
@@ -44,12 +44,12 @@ public class Calendar {
 
   private static List<InlineKeyboardButton> getLastLine(LocalDate now) {
 	return List.of(
-	  Utils.buildButton("<", BACK + " " + now.getMonth() + " " + now.getYear()),
-	  Utils.buildButton(">", FORWARD + " " + now.getMonth() + " " + now.getYear()));
+	  Utils.buildButton("<", BACK + BLANK + now.getMonth() + BLANK + now.getYear()),
+	  Utils.buildButton(">", FORWARD + BLANK + now.getMonth() + BLANK + now.getYear()));
   }
 
   private static List<InlineKeyboardButton> getDateLine(String month, Integer year) {
-	final String date = month + " " + year;
+	final String date = month + BLANK + year;
 	return Collections.singletonList(Utils.buildButton(date, date));
   }
 
@@ -73,7 +73,7 @@ public class Calendar {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
 	  if(data.startsWith(BACK) || data.startsWith(FORWARD)) {
-		final String[] text = data.split(" ");
+		final String[] text = data.split(BLANK);
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousMonth(text);
 
@@ -94,7 +94,7 @@ public class Calendar {
 	if(hasCallBack(request)) {
 	  final String data = getUpdateData(request);
 	  if(data.startsWith(BACK) || data.startsWith(FORWARD)) {
-		final String[] text = data.split(" ");
+		final String[] text = data.split(BLANK);
 		final String command = text[0];
 		final LocalDate of = getNextOrPreviousYear(text);
 
@@ -132,7 +132,7 @@ public class Calendar {
 
 	keyboardMarkup.setKeyboard(
 	  List.of(
-		getDateLine("", year),
+		getDateLine(BLANK, year),
 		getMonths(0, 2, year),
 		getMonths(3, 5, year),
 		getMonths(6, 8, year),
@@ -146,12 +146,12 @@ public class Calendar {
 	final Month[] values = Month.values();
 	return IntStream.rangeClosed(startMonth, lastMonth)
 	  .mapToObj(i -> String.valueOf(values[i]))
-	  .map(data -> Utils.buildButton(data, data + " " + year))
+	  .map(data -> Utils.buildButton(data, data + BLANK + year))
 	  .collect(Collectors.toList());
   }
 
   public static LocalDate parseMonthYear(String date) {
-	final String[] monthYear = date.split(" ");
+	final String[] monthYear = date.split(BLANK);
 	final Month month = Month.valueOf(monthYear[0]);
 	final int year = Integer.parseInt(monthYear[1]);
 	return LocalDate.of(year, month, 1);

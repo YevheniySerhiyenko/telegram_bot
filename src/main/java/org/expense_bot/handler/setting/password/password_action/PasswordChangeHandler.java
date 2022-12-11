@@ -25,7 +25,7 @@ public class PasswordChangeHandler implements PasswordActionState {
   private final PasswordEncoder encoder;
 
   @Override
-  public void initHandle(Long userId) {
+  public void init(Long userId) {
 	final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
 	telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, keyboard);
   }

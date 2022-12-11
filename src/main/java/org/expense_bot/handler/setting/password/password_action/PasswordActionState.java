@@ -4,7 +4,7 @@ import org.expense_bot.model.Request;
 
 public interface PasswordActionState {
 
-  void initHandle(Long userId);
+  void init(Long userId);
 
   void handle(Request request);
 

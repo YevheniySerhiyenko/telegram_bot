@@ -7,7 +7,6 @@ import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackHandler;
 import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Request;
-import org.expense_bot.sender.StickerSender;
 import org.expense_bot.service.ExpenseService;
 import org.expense_bot.service.impl.SessionService;
 import org.expense_bot.service.impl.TelegramService;
@@ -27,7 +26,6 @@ public class SumEnteredHandler extends RequestHandler {
   private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
-  private final StickerSender stickerSender;
   private final BackHandler backHandler;
 
 
@@ -46,15 +44,14 @@ public class SumEnteredHandler extends RequestHandler {
 	if(enteredDate) {
 	  return;
 	}
-	final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
 	if(hasMessage(request)) {
-
-	  final Optional<BigDecimal> sum = sessionService.getSum(request);
-	  if(sum.isEmpty()) {
-		return;
-	  }
-	  final Long userId = request.getUserId();
-	  sessionService.update(SessionUtil.getSession(sum.get(), userId));
+      final Optional<BigDecimal> sum = sessionService.getSum(request);
+      if(sum.isEmpty()) {
+        return;
+      }
+      final Long userId = request.getUserId();
+      final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
+      sessionService.update(SessionUtil.getSession(sum.get(), userId));
 	  expenseService.save(ExpenseUtil.getExpense(sessionService.getSession(userId)));
 	  telegramService.sendMessage(userId, Messages.SUCCESS);
 	  telegramService.sendMessage(userId, Messages.SUCCESS_SENT_SUM, keyboard);

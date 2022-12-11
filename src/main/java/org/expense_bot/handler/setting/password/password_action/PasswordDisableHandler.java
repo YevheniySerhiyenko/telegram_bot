@@ -24,7 +24,7 @@ public class PasswordDisableHandler implements PasswordActionState {
   private final PasswordEncoder encoder;
 
   @Override
-  public void initHandle(Long userId) {
+  public void init(Long userId) {
 	final User user = userService.getUser(userId);
 	if(user.isEnablePassword() && user.getPassword() != null) {
 	  final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();

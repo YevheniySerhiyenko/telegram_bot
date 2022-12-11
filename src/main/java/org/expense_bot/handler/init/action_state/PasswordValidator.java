@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PasswordEnteredChecker implements InitActionState {
+public class PasswordValidator implements InitActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;

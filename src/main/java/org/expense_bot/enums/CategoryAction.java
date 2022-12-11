@@ -2,6 +2,7 @@ package org.expense_bot.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.expense_bot.constant.ErrorMessages;
 import org.expense_bot.handler.categories.action_state.CategoryActionState;
 import org.expense_bot.handler.categories.action_state.CategoryAddNewHandler;
 import org.expense_bot.handler.categories.action_state.CategoryDefaultHandler;
@@ -24,7 +25,7 @@ public enum CategoryAction {
 	return Arrays.stream(values())
 	  .filter(action -> action.getValue().equals(text))
 	  .findFirst()
-	  .orElseThrow(() -> new IllegalArgumentException("Unable to parse category action"));
+	  .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.PARSE_CATEGORY_ACTION_ERROR));
 
   }
 }

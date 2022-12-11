@@ -6,7 +6,6 @@ import org.expense_bot.enums.Button;
 import org.expense_bot.enums.ConversationState;
 import org.expense_bot.handler.RequestHandler;
 import org.expense_bot.handler.init.BackHandler;
-import org.expense_bot.helper.KeyboardBuilder;
 import org.expense_bot.model.Income;
 import org.expense_bot.model.Request;
 import org.expense_bot.service.IncomeService;
@@ -30,7 +29,6 @@ public class EnterPeriodCheckIncomesHandler extends RequestHandler {
   private final SessionService sessionService;
   private final BackHandler backHandler;
   private final IncomeService incomeService;
-  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public boolean isApplicable(Request request) {

@@ -2,7 +2,7 @@ package org.expense_bot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.expense_bot.constant.Messages;
+import org.expense_bot.constant.ErrorMessages;
 import org.expense_bot.exception.UserNotFoundException;
 import org.expense_bot.handler.NewUserHandler;
 import org.expense_bot.model.Request;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUser(Long userId) {
 	return getOptionalUser(userId).orElseThrow(
-	  () -> new UserNotFoundException(Messages.USER_NOT_FOUND + userId));
+	  () -> new UserNotFoundException(ErrorMessages.USER_NOT_FOUND + userId));
   }
 
   @Override
