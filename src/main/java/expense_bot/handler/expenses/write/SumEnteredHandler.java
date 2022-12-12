@@ -23,7 +23,6 @@ import java.util.Optional;
 public class SumEnteredHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final BackHandler backHandler;
@@ -50,7 +49,7 @@ public class SumEnteredHandler extends RequestHandler {
         return;
       }
       final Long userId = request.getUserId();
-      final ReplyKeyboard keyboard = keyboardBuilder.buildExpenseMenu();
+      final ReplyKeyboard keyboard = KeyboardBuilder.buildExpenseMenu();
       sessionService.update(SessionUtil.getSession(sum.get(), userId));
       expenseService.save(ExpenseUtil.getExpense(sessionService.get(userId)));
       telegramService.sendMessage(userId, Messages.SUCCESS);

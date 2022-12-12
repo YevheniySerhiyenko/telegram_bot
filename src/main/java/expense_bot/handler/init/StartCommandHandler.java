@@ -22,7 +22,6 @@ public class StartCommandHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserService userService;
 
   @Override
@@ -44,7 +43,7 @@ public class StartCommandHandler extends RequestHandler {
   }
 
   private void extracted(Long userId) {
-    telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION, keyboardBuilder.buildMainMenu());
+    telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION, KeyboardBuilder.buildMainMenu());
     sessionService.updateState(userId, ConversationState.Init.WAITING_INIT_ACTION);
   }
 

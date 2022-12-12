@@ -19,7 +19,6 @@ public class CategoryRequestHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -29,7 +28,7 @@ public class CategoryRequestHandler extends RequestHandler {
   @Override
   public void handle(Request request) {
     final Long userId = request.getUserId();
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategoryOptionsMenu();
     telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboard);
     sessionService.updateState(userId, WAITING_CATEGORY_ACTION);
   }

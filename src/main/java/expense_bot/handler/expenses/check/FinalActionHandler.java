@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class FinalActionHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final BackHandler backHandler;

@@ -7,6 +7,8 @@ import expense_bot.handler.RequestHandler;
 import expense_bot.handler.init.BackHandler;
 import expense_bot.keyboard.KeyboardBuilder;
 import expense_bot.model.Request;
+import expense_bot.model.UserCategory;
+import expense_bot.service.UserCategoryService;
 import expense_bot.service.impl.SessionService;
 import expense_bot.service.impl.TelegramService;
 import expense_bot.util.Calendar;
@@ -16,16 +18,18 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CheckPeriodHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final BackHandler backHandler;
+  private final UserCategoryService userCategoryService;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -43,7 +47,7 @@ public class CheckPeriodHandler extends RequestHandler {
     if (showCalendar) {
       return;
     }
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(userId);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategories(getCategories(userId));
     sessionService.update(SessionUtil.getSession(userId, period, ConversationState.Expenses.WAITING_CHECK_CATEGORY));
     telegramService.sendMessage(userId, Messages.CHOOSE_CATEGORY, keyboard);
   }
@@ -58,6 +62,12 @@ public class CheckPeriodHandler extends RequestHandler {
     return true;
   }
 
+  private List<String> getCategories(Long userId) {
+    return userCategoryService.getByUserId(userId)
+      .stream()
+      .map(UserCategory::getCategory)
+      .collect(Collectors.toList());
+  }
   @Override
   public boolean isGlobal() {
     return false;

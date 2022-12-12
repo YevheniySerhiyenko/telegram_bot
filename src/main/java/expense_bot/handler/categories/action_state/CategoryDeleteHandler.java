@@ -17,17 +17,16 @@ import java.util.stream.Collectors;
 public class CategoryDeleteHandler implements CategoryActionState {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserCategoryService userCategoryService;
 
   @Override
   public void handle(Long userId) {
     final List<String> defaultCategories = getCategories(userId);
     if (defaultCategories.isEmpty()) {
-      telegramService.sendMessage(userId, Messages.NOTHING_TO_DELETE, keyboardBuilder.buildBackButton());
+      telegramService.sendMessage(userId, Messages.NOTHING_TO_DELETE, KeyboardBuilder.buildBackButton());
       return;
     }
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategories(defaultCategories);
     telegramService.sendMessage(userId, Messages.ASK_TO_DELETE, keyboard);
   }
 
@@ -50,13 +49,13 @@ public class CategoryDeleteHandler implements CategoryActionState {
     if (allDeleted) {
       return;
     }
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(userCategories);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategories(userCategories);
     telegramService.sendMessage(userId, Messages.ASK_TO_DELETE, keyboard);
   }
 
   private boolean checkAll(Long userId, List<String> categories) {
     if (categories.isEmpty()) {
-      final ReplyKeyboard backButton = keyboardBuilder.buildBackButton();
+      final ReplyKeyboard backButton = KeyboardBuilder.buildBackButton();
       telegramService.sendMessage(userId, Messages.ALL_CATEGORIES_DELETED, backButton);
     }
     return categories.isEmpty();

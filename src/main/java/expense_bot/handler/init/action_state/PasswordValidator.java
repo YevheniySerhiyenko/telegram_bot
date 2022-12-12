@@ -18,7 +18,6 @@ public class PasswordValidator implements InitActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserService userService;
   private final PasswordEncoder encoder;
 
@@ -29,7 +28,7 @@ public class PasswordValidator implements InitActionState {
     final User user = userService.getUser(userId);
     final boolean validPassword = encoder.matches(password, user.getPassword());
     if (validPassword) {
-      telegramService.sendMessage(userId, Messages.HELLO_MESSAGE, keyboardBuilder.buildMainMenu());
+      telegramService.sendMessage(userId, Messages.HELLO_MESSAGE, KeyboardBuilder.buildMainMenu());
       telegramService.sendMessage(userId, Messages.CHOOSE_YOUR_ACTION);
       sessionService.updateState(userId, ConversationState.Init.WAITING_INIT_ACTION);
       userService.login(userId);

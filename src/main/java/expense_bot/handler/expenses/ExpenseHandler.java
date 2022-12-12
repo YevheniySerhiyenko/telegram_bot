@@ -21,7 +21,6 @@ import java.util.List;
 public class ExpenseHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserCategoryService userCategoryService;
   private final BackHandler backHandler;
   private final ApplicationContext context;
@@ -47,7 +46,7 @@ public class ExpenseHandler extends RequestHandler {
 
   private boolean checkEmpty(Long userId, List<UserCategory> categories) {
     if (categories.isEmpty()) {
-      telegramService.sendMessage(userId, Messages.NO_ONE_CATEGORY_FOUND, keyboardBuilder.buildBackButton());
+      telegramService.sendMessage(userId, Messages.NO_ONE_CATEGORY_FOUND, KeyboardBuilder.buildBackButton());
     }
     return categories.isEmpty();
   }

@@ -49,13 +49,13 @@ public class Utils {
   }
 
   public static InlineKeyboardMarkup getManyOneButtonBoard(Map<String, String> buttons) {
-    InlineKeyboardMarkupBuilder keyboardBuilder = InlineKeyboardMarkup.builder();
+    InlineKeyboardMarkupBuilder KeyboardBuilder = InlineKeyboardMarkup.builder();
 
     buttons.entrySet().stream()
       .map(button -> List.of(Utils.buildButton(button.getKey(), button.getValue())))
-      .forEach(keyboardBuilder::keyboardRow);
+      .forEach(KeyboardBuilder::keyboardRow);
 
-    return keyboardBuilder.build();
+    return KeyboardBuilder.build();
   }
 
   public static KeyboardRow buildKey(String action) {

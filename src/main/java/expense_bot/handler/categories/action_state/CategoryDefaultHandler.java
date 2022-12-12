@@ -21,7 +21,6 @@ public class CategoryDefaultHandler implements CategoryActionState {
   private final TelegramService telegramService;
   private final CategoryService categoryService;
   private final UserCategoryService userCategoryService;
-  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public void handle(Long userId) {
@@ -30,7 +29,7 @@ public class CategoryDefaultHandler implements CategoryActionState {
       telegramService.sendMessage(userId, Messages.ALL_CATEGORIES_ADDED);
       return;
     }
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategories(defaultCategories);
     telegramService.sendMessage(userId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
   }
 
@@ -47,7 +46,7 @@ public class CategoryDefaultHandler implements CategoryActionState {
     if (allAdded) {
       return;
     }
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCustomCategoriesMenu(defaultCategories);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategories(defaultCategories);
     telegramService.sendMessage(userId, Messages.CHOOSE_CATEGORY_FROM_LIST, keyboard);
   }
 
@@ -79,7 +78,7 @@ public class CategoryDefaultHandler implements CategoryActionState {
 
   private boolean checkAll(Long userId, List<String> categories) {
     if (categories.isEmpty()) {
-      telegramService.sendMessage(userId, Messages.ALL_CATEGORIES_ADDED, keyboardBuilder.buildBackButton());
+      telegramService.sendMessage(userId, Messages.ALL_CATEGORIES_ADDED, KeyboardBuilder.buildBackButton());
     }
     return categories.isEmpty();
   }

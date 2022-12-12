@@ -4,41 +4,21 @@ import expense_bot.dto.ExpenseGroup;
 import expense_bot.enums.Button;
 import expense_bot.enums.CategoryAction;
 import expense_bot.enums.Period;
-import expense_bot.model.UserCategory;
-import expense_bot.service.UserCategoryService;
 import expense_bot.util.Utils;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class KeyboardBuilder {
 
-  private final UserCategoryService userCategoryService;
-
-  public ReplyKeyboard buildCategoriesMenu(Long userId) {
-    final List<KeyboardRow> buttonsList = new ArrayList<>();
-    final List<String> allCategories = getCategoryList(userId);
-
-    allCategories.stream().map(Utils::buildKey).forEach(buttonsList::add);
-    buttonsList.add(Utils.buildKey(Button.BUTTON_BACK.getValue()));
-
-    return ReplyKeyboardMarkup.builder()
-      .keyboard(buttonsList)
-      .selective(true)
-      .resizeKeyboard(true)
-      .build();
-  }
-
-  public ReplyKeyboard buildMainMenu() {
+  public static ReplyKeyboard buildMainMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildTwoKeys(
         Button.EXPENSES.getValue(),
@@ -51,7 +31,7 @@ public class KeyboardBuilder {
   }
 
 
-  public ReplyKeyboard buildExpenseMenu() {
+  public static ReplyKeyboard buildExpenseMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildTwoKeys(
         Button.WRITE_EXPENSES.getValue(),
@@ -64,7 +44,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildIncomeMenu() {
+  public static ReplyKeyboard buildIncomeMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildKey(Button.WRITE_INCOMES.getValue()))
       .keyboardRow(Utils.buildKey(Button.CHECK_INCOMES.getValue()))
@@ -75,7 +55,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildCheckPeriodMenu() {
+  public static ReplyKeyboard buildCheckPeriodMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildKey(Period.DAY.getValue()))
       .keyboardRow(Utils.buildKey(Period.WEEK.getValue()))
@@ -87,22 +67,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildCheckCategoriesMenu(Long userId) {
-    final List<String> categoryList = getCategoryList(userId);
-
-    final List<KeyboardRow> keyboardRows = new ArrayList<>();
-    categoryList.stream().map(Utils::buildKey).forEach(keyboardRows::add);
-
-    return ReplyKeyboardMarkup.builder()
-      .keyboardRow(Utils.buildKey(Button.BY_ALL_CATEGORIES.getValue()))
-      .keyboard(keyboardRows)
-      .keyboardRow(Utils.buildKey(Button.BUTTON_BACK.getValue()))
-      .resizeKeyboard(true)
-      .oneTimeKeyboard(true)
-      .build();
-  }
-
-  public ReplyKeyboard buildCategoryOptionsMenu() {
+  public static ReplyKeyboard buildCategoryOptionsMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildKey(CategoryAction.ADD_NEW_CATEGORY.getValue()))
       .keyboardRow(Utils.buildKey(CategoryAction.DELETE_MY_CATEGORIES.getValue()))
@@ -112,8 +77,8 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildCustomCategoriesMenu(List<String> allCategories) {
-    final List<KeyboardRow> keyboard = allCategories.stream()
+  public static ReplyKeyboard buildCategories(List<String> categories) {
+    final List<KeyboardRow> keyboard = categories.stream()
       .map(Utils::buildKey)
       .collect(Collectors.toList());
 
@@ -124,7 +89,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildSetDateMenu() {
+  public static ReplyKeyboard buildSetDateMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildKey(Button.ENTER_DATE.getValue()))
       .keyboardRow(Utils.buildKey(Button.BUTTON_BACK.getValue()))
@@ -133,7 +98,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildBackButton() {
+  public static ReplyKeyboard buildBackButton() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildKey(Button.BUTTON_BACK.getValue()))
       .resizeKeyboard(true)
@@ -141,7 +106,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildSettingsMenu() {
+  public static ReplyKeyboard buildSettingsMenu() {
     return ReplyKeyboardMarkup.builder()
       .keyboardRow(Utils.buildKey(Button.PASSWORD.getValue()))
       .resizeKeyboard(true)
@@ -149,21 +114,16 @@ public class KeyboardBuilder {
       .build();
   }
 
-  private List<String> getCategoryList(Long userId) {
-    return userCategoryService.getByUserId(userId)
-      .stream()
-      .map(UserCategory::getCategory)
-      .collect(Collectors.toList());
-  }
 
-  public ReplyKeyboard buildExpenseOptions(ExpenseGroup group) {
+
+  public static ReplyKeyboard buildExpenseOptions(ExpenseGroup group) {
     return InlineKeyboardMarkup.builder()
       .keyboardRow(List.of(
         Utils.buildButton(Button.BUTTON_INFO.getValue(), group.getCategory())))
       .build();
   }
 
-  public ReplyKeyboard buildCreatePDFMenu() {
+  public static ReplyKeyboard buildCreatePDFMenu() {
     return ReplyKeyboardMarkup.builder()
 //      .keyboardRow(Utils.buildKey(Button.CREATE_PDF.getValue()))
       .keyboardRow(Utils.buildKey(Button.BUTTON_BACK.getValue()))
@@ -172,7 +132,7 @@ public class KeyboardBuilder {
       .build();
   }
 
-  public ReplyKeyboard buildPasswordOptions(boolean enablePassword) {
+  public static ReplyKeyboard buildPasswordOptions(boolean enablePassword) {
     final List<KeyboardRow> passwordExistOptions = List.of(
       Utils.buildKey(Button.UPDATE_PASSWORD.getValue()),
       Utils.buildKey(Button.DISABLE_PASSWORD.getValue()),

@@ -21,7 +21,6 @@ public class PasswordSettingsRequestHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserService userService;
   private final BackHandler backHandler;
 
@@ -39,7 +38,7 @@ public class PasswordSettingsRequestHandler extends RequestHandler {
     final Long userId = request.getUserId();
     final User user = userService.getUser(userId);
     final boolean enablePassword = user.isEnablePassword();
-    final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(enablePassword);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildPasswordOptions(enablePassword);
 
     if (enablePassword) {
       telegramService.sendMessage(userId, Messages.ALREADY_HAD_PASSWORD, keyboard);

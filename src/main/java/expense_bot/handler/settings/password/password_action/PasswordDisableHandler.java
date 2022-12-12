@@ -19,7 +19,6 @@ public class PasswordDisableHandler implements PasswordActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserService userService;
   private final PasswordEncoder encoder;
 
@@ -27,7 +26,7 @@ public class PasswordDisableHandler implements PasswordActionState {
   public void init(Long userId) {
     final User user = userService.getUser(userId);
     if (user.isEnablePassword() && user.getPassword() != null) {
-      final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
+      final ReplyKeyboard keyboard = KeyboardBuilder.buildBackButton();
       telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, keyboard);
     }
   }
@@ -40,12 +39,12 @@ public class PasswordDisableHandler implements PasswordActionState {
     final boolean validPassword = encoder.matches(oldPassword, user.getPassword());
     if (validPassword) {
       userService.updatePassword(userId, null, false);
-      final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(false);
+      final ReplyKeyboard keyboard = KeyboardBuilder.buildPasswordOptions(false);
       telegramService.sendMessage(userId, Messages.PASSWORD_DISABLED, keyboard);
       sessionService.updateState(userId, ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION);
     } else {
       telegramService.sendMessage(userId, Messages.WRONG_PASSWORD);
-      telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, keyboardBuilder.buildBackButton());
+      telegramService.sendMessage(userId, Messages.ENTER_OLD_PASSWORD, KeyboardBuilder.buildBackButton());
       sessionService.updateState(userId, ConversationState.Settings.WAITING_PASSWORD_ACTION);
     }
   }
@@ -54,7 +53,7 @@ public class PasswordDisableHandler implements PasswordActionState {
   public void handleFinal(Request request) {
     final Long userId = request.getUserId();
     final boolean enablePassword = sessionService.get(userId).isEnablePassword();
-    final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(enablePassword);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildPasswordOptions(enablePassword);
     telegramService.sendMessage(userId, Messages.PASSWORD_DISABLED, keyboard);
   }
 

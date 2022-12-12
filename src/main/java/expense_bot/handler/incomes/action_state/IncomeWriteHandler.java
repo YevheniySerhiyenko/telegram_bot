@@ -25,13 +25,12 @@ public class IncomeWriteHandler implements IncomeActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final IncomeService incomeService;
   private final StickerSender stickerSender;
 
   @Override
   public void handle(Long userId) {
-    telegramService.sendMessage(userId, Messages.ENTER_INCOME_SUM, keyboardBuilder.buildSetDateMenu());
+    telegramService.sendMessage(userId, Messages.ENTER_INCOME_SUM, KeyboardBuilder.buildSetDateMenu());
     sessionService.update(SessionUtil.getSession(IncomeAction.WRITE, userId));
   }
 
@@ -45,7 +44,7 @@ public class IncomeWriteHandler implements IncomeActionState {
     final LocalDate incomeDate = request.getSession().getIncomeDate();
     incomeService.save(IncomeUtil.buildIncome(userId, sum.get(), incomeDate));
     stickerSender.sendSticker(userId, StickerAction.SUCCESS_EXPENSE_SUM.name());
-    telegramService.sendMessage(userId, Messages.SUCCESS_INCOME, keyboardBuilder.buildIncomeMenu());
+    telegramService.sendMessage(userId, Messages.SUCCESS_INCOME, KeyboardBuilder.buildIncomeMenu());
     sessionService.updateState(userId, ConversationState.Init.WAITING_INCOME_ACTION);
   }
 

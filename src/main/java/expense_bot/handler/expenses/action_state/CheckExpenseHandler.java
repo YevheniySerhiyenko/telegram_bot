@@ -15,11 +15,10 @@ public class CheckExpenseHandler implements ExpenseActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public void handle(Long userId) {
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCheckPeriodMenu();
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCheckPeriodMenu();
     telegramService.sendMessage(userId, Messages.CHOOSE_PERIOD, keyboard);
     sessionService.updateState(userId, ConversationState.Expenses.WAITING_FOR_PERIOD);
   }

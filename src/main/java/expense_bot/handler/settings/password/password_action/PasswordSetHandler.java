@@ -20,7 +20,6 @@ public class PasswordSetHandler implements PasswordActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final UserService userService;
   private final PasswordEncoder encoder;
 
@@ -28,7 +27,7 @@ public class PasswordSetHandler implements PasswordActionState {
   public void init(Long userId) {
     final User user = userService.getUser(userId);
     if (!user.isEnablePassword() && user.getPassword() == null) {
-      final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
+      final ReplyKeyboard keyboard = KeyboardBuilder.buildBackButton();
       telegramService.sendMessage(userId, Messages.ENTER_NEW_PASSWORD, keyboard);
     }
   }
@@ -45,11 +44,11 @@ public class PasswordSetHandler implements PasswordActionState {
     if (isPasswordsEquals(session)) {
       userService.updatePassword(userId, encoder.encode(session.getPassword()), true);
       sessionService.updateState(userId, ConversationState.Settings.WAITING_INIT_PASSWORD_ACTION);
-      final ReplyKeyboard keyboard = keyboardBuilder.buildPasswordOptions(true);
+      final ReplyKeyboard keyboard = KeyboardBuilder.buildPasswordOptions(true);
       telegramService.sendMessage(userId, Messages.SUCCESS);
       telegramService.sendMessage(userId, Messages.PASSWORD_CHANGED, keyboard);
     } else {
-      final ReplyKeyboard keyboard = keyboardBuilder.buildBackButton();
+      final ReplyKeyboard keyboard = KeyboardBuilder.buildBackButton();
       telegramService.sendMessage(userId, Messages.PASSWORDS_NOT_IDENTICAL);
       telegramService.sendMessage(userId, Messages.ENTER_PASSWORD_ONE_MORE, keyboard);
       sessionService.updateState(userId, ConversationState.Settings.WAITING_FINAL_PASSWORD_ACTION);

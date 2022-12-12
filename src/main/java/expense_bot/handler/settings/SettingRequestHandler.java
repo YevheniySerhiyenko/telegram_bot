@@ -18,7 +18,6 @@ public class SettingRequestHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -28,7 +27,7 @@ public class SettingRequestHandler extends RequestHandler {
   @Override
   public void handle(Request request) {
     final Long userId = request.getUserId();
-    final ReplyKeyboard keyboard = keyboardBuilder.buildSettingsMenu();
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildSettingsMenu();
     telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboard);
     sessionService.updateState(userId, ConversationState.Settings.WAITING_SETTINGS_ACTION);
   }

@@ -27,7 +27,7 @@ import java.util.Map;
 public class PDFCreator {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
+  private final KeyboardBuilder KeyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final BackHandler backHandler;
@@ -35,13 +35,13 @@ public class PDFCreator {
   @Autowired
   public PDFCreator(
     TelegramService telegramService,
-    KeyboardBuilder keyboardBuilder,
+    KeyboardBuilder KeyboardBuilder,
     SessionService sessionService,
     ExpenseService expenseService,
     BackHandler backHandler
   ) {
     this.telegramService = telegramService;
-    this.keyboardBuilder = keyboardBuilder;
+    this.KeyboardBuilder = KeyboardBuilder;
     this.sessionService = sessionService;
     this.expenseService = expenseService;
     this.backHandler = backHandler;

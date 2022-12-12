@@ -27,7 +27,6 @@ import java.util.List;
 public class CheckCategoryHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final BackHandler backHandler;
@@ -62,14 +61,14 @@ public class CheckCategoryHandler extends RequestHandler {
 
   private void sendExpenses(List<Expense> expenses, Long userId, String period) {
     if (expenses == null || expenses.isEmpty()) {
-      telegramService.sendMessage(userId, Messages.NO_EXPENSES_FOR_PERIOD, keyboardBuilder.buildExpenseMenu());
+      telegramService.sendMessage(userId, Messages.NO_EXPENSES_FOR_PERIOD, KeyboardBuilder.buildExpenseMenu());
       sessionService.updateState(userId, ConversationState.Init.WAITING_EXPENSE_ACTION);
     } else {
       telegramService.sendMessage(userId, Messages.SUCCESS);
       final List<ExpenseGroup> groupList = ExpenseMapper.toGroup(expenses);
       groupList.forEach(group ->
-        telegramService.sendMessage(userId, ExpenseUtil.getMessage(group), keyboardBuilder.buildExpenseOptions(group)));
-      telegramService.sendMessage(userId, ExpenseUtil.getSumMessage(expenses, period), keyboardBuilder.buildCreatePDFMenu());
+        telegramService.sendMessage(userId, ExpenseUtil.getMessage(group), KeyboardBuilder.buildExpenseOptions(group)));
+      telegramService.sendMessage(userId, ExpenseUtil.getSumMessage(expenses, period), KeyboardBuilder.buildCreatePDFMenu());
     }
   }
 

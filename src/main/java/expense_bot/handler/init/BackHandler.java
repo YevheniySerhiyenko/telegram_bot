@@ -20,29 +20,28 @@ import java.util.Objects;
 public class BackHandler {
 
   private final SessionService sessionService;
-  private final KeyboardBuilder keyboardBuilder;
   private final TelegramService telegramService;
 
   public boolean handleCategoriesBackButton(Request request) {
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCategoryOptionsMenu();
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategoryOptionsMenu();
     return handleBack(request, keyboard, ConversationState.Categories.WAITING_CATEGORY_ACTION);
   }
 
   public boolean handleExpensesBackButton(Request request) {
-    return handleBack(request, keyboardBuilder.buildExpenseMenu(), ConversationState.Init.WAITING_EXPENSE_ACTION);
+    return handleBack(request, KeyboardBuilder.buildExpenseMenu(), ConversationState.Init.WAITING_EXPENSE_ACTION);
   }
 
   public boolean handleBackPasswordSetting(Request request) {
-    final ReplyKeyboard keyboard = keyboardBuilder.buildSettingsMenu();
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildSettingsMenu();
     return handleBack(request, keyboard, ConversationState.Settings.WAITING_SETTINGS_ACTION);
   }
 
   public boolean handleMainMenuBackButton(Request request) {
-    return handleBack(request, keyboardBuilder.buildMainMenu(), ConversationState.Init.WAITING_INIT_ACTION);
+    return handleBack(request, KeyboardBuilder.buildMainMenu(), ConversationState.Init.WAITING_INIT_ACTION);
   }
 
   public boolean handleIncomeBackButton(Request request) {
-    return handleBack(request, keyboardBuilder.buildIncomeMenu(), ConversationState.Init.WAITING_INCOME_ACTION);
+    return handleBack(request, KeyboardBuilder.buildIncomeMenu(), ConversationState.Init.WAITING_INCOME_ACTION);
   }
 
   private boolean handleBack(Request request, ReplyKeyboard keyboard, ConversationState state) {

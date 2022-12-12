@@ -20,14 +20,13 @@ public class IncomeCheckHandler implements IncomeActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final IncomeService incomeService;
 
   @Override
   public void handle(Long userId) {
     final List<Income> incomes = incomeService.getAllCurrentMonth(userId);
     incomes.forEach(income -> telegramService.sendMessage(userId, IncomeUtil.getIncome(income)));
-    telegramService.sendMessage(userId, Messages.CHOOSE_ANOTHER_PERIOD, keyboardBuilder.buildSetDateMenu());
+    telegramService.sendMessage(userId, Messages.CHOOSE_ANOTHER_PERIOD, KeyboardBuilder.buildSetDateMenu());
     sessionService.updateState(userId, ConversationState.Incomes.WAITING_FOR_PERIOD);
   }
 

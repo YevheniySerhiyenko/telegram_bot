@@ -14,12 +14,11 @@ public class InitExpenseHandler implements InitActionState {
 
   private final SessionService sessionService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
 
   @Override
   public void handle(Long userId) {
     sessionService.updateState(userId, ConversationState.Init.WAITING_EXPENSE_ACTION);
-    telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, keyboardBuilder.buildExpenseMenu());
+    telegramService.sendMessage(userId, Messages.CHOOSE_ACTION, KeyboardBuilder.buildExpenseMenu());
   }
 
 }

@@ -18,7 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 public class CategoryAddNewHandler implements CategoryActionState {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final StickerSender stickerSender;
   private final UserCategoryService userCategoryService;
@@ -26,12 +25,12 @@ public class CategoryAddNewHandler implements CategoryActionState {
 
   @Override
   public void handle(Long userId) {
-    telegramService.sendMessage(userId, Messages.ENTER_CATEGORY_NAME, keyboardBuilder.buildBackButton());
+    telegramService.sendMessage(userId, Messages.ENTER_CATEGORY_NAME, KeyboardBuilder.buildBackButton());
   }
 
   @Override
   public void handleFinal(Long userId, String categoryParam) {
-    final ReplyKeyboard backButton = keyboardBuilder.buildBackButton();
+    final ReplyKeyboard backButton = KeyboardBuilder.buildBackButton();
     try {
       userCategoryService.add(userId, categoryParam);
     } catch (DuplicateException exception) {

@@ -19,7 +19,6 @@ public class CategoryEnteredHandler extends RequestHandler {
 
   private final TelegramService telegramService;
   private final SessionService sessionService;
-  private final KeyboardBuilder keyboardBuilder;
   private final BackHandler backHandler;
 
   @Override
@@ -33,7 +32,7 @@ public class CategoryEnteredHandler extends RequestHandler {
       return;
     }
     final Long userId = request.getUserId();
-    final ReplyKeyboard keyboard = keyboardBuilder.buildSetDateMenu();
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildSetDateMenu();
     telegramService.sendMessage(userId, Messages.ENTER_SUM, keyboard);
     final String category = getUpdateData(request);
     sessionService.update(SessionUtil.buildSession(userId, category));

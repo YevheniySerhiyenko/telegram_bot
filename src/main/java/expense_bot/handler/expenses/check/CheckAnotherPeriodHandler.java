@@ -7,6 +7,8 @@ import expense_bot.handler.init.BackHandler;
 import expense_bot.keyboard.KeyboardBuilder;
 import expense_bot.model.Request;
 import expense_bot.model.Session;
+import expense_bot.model.UserCategory;
+import expense_bot.service.UserCategoryService;
 import expense_bot.service.impl.SessionService;
 import expense_bot.service.impl.TelegramService;
 import expense_bot.util.Calendar;
@@ -16,8 +18,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static expense_bot.constant.Messages.DATE;
 
@@ -26,9 +30,9 @@ import static expense_bot.constant.Messages.DATE;
 public class CheckAnotherPeriodHandler extends RequestHandler {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final SessionService sessionService;
   private final BackHandler backHandler;
+  private final UserCategoryService userCategoryService;
 
   @Override
   public boolean isApplicable(Request request) {
@@ -49,7 +53,7 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
     if (enteredPeriod) {
       return;
     }
-    final ReplyKeyboard keyboard = keyboardBuilder.buildCheckCategoriesMenu(userId);
+    final ReplyKeyboard keyboard = KeyboardBuilder.buildCategories(getCategories(userId));
     telegramService.sendMessage(userId, Messages.CHOOSE_CATEGORY, keyboard);
   }
 
@@ -58,7 +62,6 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
     if (hasCallBack(request)) {
       final LocalDate date = Calendar.getDate(request);
       telegramService.sendMessage(userId, String.format(DATE, date));
-//	  sessionService.updateState(userId, ConversationState.Expenses.WAITING_FOR_TWO_DATES);
       return setDates(date, request);
     }
     return false;
@@ -80,7 +83,6 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
       sessionService.update(session);
       return false;
     }
-//	sessionService.update(session);
 
     return false;
   }
@@ -92,6 +94,13 @@ public class CheckAnotherPeriodHandler extends RequestHandler {
     telegramService.editKeyboardMarkup(request, keyboard.get());
     sessionService.updateState(request.getUserId(), ConversationState.Expenses.WAITING_FOR_TWO_DATES);
     return true;
+  }
+
+  private List<String> getCategories(Long userId) {
+    return userCategoryService.getByUserId(userId)
+      .stream()
+      .map(UserCategory::getCategory)
+      .collect(Collectors.toList());
   }
 
   @Override

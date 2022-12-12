@@ -26,7 +26,6 @@ public class ScheduleConfig {
 
   private final UserService userService;
   private final TelegramService telegramService;
-  private final KeyboardBuilder keyboardBuilder;
   private final ExpenseService expenseService;
   private final StickerSender stickerSender;
 
@@ -40,7 +39,7 @@ public class ScheduleConfig {
       final List<Expense> byPeriod = expenseService.getByPeriod(user.getUserId(), dateFrom, dateTo, byAllCategories);
       if (byPeriod.isEmpty()) {
         telegramService.sendMessage(
-          user.getUserId(), "Hello, write your expenses", keyboardBuilder.buildExpenseMenu());
+          user.getUserId(), "Hello, write your expenses", KeyboardBuilder.buildExpenseMenu());
         stickerSender.sendSticker(user.getUserId(), StickerAction.NOTIFICATION.name());
       }
     });
