@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -41,15 +40,13 @@ public class EnteredDateIncomeHandler extends RequestHandler {
     if (anotherMonth) {
       return;
     }
-    keyboard.ifPresent(keyboardMarkup -> {
-      final LocalDate localDate = getLocalDate(request, keyboardMarkup);
+      final LocalDate localDate = getLocalDate(request, keyboard);
       sessionService.update(SessionUtil.buildIncomeSession(userId, localDate));
       telegramService.sendMessage(userId, String.format(Messages.DATE, localDate));
-    });
   }
 
-  private LocalDate getLocalDate(Request request, InlineKeyboardMarkup keyboard) {
-    return Objects.isNull(keyboard) ? Calendar.getDate(request) : null;
+  private LocalDate getLocalDate(Request request, Optional<InlineKeyboardMarkup> keyboard) {
+    return keyboard.isEmpty() ? Calendar.getDate(request) : null;
   }
 
   private boolean drawAnotherMonth(Request request, Optional<InlineKeyboardMarkup> keyboard) {

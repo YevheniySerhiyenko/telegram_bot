@@ -3,12 +3,14 @@ package expense_bot.util;
 import expense_bot.model.Request;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import java.util.stream.IntStream;
 import static expense_bot.handler.RequestHandler.getUpdateData;
 import static expense_bot.handler.RequestHandler.hasCallBack;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Calendar {
 
@@ -55,11 +58,11 @@ public class Calendar {
 
   private static List<InlineKeyboardButton> getNumbersLine(int number, int numberOfDays, LocalDate now) {
     return IntStream.rangeClosed(number, numberOfDays)
-      .mapToObj(num -> Utils.buildButton(String.valueOf(num), getCalBACKData(now, num)))
+      .mapToObj(num -> Utils.buildButton(String.valueOf(num), getCallBackData(now, num)))
       .collect(Collectors.toList());
   }
 
-  private static String getCalBACKData(LocalDate now, int number) {
+  private static String getCallBackData(LocalDate now, int number) {
     final String callBackDayValue = getCallBackFormatValue(String.valueOf(number));
     final String callBackMonthValue = getCallBackFormatValue(String.valueOf(now.getMonth().getValue()));
     return callBackDayValue + "." + callBackMonthValue + "." + now.getYear();
@@ -121,7 +124,11 @@ public class Calendar {
 
   public static LocalDate getDate(Request request) {
     if (hasCallBack(request)) {
-      return LocalDate.parse(getUpdateData(request), DateTimeFormatter.ofPattern(PATTERN));
+      try {
+        return LocalDate.parse(getUpdateData(request), DateTimeFormatter.ofPattern(PATTERN));
+      } catch (DateTimeParseException ignored) {
+        log.warn("Selected header in calendar");
+      }
     }
     return LocalDate.now();
   }

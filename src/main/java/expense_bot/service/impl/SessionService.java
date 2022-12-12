@@ -98,8 +98,8 @@ public class SessionService {
         update(userId, date, state);
       } else {
         telegramService.editKeyboardMarkup(request, keyboard.get());
-        enteredDate = true;
       }
+      enteredDate = true;
     }
     return enteredDate;
   }
