@@ -2,7 +2,6 @@ package expense_bot.util;
 
 import com.itextpdf.html2pdf.HtmlConverter;
 import expense_bot.handler.init.BackHandler;
-import expense_bot.keyboard.KeyboardBuilder;
 import expense_bot.model.Expense;
 import expense_bot.model.Request;
 import expense_bot.model.Session;
@@ -27,7 +26,6 @@ import java.util.Map;
 public class PDFCreator {
 
   private final TelegramService telegramService;
-  private final KeyboardBuilder KeyboardBuilder;
   private final SessionService sessionService;
   private final ExpenseService expenseService;
   private final BackHandler backHandler;
@@ -35,13 +33,11 @@ public class PDFCreator {
   @Autowired
   public PDFCreator(
     TelegramService telegramService,
-    KeyboardBuilder KeyboardBuilder,
     SessionService sessionService,
     ExpenseService expenseService,
     BackHandler backHandler
   ) {
     this.telegramService = telegramService;
-    this.KeyboardBuilder = KeyboardBuilder;
     this.sessionService = sessionService;
     this.expenseService = expenseService;
     this.backHandler = backHandler;
