@@ -32,7 +32,7 @@ jobs:
           path: artifact
 
   deploy:
-    name: Deploy to EC2 on master branch push
+    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
