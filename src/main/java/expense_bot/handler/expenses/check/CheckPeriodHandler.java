@@ -1,6 +1,7 @@
 package expense_bot.handler.expenses.check;
 
 import expense_bot.constant.Messages;
+import expense_bot.enums.Button;
 import expense_bot.enums.ConversationState;
 import expense_bot.enums.Period;
 import expense_bot.handler.RequestHandler;
@@ -18,9 +19,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -63,10 +64,13 @@ public class CheckPeriodHandler extends RequestHandler {
   }
 
   private List<String> getCategories(Long userId) {
-    return userCategoryService.getByUserId(userId)
+    final List<String> categories = new ArrayList<>();
+    categories.add(Button.BY_ALL_CATEGORIES.getValue());
+    userCategoryService.getByUserId(userId)
       .stream()
       .map(UserCategory::getCategory)
-      .collect(Collectors.toList());
+      .forEach(categories::add);
+    return categories;
   }
   @Override
   public boolean isGlobal() {

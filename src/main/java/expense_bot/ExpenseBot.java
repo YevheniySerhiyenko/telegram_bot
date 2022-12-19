@@ -18,16 +18,19 @@ public class ExpenseBot extends TelegramLongPollingBot {
   private final Dispatcher dispatcher;
   private final SessionService sessionService;
   private final StartCommandHandler startCommandHandler;
+  private final String botToken;
+  private final String botUsername;
 
-  @Value("${bot.token}")
-  private String botToken;
-  @Value("${bot.username}")
-  private String botUsername;
-
-  public ExpenseBot(Dispatcher dispatcher, SessionService sessionService, StartCommandHandler startCommandHandler) {
+  public ExpenseBot(Dispatcher dispatcher,
+                    SessionService sessionService,
+                    StartCommandHandler startCommandHandler,
+                    @Value("${bot.token}") String botToken,
+                    @Value("${bot.username}") String botUsername) {
     this.dispatcher = dispatcher;
     this.sessionService = sessionService;
     this.startCommandHandler = startCommandHandler;
+    this.botToken = botToken;
+    this.botUsername = botUsername;
   }
 
   /**
