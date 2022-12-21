@@ -13,6 +13,7 @@ public class ExpenseBotSender extends DefaultAbsSender {
   @Value("${bot.token}")
   private String botToken;
 
+
   public ExpenseBotSender() {
     super(new DefaultBotOptions());
   }
